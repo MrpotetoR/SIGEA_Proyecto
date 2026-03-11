@@ -1,0 +1,11 @@
+<x-sidebar-link href="{{ route('alumno.dashboard') }}">📊 Dashboard</x-sidebar-link>
+<x-sidebar-link href="{{ route('alumno.perfil') }}">👤 Mi Perfil</x-sidebar-link>
+<x-sidebar-link href="{{ route('alumno.horario') }}">🗓 Horario</x-sidebar-link>
+<x-sidebar-link href="{{ route('alumno.calificaciones') }}">📝 Calificaciones</x-sidebar-link>
+<x-sidebar-link href="{{ route('alumno.kardex') }}">📋 Kárdex</x-sidebar-link>
+<x-sidebar-link href="{{ route('alumno.historial') }}">📚 Historial Académico</x-sidebar-link>
+<x-sidebar-link href="{{ route('alumno.horas-culturales') }}">🎭 Horas ACUDE</x-sidebar-link>
+<x-sidebar-link href="{{ route('alumno.servicio-social') }}">🤝 Servicio Social</x-sidebar-link>
+<x-sidebar-link href="{{ route('alumno.evaluacion-docente') }}">⭐ Evaluar Docentes</x-sidebar-link>
+<x-sidebar-link href="{{ route('alumno.mis-docentes') }}">👨‍🏫 Mis Docentes</x-sidebar-link>
+<x-sidebar-link href="{{ route('alumno.noticias') }}">📰 Noticias</x-sidebar-link>

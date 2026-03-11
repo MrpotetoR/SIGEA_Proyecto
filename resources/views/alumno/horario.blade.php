@@ -1,0 +1,43 @@
+<x-panel title="Mi Horario" panelNombre="Panel Alumno">
+    <x-slot name="nav">@include('partials.alumno-nav')</x-slot>
+
+    <div class="bg-white rounded-xl shadow overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-indigo-50">
+                    <tr>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Hora</th>
+                        @foreach($dias as $dia)
+                            <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">
+                                {{ ucfirst($dia) }}
+                            </th>
+                        @endforeach
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-100">
+                    @php
+                        $horas = ['07:00', '08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00'];
+                    @endphp
+                    @foreach($horas as $hora)
+                        <tr>
+                            <td class="px-4 py-3 text-sm text-gray-500 font-mono whitespace-nowrap">{{ $hora }}</td>
+                            @foreach($dias as $dia)
+                                <td class="px-4 py-3 text-center">
+                                    @foreach($horario[$dia] ?? [] as $clase)
+                                        @if(\Carbon\Carbon::parse($clase->hora_inicio)->format('H:i') === $hora)
+                                            <div class="bg-indigo-100 rounded p-2 text-xs">
+                                                <p class="font-semibold text-indigo-800">{{ $clase->materia->nombre_materia }}</p>
+                                                <p class="text-indigo-600">{{ $clase->docente->nombre }}</p>
+                                                <p class="text-indigo-400">{{ \Carbon\Carbon::parse($clase->hora_inicio)->format('H:i') }}-{{ \Carbon\Carbon::parse($clase->hora_fin)->format('H:i') }}</p>
+                                            </div>
+                                        @endif
+                                    @endforeach
+                                </td>
+                            @endforeach
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    </div>
+</x-panel>

@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('alumno', function (Blueprint $table) {
             $table->id('id_alumno');
-            $table->unsignedBigInteger('id_usuario');
+            $table->foreignId('user_id')->constrained('users')->onUpdate('cascade')->onDelete('restrict');
             $table->unsignedBigInteger('id_carrera');
             $table->unsignedBigInteger('id_tutor')->nullable()->comment('Docente asignado como tutor');
             $table->string('matricula', 20)->unique()->comment('Generada automáticamente');
@@ -18,10 +18,6 @@ return new class extends Migration
             $table->string('apellidos', 100);
             $table->integer('cuatrimestre_actual')->default(1);
             $table->enum('estatus', ['activo', 'baja_temporal', 'baja_definitiva'])->default('activo');
-
-            $table->foreign('id_usuario')
-                  ->references('id_usuario')->on('usuario')
-                  ->onUpdate('cascade')->onDelete('restrict');
 
             $table->foreign('id_carrera')
                   ->references('id_carrera')->on('carrera')

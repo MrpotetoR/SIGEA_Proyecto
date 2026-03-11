@@ -10,14 +10,10 @@ return new class extends Migration
     {
         Schema::create('chatbot_sesion', function (Blueprint $table) {
             $table->id('id_sesion');
-            $table->unsignedBigInteger('id_usuario');
+            $table->foreignId('user_id')->constrained('users')->onUpdate('cascade')->onDelete('restrict');
             $table->dateTime('fecha_hora')->useCurrent();
             $table->text('pregunta');
             $table->text('respuesta');
-
-            $table->foreign('id_usuario')
-                  ->references('id_usuario')->on('usuario')
-                  ->onUpdate('cascade')->onDelete('restrict');
         });
     }
 

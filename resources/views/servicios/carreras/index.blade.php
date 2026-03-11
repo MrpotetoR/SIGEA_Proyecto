@@ -1,0 +1,49 @@
+<x-panel title="Carreras" panelNombre="Servicios Escolares">
+    <x-slot name="nav">@include('partials.servicios-nav')</x-slot>
+
+    <div class="flex justify-end mb-6">
+        <a href="{{ route('servicios.carreras.create') }}"
+           class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+            + Nueva carrera
+        </a>
+    </div>
+
+    <div class="bg-white rounded-xl shadow overflow-hidden">
+        <table class="min-w-full divide-y divide-gray-200 text-sm">
+            <thead class="bg-gray-50 text-xs uppercase text-gray-500">
+                <tr>
+                    <th class="px-4 py-3 text-left">Clave</th>
+                    <th class="px-4 py-3 text-left">Nombre</th>
+                    <th class="px-4 py-3 text-center">Alumnos</th>
+                    <th class="px-4 py-3 text-center">Materias</th>
+                    <th class="px-4 py-3 text-left">Director</th>
+                    <th class="px-4 py-3 text-center">Acciones</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100">
+                @forelse($carreras as $c)
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-4 py-3 font-mono font-bold text-indigo-700">{{ $c->clave_carrera }}</td>
+                        <td class="px-4 py-3 font-medium text-gray-900">{{ $c->nombre_carrera }}</td>
+                        <td class="px-4 py-3 text-center">{{ $c->alumnos_count ?? 0 }}</td>
+                        <td class="px-4 py-3 text-center">{{ $c->materias_count ?? 0 }}</td>
+                        <td class="px-4 py-3 text-gray-600">{{ $c->director?->nombre_completo ?? '—' }}</td>
+                        <td class="px-4 py-3 text-center">
+                            <div class="flex justify-center gap-2">
+                                <a href="{{ route('servicios.carreras.edit', $c) }}"
+                                   class="text-yellow-600 hover:text-yellow-900 font-medium">Editar</a>
+                                <form method="POST" action="{{ route('servicios.carreras.destroy', $c) }}" class="inline">
+                                    @csrf @method('DELETE')
+                                    <button type="submit" class="text-red-600 hover:text-red-900 font-medium"
+                                            onclick="return confirm('¿Eliminar carrera?')">Eliminar</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                @empty
+                    <tr><td colspan="6" class="px-4 py-10 text-center text-gray-400">No hay carreras registradas.</td></tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
+</x-panel>
