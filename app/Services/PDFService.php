@@ -35,7 +35,9 @@ class PDFService
 
     public function generarConstancia(Alumno $alumno, string $tipo): string
     {
-        $pdf = Pdf::loadView("pdf.constancia-{$tipo}", compact('alumno', 'tipo'));
+        $alumno->load('carrera');
+        $pdf = Pdf::loadView('pdf.constancia', compact('alumno', 'tipo'));
+        $pdf->setPaper('letter', 'portrait');
         $path = storage_path("app/public/constancia_{$alumno->matricula}_{$tipo}_" . now()->format('Ymd') . ".pdf");
         $pdf->save($path);
         return $path;
