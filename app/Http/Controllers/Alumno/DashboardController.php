@@ -19,7 +19,7 @@ class DashboardController extends Controller
 
         $noticias = \App\Models\Noticia::activas()->take(3)->get();
 
-        $proximasClases = [];
+        $proximasClases = collect();
         if ($alumno) {
             $diaSemana = strtolower(now()->locale('es')->dayName);
             $proximasClases = $alumno->inscripciones()

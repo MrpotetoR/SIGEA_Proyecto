@@ -18,8 +18,8 @@ class ReporteRendimientoController extends Controller
             : collect();
 
         $reporte = null;
-        if ($request->filled('grupo_id')) {
-            $grupo = \App\Models\Grupo::find($request->grupo_id);
+        if ($request->filled('grupo')) {
+            $grupo = \App\Models\Grupo::find($request->grupo);
             $reporte = $grupo ? $this->service->generarReporteRendimiento($grupo) : null;
         }
 
