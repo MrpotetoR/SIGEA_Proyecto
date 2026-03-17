@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep -n \"$ciclo\\\\?\" /c/Users/Yosra/SIGEA_Proyecto/app/Http/Controllers/Alumno/DashboardController.php)"
+    ]
+  }
+}

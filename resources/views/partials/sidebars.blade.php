@@ -28,7 +28,7 @@
 <a href="#" class="flex items-center px-3 py-2 text-sm rounded-md text-gray-700 hover:bg-gray-50">
     Grupos
 </a>
-<a href="#" class="flex items-center px-3 py-2 text-sm rounded-md text-gray-700 hover:bg-gray-50">
+<a href="#" class="flex items-center ">
     Materias
 </a>
 <a href="#" class="flex items-center px-3 py-2 text-sm rounded-md text-gray-700 hover:bg-gray-50">
