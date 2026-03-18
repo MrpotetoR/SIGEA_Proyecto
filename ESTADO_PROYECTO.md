@@ -1,7 +1,7 @@
 # SIGEA — Estado del Proyecto
 **Sistema Integral de Gestión Escolar y Académica**
 
-> Última actualización: Marzo 2026
+> Última actualización: 18 de marzo de 2026
 > Rama principal: `main`
 
 ---
@@ -57,7 +57,7 @@ php artisan key:generate
 
 ```env
 APP_NAME=SIGEA
-APP_URL=http://localhost/sigea/public
+APP_URL=http://127.0.0.1:8000
 
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
@@ -65,9 +65,19 @@ DB_PORT=3306
 DB_DATABASE=sigea_db
 DB_USERNAME=root
 DB_PASSWORD=
+
+MAIL_MAILER=smtp
+MAIL_HOST=smtp.gmail.com
+MAIL_PORT=587
+MAIL_ENCRYPTION=tls
+MAIL_USERNAME=tu_correo@gmail.com
+MAIL_PASSWORD="contraseña_de_aplicacion_google"
+MAIL_FROM_ADDRESS=tu_correo@gmail.com
+MAIL_FROM_NAME="SIGEA - Recuperación de contraseña"
 ```
 
 > Crear la base de datos `sigea_db` en MySQL antes de continuar.
+> La contraseña de correo debe ser una **contraseña de aplicación de Google** (no la contraseña normal de Gmail).
 
 ### Base de datos y datos iniciales
 
@@ -75,7 +85,7 @@ DB_PASSWORD=
 # Ejecutar migraciones + seeders
 php artisan migrate:fresh --seed
 
-# Crear enlace simbólico de storage (para archivos subidos)
+# Crear enlace simbólico de storage (para archivos subidos y PDFs)
 php artisan storage:link
 ```
 
@@ -89,94 +99,116 @@ npm run dev
 npm run build
 ```
 
-### Acceder al sistema
+### Iniciar servidor
 
-```
-http://localhost/sigea/public
+```bash
+php artisan serve
+# Acceder en: http://127.0.0.1:8000
 ```
 
 ---
 
 ## Usuarios de prueba (generados por seeders)
 
-| Email | Contraseña | Rol | Estado |
+| Email | Contraseña | Rol | Panel |
 |---|---|---|---|
-| `servicios@sigea.edu.mx` | `password` | Servicios Escolares | **Funcional** |
-| `docente@sigea.edu.mx` | `password` | Docente | En desarrollo |
-| `alumno@sigea.edu.mx` | `password` | Alumno | En desarrollo |
+| `servicios@sigea.edu.mx` | `password` | Servicios Escolares | ✅ Funcional |
+| `docente@sigea.edu.mx` | `password` | Docente | 🚧 Parcial |
+| `alumno@sigea.edu.mx` | `password` | Alumno | 🚧 Parcial |
 
-> No hay usuario `director_carrera` de prueba aún. Se puede crear manualmente vía Tinker.
+> No hay usuario `director_carrera` de prueba. Crear manualmente vía Tinker (ver sección de comandos).
 
 ---
 
 ## Estado de implementación por panel
 
-### Panel Servicios Escolares — `/servicios` ✅ COMPLETO
+### Autenticación — ✅ COMPLETA
 
-El único panel completamente implementado. Incluye:
+| Función | Estado |
+|---|---|
+| Login con redirección por rol | ✅ |
+| Recuperación de contraseña por correo | ✅ (Gmail SMTP configurado) |
+| Restablecimiento de contraseña | ✅ |
+| Cambio de contraseña (usuario autenticado) | ✅ |
+
+---
+
+### Panel Servicios Escolares — `/servicios` ✅ COMPLETO
 
 | Módulo | Ruta | Estado |
 |---|---|---|
 | Dashboard | `/servicios/dashboard` | ✅ |
-| Gestión de Alumnos | `/servicios/alumnos` | ✅ CRUD completo + baja/reingreso |
+| Gestión de Alumnos | `/servicios/alumnos` | ✅ CRUD + baja/reingreso + matrícula automática |
 | Gestión de Docentes | `/servicios/docentes` | ✅ CRUD completo |
-| Carreras | `/servicios/carreras` | ✅ CRUD completo |
-| Materias | `/servicios/materias` | ✅ CRUD completo |
-| Ciclos Escolares | `/servicios/ciclos` | ✅ CRUD completo |
+| Carreras | `/servicios/carreras` | ✅ CRUD + detalle con plan de estudios |
+| Materias | `/servicios/materias` | ✅ CRUD + detalle por carrera |
+| Ciclos Escolares | `/servicios/ciclos` | ✅ CRUD + badge de estado activo |
 | Inscripciones | `/servicios/inscripciones` | ✅ |
-| Constancias | `/servicios/constancias` | ✅ (PDF pendiente de vista) |
+| Constancias | `/servicios/constancias` | ✅ Generación y descarga de PDF |
 | Noticias | `/servicios/noticias` | ✅ CRUD completo |
 | Documentos Institucionales | `/servicios/documentos` | ✅ CRUD + subida de archivos |
-| Reportes | `/servicios/reportes` | ✅ (estadísticas por carrera/ciclo) |
+| Reportes | `/servicios/reportes` | ✅ Estadísticas por carrera/ciclo |
 
-### Panel Alumno — `/alumno` 🚧 EN DESARROLLO
+---
 
-Muestra pantalla "próximamente". Controladores creados, vistas pendientes.
+### Panel Alumno — `/alumno` 🚧 VISTAS CREADAS, SIN CONECTAR
 
-| Módulo | Controlador | Vistas |
+Controladores y vistas existen. Pendiente conectar con datos reales y revisar errores.
+
+| Módulo | Controlador | Vista |
 |---|---|---|
-| Dashboard | ✅ | Parcial |
-| Calificaciones | ✅ | Parcial |
-| Horario | ✅ | Parcial |
-| Kardex | ✅ | ❌ |
-| Historial académico | ✅ | ❌ |
-| Evaluación docente | ✅ | ❌ |
-| Horas culturales | ✅ | ❌ |
-| Servicio social | ✅ | ❌ |
-| Noticias | ✅ | ❌ |
-| Mis docentes | ✅ | ❌ |
+| Dashboard | ✅ | ✅ Parcial |
+| Calificaciones | ✅ | ✅ Parcial |
+| Horario | ✅ | ✅ Parcial |
+| Kardex | ✅ | ✅ Parcial |
+| Historial académico | ✅ | ✅ Parcial |
+| Evaluación docente | ✅ | ✅ Parcial |
+| Horas culturales | ✅ | ✅ Parcial |
+| Servicio social | ✅ | ✅ Parcial |
+| Noticias | ✅ | ✅ Parcial |
+| Mis docentes | ✅ | ✅ Parcial |
+| Perfil | ✅ | ✅ Parcial |
 
-### Panel Docente — `/docente` 🚧 EN DESARROLLO
+> "Parcial" = vista existe pero no está conectada a datos reales ni probada.
 
-Muestra pantalla "próximamente". Controladores creados, vistas pendientes.
+---
 
-| Módulo | Controlador | Vistas |
+### Panel Docente — `/docente` 🚧 VISTAS CREADAS, SIN CONECTAR
+
+Controladores y vistas existen. Pendiente conectar con datos reales y revisar errores.
+
+| Módulo | Controlador | Vista |
 |---|---|---|
-| Dashboard | ✅ | Parcial |
-| Grupos | ✅ | ❌ |
-| Horario | ✅ | ❌ |
-| Asistencia | ✅ | ❌ |
-| Calificaciones | ✅ | ❌ |
-| Reportes | ✅ | ❌ |
-| Evaluación (resultados) | ✅ | ❌ |
-| Horas culturales | ✅ | ❌ |
-| Servicio social | ✅ | ❌ |
+| Dashboard | ✅ | ✅ Parcial |
+| Grupos | ✅ | ✅ Parcial |
+| Horario | ✅ | ✅ Parcial |
+| Asistencia (lista + registro) | ✅ | ✅ Parcial |
+| Calificaciones (captura) | ✅ | ✅ Parcial |
+| Reporte asistencia | ✅ | ✅ Parcial |
+| Reporte rendimiento | ✅ | ✅ Parcial |
+| Evaluación docente (resultados) | ✅ | ✅ Parcial |
+| Horas culturales | ✅ | ✅ Parcial (CRUD completo) |
+| Servicio social | ✅ | ✅ Parcial (CRUD completo) |
+| Noticias | ✅ | ✅ Parcial |
+| Perfil | ✅ | ✅ Parcial |
+
+---
 
 ### Panel Director de Carrera — `/director` 🚧 EN DESARROLLO
 
-Muestra pantalla "próximamente". Controladores creados, vistas pendientes.
+Controladores creados. Solo existe la vista del dashboard.
 
-| Módulo | Controlador | Vistas |
+| Módulo | Controlador | Vista |
 |---|---|---|
-| Dashboard | ✅ | Parcial |
-| Alumnos | ✅ | ❌ |
-| Docentes | ✅ | ❌ |
-| Grupos | ✅ | ❌ |
-| Horarios | ✅ | ❌ |
-| Índice de aprobación | ✅ | ❌ |
-| Plan de estudios | ✅ | ❌ |
-| Evaluación docente | ✅ | ❌ |
-| Noticias | ✅ | ❌ |
+| Dashboard | ✅ | ✅ Parcial |
+| Alumnos | ✅ | ❌ Pendiente |
+| Docentes | ✅ | ❌ Pendiente |
+| Grupos | ✅ | ❌ Pendiente |
+| Horarios | ✅ | ❌ Pendiente |
+| Índice de aprobación | ✅ | ❌ Pendiente |
+| Plan de estudios | ✅ | ❌ Pendiente |
+| Evaluación docente | ✅ | ❌ Pendiente |
+| Noticias | ✅ | ❌ Pendiente |
 
 ---
 
@@ -186,19 +218,19 @@ Muestra pantalla "próximamente". Controladores creados, vistas pendientes.
 app/
 ├── Http/
 │   ├── Controllers/
-│   │   ├── Auth/           # Controladores de autenticación (Breeze)
-│   │   ├── Alumno/         # 11 controladores — panel alumno
+│   │   ├── Auth/           # Autenticación Breeze + recuperación de contraseña
+│   │   ├── Alumno/         # 12 controladores — panel alumno
 │   │   ├── Docente/        # 12 controladores — panel docente
 │   │   ├── Director/       # 11 controladores — panel director
 │   │   └── Servicios/      # 11 controladores — panel servicios ✅
 │   └── Middleware/
-│       └── CheckRole.php   # Middleware de rol + verificación activo
+│       └── CheckRole.php   # Middleware de rol + verificación campo activo
 ├── Models/                 # 22 modelos Eloquent
-│   ├── User.php            # Extiende con HasRoles (Spatie) + panelUrl()
-│   ├── Alumno.php
+│   ├── User.php            # HasRoles (Spatie) + panelUrl()
+│   ├── Alumno.php          # scopes: activos(), deCarrera()
 │   ├── Docente.php
 │   ├── Carrera.php
-│   ├── CicloEscolar.php
+│   ├── CicloEscolar.php    # cicloActual() por fechas
 │   ├── Grupo.php
 │   ├── Materia.php
 │   ├── Horario.php
@@ -216,15 +248,37 @@ app/
 │   ├── Noticia.php
 │   ├── DocumentoInstitucional.php
 │   └── ChatbotSesion.php
-└── Services/               # Capa de lógica de negocio (SOA)
+└── Services/               # Capa SOA — firmas definidas, implementación pendiente
     ├── KardexService.php
     ├── AsistenciaService.php
     ├── CalificacionService.php
     ├── SemaforoAcademicoService.php
     ├── EstadisticasCarreraService.php
     ├── GrupoService.php
-    └── PDFService.php
+    └── PDFService.php      # generarConstancia() funcional con DomPDF
+
+resources/views/
+├── auth/                   # Login, forgot-password, reset-password ✅
+├── layouts/
+│   ├── guest.blade.php     # Layout institucional para auth
+│   └── panel.blade.php     # Layout base para todos los paneles
+├── components/
+│   ├── panel.blade.php     # Componente <x-panel> con sidebar + slots
+│   └── sidebar-link.blade.php
+├── partials/
+│   ├── servicios-nav.blade.php
+│   ├── alumno-nav.blade.php
+│   └── docente-nav.blade.php
+├── pdf/
+│   ├── constancia.blade.php  ✅
+│   └── kardex.blade.php      ✅ (stub)
+├── servicios/              # ✅ Todas las vistas completas
+├── alumno/                 # 🚧 Vistas creadas, sin conectar
+├── docente/                # 🚧 Vistas creadas, sin conectar
+└── director/               # 🚧 Solo dashboard
 ```
+
+---
 
 ### Roles del sistema
 
@@ -239,12 +293,14 @@ app/
 
 ```
 / → (no autenticado) → /login
-        ↓ (autenticado)
+        ↓ credenciales correctas
     User::panelUrl()
-        ├── rol alumno           → /alumno/dashboard
-        ├── rol docente          → /docente/dashboard
-        ├── rol director_carrera → /director/dashboard
-        └── rol servicios_escolares → /servicios/dashboard
+        ├── alumno              → /alumno/dashboard
+        ├── docente             → /docente/dashboard
+        ├── director_carrera    → /director/dashboard
+        └── servicios_escolares → /servicios/dashboard
+
+/forgot-password → correo con enlace → /reset-password/{token}
 ```
 
 ---
@@ -285,7 +341,7 @@ Al ejecutar `migrate:fresh --seed` se generan:
 
 - **4 roles**: `alumno`, `docente`, `director_carrera`, `servicios_escolares`
 - **Permisos** por módulo asignados a cada rol
-- **4 carreras**: DSM (Desarrollo de Software Multiplataforma), GE (Gastronomía), MEC (Mecatrónica), ADM (Administración)
+- **4 carreras**: DSM, GE, MEC, ADM
 - **2 ciclos escolares**: 2025-2 y 2026-1
 - **7 preguntas** de evaluación docente
 - **3 usuarios de prueba** con sus respectivos roles
@@ -294,72 +350,62 @@ Al ejecutar `migrate:fresh --seed` se generan:
 
 ## Servicios (SOA) — Estado actual
 
-Los servicios están definidos con la firma de sus métodos pero **la implementación real está pendiente**. Actualmente los controladores realizan las consultas directamente.
+Los servicios tienen firmas definidas. `PDFService::generarConstancia()` es el único método con implementación funcional. El resto son stubs — los controladores realizan las consultas directamente por ahora.
 
-| Servicio | Métodos definidos | Implementado |
-|---|---|---|
-| `KardexService` | `obtenerHistorialCompleto`, `calcularPromedioGeneral`, `generarKardexPDF` | 🚧 Stub |
-| `AsistenciaService` | `registrarAsistencia`, `obtenerReportePorGrupo`, `generarListaPDF`, `calcularPorcentaje` | 🚧 Stub |
-| `CalificacionService` | `registrarCalificaciones`, `obtenerBoletaPorAlumno`, `calcularPromedioGrupo` | 🚧 Stub |
-| `SemaforoAcademicoService` | `calcularSemaforo`, `actualizarTodos`, `enviarAlertasTutores` | 🚧 Stub |
-| `EstadisticasCarreraService` | `indiceAprobacion`, `distribucionSemaforo`, `promedioEvaluacionDocente` | 🚧 Stub |
-| `GrupoService` | `crearGrupo`, `asignarHorario`, `asignarTutor`, `obtenerAlumnosDeGrupo` | 🚧 Stub |
-| `PDFService` | `generarKardex`, `generarBoleta`, `generarConstancia`, `generarListaAsistencia` | 🚧 Stub |
+| Servicio | Estado |
+|---|---|
+| `PDFService` | 🟡 Parcial — `generarConstancia()` funcional, otros stubs |
+| `KardexService` | 🚧 Stub |
+| `AsistenciaService` | 🚧 Stub |
+| `CalificacionService` | 🚧 Stub |
+| `SemaforoAcademicoService` | 🚧 Stub |
+| `EstadisticasCarreraService` | 🚧 Stub |
+| `GrupoService` | 🚧 Stub |
 
 ---
 
 ## Pendientes prioritarios
 
-### Para colaboradores — tareas disponibles
+### Scope actual del equipo (Login + Servicios Escolares)
+- [ ] Recorrido de prueba completo del Panel Servicios Escolares
+- [ ] Verificar PDF de constancias con DomPDF en entorno local
 
-1. **Vistas Panel Alumno** — Crear vistas Blade para todos los módulos del alumno usando `<x-panel>` como componente base y `@include('partials.alumno-nav')` para la navegación.
-
-2. **Vistas Panel Docente** — Igual que alumno, crear vistas para: grupos, horario, asistencia (lista + registro), calificaciones (captura), reportes.
-
-3. **Vistas Panel Director** — Crear vistas para: alumnos, docentes, grupos, horarios, índice de aprobación.
-
-4. **Implementar Servicios** — Mover la lógica de negocio de los controladores a la capa de servicios (`app/Services/`).
-
-5. **Vistas PDF** — Crear las vistas en `resources/views/pdf/` para kardex, boleta, constancias y listas de asistencia (usadas por `PDFService` con DomPDF).
-
-6. **API REST** — Implementar endpoints en `routes/api.php` con autenticación Sanctum y `JsonResource` para consumo externo (app móvil / chatbot).
+### Siguientes módulos a implementar
+1. **Panel Alumno** — Vistas existen, conectar controladores con datos reales
+2. **Panel Docente** — Vistas existen, conectar con servicios de asistencia y calificaciones
+3. **Panel Director** — Crear vistas faltantes (8 módulos pendientes)
+4. **Implementar Servicios** — Mover lógica de negocio de controladores a `app/Services/`
+5. **API REST** — Implementar endpoints en `routes/api.php` con Sanctum y `JsonResource` (después de completar los paneles)
 
 ---
 
 ## Convenciones del proyecto
 
-- **Componente base de panel**: `<x-panel title="Título" panelNombre="Nombre del Panel">`
+- **No usar Filament** — Frontend exclusivamente Blade + Tailwind CSS
+- **Componente base de panel**: `<x-panel title="Título" panelNombre="Nombre">`
 - **Navegación del panel**: `<x-slot name="nav">@include('partials.{rol}-nav')</x-slot>`
 - **PKs personalizadas**: Todas las tablas SIGEA usan `id_{tabla}` como PK, no `id`
-- **Relación usuario**: `docente.user_id` y `alumno.user_id` apuntan a `users.id`
+- **Relación usuario**: `docente.user_id` y `alumno.user_id` → `users.id`
 - **Ciclo activo**: `CicloEscolar::cicloActual()` devuelve el ciclo vigente por fechas
-- **Matrícula**: Se genera automáticamente al crear un alumno: `{CLAVE_CARRERA}{AÑO}{SECUENCIA}`
-- **No usar Filament** — El frontend es exclusivamente Blade + Tailwind CSS
+- **Matrícula**: Se genera automáticamente al crear alumno: `{CLAVE_CARRERA}{AÑO}{SECUENCIA}`
+- **Archivos subidos**: Se guardan en `storage/app/public/` — requiere `php artisan storage:link`
 
 ---
 
 ## Comandos útiles
 
 ```bash
-# Limpiar caché de vistas
-php artisan view:clear
-
-# Limpiar caché de rutas
-php artisan route:clear
-
 # Limpiar toda la caché
 php artisan optimize:clear
 
 # Ver todas las rutas del sistema
 php artisan route:list
 
-# Ver solo rutas de un panel
+# Ver rutas de un panel específico
 php artisan route:list --name=servicios
 
-# Acceder a Tinker (consola interactiva)
+# Crear usuario director manualmente (Tinker)
 php artisan tinker
-
-# Crear un usuario de director manualmente (en Tinker)
-# $u = App\Models\User::create(['name'=>'Director','email'=>'director@sigea.edu.mx','password'=>bcrypt('password')]);
-# $u->assignRole('director_carrera');
+>>> $u = App\Models\User::create(['name'=>'Director','email'=>'director@sigea.edu.mx','password'=>bcrypt('password'),'activo'=>true]);
+>>> $u->assignRole('director_carrera');
 ```

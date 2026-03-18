@@ -26,32 +26,39 @@
         </div>
     </form>
 
-    @if($reporte && $reporte->isNotEmpty())
+    @if(!empty($reporte))
         <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
             <table class="min-w-full divide-y divide-gray-100">
                 <thead class="bg-gray-50">
                     <tr>
                         <th class="px-5 py-3 text-left text-[11px] font-semibold text-gray-500 uppercase">Alumno</th>
-                        <th class="px-5 py-3 text-center text-[11px] font-semibold text-gray-500 uppercase">P1</th>
-                        <th class="px-5 py-3 text-center text-[11px] font-semibold text-gray-500 uppercase">P2</th>
-                        <th class="px-5 py-3 text-center text-[11px] font-semibold text-gray-500 uppercase">P3</th>
                         <th class="px-5 py-3 text-center text-[11px] font-semibold text-gray-500 uppercase">Promedio</th>
+                        <th class="px-5 py-3 text-center text-[11px] font-semibold text-gray-500 uppercase">Semáforo</th>
                         <th class="px-5 py-3 text-center text-[11px] font-semibold text-gray-500 uppercase">Estatus</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-50">
                     @foreach($reporte as $r)
                         @php
-                            $promedio = $r->promedio ?? 0;
-                            $aprobado = $promedio >= 7;
+                            $aprobado = $r['aprobado'];
+                            $semaforo = $r['nivel_semaforo'] ?? 'verde';
+                            $semaforoColor = match($semaforo) {
+                                'rojo'     => 'bg-red-100 text-red-600',
+                                'amarillo' => 'bg-amber-100 text-amber-600',
+                                default    => 'bg-emerald-100 text-emerald-600',
+                            };
                         @endphp
                         <tr class="hover:bg-gray-50/50">
-                            <td class="px-5 py-3 text-[13px] font-medium text-gray-800">{{ $r->alumno }}</td>
-                            <td class="px-5 py-3 text-[13px] text-center text-gray-600">{{ $r->p1 ?? '—' }}</td>
-                            <td class="px-5 py-3 text-[13px] text-center text-gray-600">{{ $r->p2 ?? '—' }}</td>
-                            <td class="px-5 py-3 text-[13px] text-center text-gray-600">{{ $r->p3 ?? '—' }}</td>
+                            <td class="px-5 py-3 text-[13px] font-medium text-gray-800">{{ $r['alumno']->nombre_completo }}</td>
                             <td class="px-5 py-3 text-center">
-                                <span class="font-bold text-[13px] {{ $aprobado ? 'text-emerald-600' : 'text-red-500' }}">{{ number_format($promedio, 1) }}</span>
+                                <span class="font-bold text-[13px] {{ $aprobado ? 'text-emerald-600' : 'text-red-500' }}">
+                                    {{ number_format($r['promedio'], 1) }}
+                                </span>
+                            </td>
+                            <td class="px-5 py-3 text-center">
+                                <span class="inline-block px-2.5 py-1 rounded-lg text-[11px] font-bold {{ $semaforoColor }}">
+                                    {{ ucfirst($semaforo) }}
+                                </span>
                             </td>
                             <td class="px-5 py-3 text-center">
                                 <span class="inline-block px-2.5 py-1 rounded-lg text-[11px] font-bold {{ $aprobado ? 'bg-emerald-50 text-emerald-600' : 'bg-red-50 text-red-500' }}">

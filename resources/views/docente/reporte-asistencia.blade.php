@@ -26,14 +26,14 @@
         </div>
     </form>
 
-    @if($reporte && $reporte->isNotEmpty())
+    @if(!empty($reporte))
         <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
             <table class="min-w-full divide-y divide-gray-100">
                 <thead class="bg-gray-50">
                     <tr>
                         <th class="px-5 py-3 text-left text-[11px] font-semibold text-gray-500 uppercase">Alumno</th>
                         <th class="px-5 py-3 text-center text-[11px] font-semibold text-gray-500 uppercase">Presentes</th>
-                        <th class="px-5 py-3 text-center text-[11px] font-semibold text-gray-500 uppercase">Ausentes</th>
+                        <th class="px-5 py-3 text-center text-[11px] font-semibold text-gray-500 uppercase">Faltas</th>
                         <th class="px-5 py-3 text-center text-[11px] font-semibold text-gray-500 uppercase">Justificadas</th>
                         <th class="px-5 py-3 text-center text-[11px] font-semibold text-gray-500 uppercase">% Asistencia</th>
                     </tr>
@@ -41,15 +41,14 @@
                 <tbody class="divide-y divide-gray-50">
                     @foreach($reporte as $r)
                         @php
-                            $total = $r->presentes + $r->ausentes + $r->justificadas;
-                            $pct = $total > 0 ? round(($r->presentes + $r->justificadas) / $total * 100) : 0;
+                            $pct = $r['porcentaje'];
                             $pctColor = $pct >= 80 ? 'text-emerald-600 bg-emerald-50' : ($pct >= 60 ? 'text-amber-600 bg-amber-50' : 'text-red-600 bg-red-50');
                         @endphp
                         <tr class="hover:bg-gray-50/50">
-                            <td class="px-5 py-3 text-[13px] font-medium text-gray-800">{{ $r->alumno }}</td>
-                            <td class="px-5 py-3 text-[13px] text-center text-emerald-600 font-medium">{{ $r->presentes }}</td>
-                            <td class="px-5 py-3 text-[13px] text-center text-red-500 font-medium">{{ $r->ausentes }}</td>
-                            <td class="px-5 py-3 text-[13px] text-center text-amber-500 font-medium">{{ $r->justificadas }}</td>
+                            <td class="px-5 py-3 text-[13px] font-medium text-gray-800">{{ $r['alumno']->nombre_completo }}</td>
+                            <td class="px-5 py-3 text-[13px] text-center text-emerald-600 font-medium">{{ $r['presentes'] }}</td>
+                            <td class="px-5 py-3 text-[13px] text-center text-red-500 font-medium">{{ $r['faltas'] }}</td>
+                            <td class="px-5 py-3 text-[13px] text-center text-amber-500 font-medium">{{ $r['justificadas'] }}</td>
                             <td class="px-5 py-3 text-center">
                                 <span class="inline-block px-2.5 py-1 rounded-lg text-[12px] font-bold {{ $pctColor }}">{{ $pct }}%</span>
                             </td>

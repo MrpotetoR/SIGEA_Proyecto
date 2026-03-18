@@ -27,9 +27,30 @@
                                class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-400 focus:outline-none">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Horas de contrato</label>
-                        <input type="number" name="horas_contrato" value="{{ old('horas_contrato', $docente->horas_contrato) }}" min="0"
-                               class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-400 focus:outline-none">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Tipo de contrato</label>
+                        @php $esPlanta = is_null($docente->horas_contrato); @endphp
+                        <div class="flex gap-4 mt-2 mb-2">
+                            <label class="flex items-center gap-2 text-sm cursor-pointer">
+                                <input type="radio" name="tipo_contrato" value="horas"
+                                       @checked(old('tipo_contrato', $esPlanta ? 'planta' : 'horas') === 'horas')
+                                       onchange="document.getElementById('campo-horas').classList.remove('hidden')"
+                                       class="text-indigo-600 focus:ring-indigo-500">
+                                Por horas
+                            </label>
+                            <label class="flex items-center gap-2 text-sm cursor-pointer">
+                                <input type="radio" name="tipo_contrato" value="planta"
+                                       @checked(old('tipo_contrato', $esPlanta ? 'planta' : 'horas') === 'planta')
+                                       onchange="document.getElementById('campo-horas').classList.add('hidden')"
+                                       class="text-indigo-600 focus:ring-indigo-500">
+                                Docente de Planta
+                            </label>
+                        </div>
+                        <div id="campo-horas" class="{{ ($esPlanta && old('tipo_contrato', 'planta') === 'planta') ? 'hidden' : '' }}">
+                            <input type="number" name="horas_contrato" value="{{ old('horas_contrato', $docente->horas_contrato) }}"
+                                   min="1" max="40" placeholder="Ej. 20"
+                                   class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-400 focus:outline-none">
+                            <p class="text-xs text-gray-400 mt-1">Entre 1 y 40 horas semanales</p>
+                        </div>
                     </div>
                 </div>
                 <div>

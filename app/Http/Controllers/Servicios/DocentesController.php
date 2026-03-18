@@ -35,7 +35,7 @@ class DocentesController extends Controller
             'apellidos' => 'required|string|max:100',
             'email' => 'required|email|unique:users,email',
             'especialidad' => 'nullable|string|max:100',
-            'horas_contrato' => 'required|integer|min:0',
+            'horas_contrato' => 'nullable|integer|min:1|max:40',
             'es_tutor' => 'boolean',
         ]);
 
@@ -53,7 +53,7 @@ class DocentesController extends Controller
                 'nombre' => $request->nombre,
                 'apellidos' => $request->apellidos,
                 'especialidad' => $request->especialidad,
-                'horas_contrato' => $request->horas_contrato,
+                'horas_contrato' => $request->tipo_contrato === 'planta' ? null : $request->horas_contrato,
                 'es_tutor' => $request->boolean('es_tutor'),
             ]);
         });
@@ -78,9 +78,15 @@ class DocentesController extends Controller
             'nombre' => 'required|string|max:80',
             'apellidos' => 'required|string|max:100',
             'especialidad' => 'nullable|string|max:100',
-            'horas_contrato' => 'required|integer|min:0',
+            'horas_contrato' => 'nullable|integer|min:1|max:40',
         ]);
-        $docente->update($request->only('nombre', 'apellidos', 'especialidad', 'horas_contrato', 'es_tutor'));
+        $docente->update([
+            'nombre'         => $request->nombre,
+            'apellidos'      => $request->apellidos,
+            'especialidad'   => $request->especialidad,
+            'horas_contrato' => $request->tipo_contrato === 'planta' ? null : $request->horas_contrato,
+            'es_tutor'       => $request->boolean('es_tutor'),
+        ]);
         return redirect()->route('servicios.docentes.index')->with('success', 'Docente actualizado.');
     }
 

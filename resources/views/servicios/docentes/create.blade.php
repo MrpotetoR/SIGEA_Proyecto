@@ -11,20 +11,36 @@
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Nombre(s) *</label>
-                        <input type="text" name="nombre" value="{{ old('nombre') }}" required
+                        <input type="text" name="nombre" value="{{ old('nombre') }}" required maxlength="80"
+                               oninput="updateCount(this, 'cnt-nombre')"
                                class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-400 focus:outline-none @error('nombre') border-red-400 @enderror">
-                        @error('nombre')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
+                        <div class="flex justify-between mt-1">
+                            @error('nombre')
+                                <p class="text-red-500 text-xs">{{ $message }}</p>
+                            @else
+                                <span></span>
+                            @enderror
+                            <span id="cnt-nombre" class="text-xs text-gray-400">0/80</span>
+                        </div>
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Apellidos *</label>
-                        <input type="text" name="apellidos" value="{{ old('apellidos') }}" required
+                        <input type="text" name="apellidos" value="{{ old('apellidos') }}" required maxlength="100"
+                               oninput="updateCount(this, 'cnt-apellidos')"
                                class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-400 focus:outline-none @error('apellidos') border-red-400 @enderror">
-                        @error('apellidos')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
+                        <div class="flex justify-between mt-1">
+                            @error('apellidos')
+                                <p class="text-red-500 text-xs">{{ $message }}</p>
+                            @else
+                                <span></span>
+                            @enderror
+                            <span id="cnt-apellidos" class="text-xs text-gray-400">0/100</span>
+                        </div>
                     </div>
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Correo electrónico *</label>
-                    <input type="email" name="email" value="{{ old('email') }}" required
+                    <input type="email" name="email" value="{{ old('email') }}" required maxlength="255"
                            class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-400 focus:outline-none @error('email') border-red-400 @enderror">
                     @error('email')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                     <p class="text-xs text-gray-400 mt-1">Contraseña inicial: <code>docente{{ date('Y') }}</code></p>
@@ -32,13 +48,37 @@
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Especialidad</label>
-                        <input type="text" name="especialidad" value="{{ old('especialidad') }}"
+                        <input type="text" name="especialidad" value="{{ old('especialidad') }}" maxlength="100"
+                               oninput="updateCount(this, 'cnt-especialidad')"
                                class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-400 focus:outline-none">
+                        <div class="flex justify-end mt-1">
+                            <span id="cnt-especialidad" class="text-xs text-gray-400">0/100</span>
+                        </div>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Horas de contrato *</label>
-                        <input type="number" name="horas_contrato" value="{{ old('horas_contrato', 0) }}" required min="0"
-                               class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-400 focus:outline-none">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Tipo de contrato *</label>
+                        <div class="flex gap-4 mt-2 mb-2">
+                            <label class="flex items-center gap-2 text-sm cursor-pointer">
+                                <input type="radio" name="tipo_contrato" value="horas"
+                                       @checked(old('tipo_contrato', 'horas') === 'horas')
+                                       onchange="document.getElementById('campo-horas').classList.remove('hidden')"
+                                       class="text-indigo-600 focus:ring-indigo-500">
+                                Por horas
+                            </label>
+                            <label class="flex items-center gap-2 text-sm cursor-pointer">
+                                <input type="radio" name="tipo_contrato" value="planta"
+                                       @checked(old('tipo_contrato') === 'planta')
+                                       onchange="document.getElementById('campo-horas').classList.add('hidden')"
+                                       class="text-indigo-600 focus:ring-indigo-500">
+                                Docente de Planta
+                            </label>
+                        </div>
+                        <div id="campo-horas" class="{{ old('tipo_contrato') === 'planta' ? 'hidden' : '' }}">
+                            <input type="number" name="horas_contrato" value="{{ old('horas_contrato') }}"
+                                   min="1" max="40" placeholder="Ej. 20"
+                                   class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-400 focus:outline-none">
+                            <p class="text-xs text-gray-400 mt-1">Entre 1 y 40 horas semanales</p>
+                        </div>
                     </div>
                 </div>
                 <div>
@@ -62,3 +102,17 @@
         </div>
     </div>
 </x-panel>
+
+<script>
+function updateCount(input, counterId) {
+    const counter = document.getElementById(counterId);
+    const max = input.maxLength;
+    const len = input.value.length;
+    counter.textContent = len + '/' + max;
+    counter.classList.toggle('text-red-500', len >= max);
+    counter.classList.toggle('text-gray-400', len < max);
+}
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('input[maxlength][oninput]').forEach(el => el.dispatchEvent(new Event('input')));
+});
+</script>

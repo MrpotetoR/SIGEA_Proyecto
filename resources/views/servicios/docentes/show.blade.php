@@ -15,7 +15,16 @@
             <dl class="grid grid-cols-2 gap-4 text-sm">
                 <div><dt class="text-gray-500">Correo</dt><dd class="font-medium">{{ $docente->user?->email }}</dd></div>
                 <div><dt class="text-gray-500">Especialidad</dt><dd class="font-medium">{{ $docente->especialidad ?? '—' }}</dd></div>
-                <div><dt class="text-gray-500">Horas de contrato</dt><dd class="font-medium">{{ $docente->horas_contrato }}</dd></div>
+                <div>
+                    <dt class="text-gray-500">Contrato</dt>
+                    <dd class="font-medium">
+                        @if(is_null($docente->horas_contrato))
+                            <span class="px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-700">Docente de Planta</span>
+                        @else
+                            {{ $docente->horas_contrato }} horas semanales
+                        @endif
+                    </dd>
+                </div>
                 <div><dt class="text-gray-500">Es tutor</dt><dd class="font-medium">{{ $docente->es_tutor ? 'Sí' : 'No' }}</dd></div>
             </dl>
         </div>

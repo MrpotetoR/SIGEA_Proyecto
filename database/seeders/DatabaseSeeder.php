@@ -48,5 +48,8 @@ class DatabaseSeeder extends Seeder
             ]
         );
         $alumno->assignRole('alumno');
+
+        // Datos de prueba completos
+        $this->call(DatosPruebaSeeder::class);
     }
 }

@@ -36,7 +36,13 @@
                         <td class="px-4 py-3 font-medium text-gray-900">{{ $d->nombre_completo }}</td>
                         <td class="px-4 py-3 text-gray-600">{{ $d->user?->email }}</td>
                         <td class="px-4 py-3 text-gray-600">{{ $d->especialidad ?? '—' }}</td>
-                        <td class="px-4 py-3 text-center">{{ $d->horas_contrato }}</td>
+                        <td class="px-4 py-3 text-center">
+                            @if(is_null($d->horas_contrato))
+                                <span class="px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-700">Planta</span>
+                            @else
+                                {{ $d->horas_contrato }} hrs
+                            @endif
+                        </td>
                         <td class="px-4 py-3 text-center">
                             @if($d->es_tutor)
                                 <span class="px-2 py-1 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">Sí</span>

@@ -118,7 +118,7 @@
         <p>
             La presente se expide a petición del interesado, en la ciudad,
             a los <span class="dato">{{ now()->format('d') }}</span> días del mes de
-            <span class="dato">{{ now()->format('F') }}</span> de
+            <span class="dato">{{ \Carbon\Carbon::now()->locale('es')->translatedFormat('F') }}</span> de
             <span class="dato">{{ now()->format('Y') }}</span>.
         </p>
     </div>
