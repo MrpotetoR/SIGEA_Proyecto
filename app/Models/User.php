@@ -58,10 +58,10 @@ class User extends Authenticatable
     // Helper para redirigir según rol
     public function panelUrl(): string
     {
-        if ($this->hasRole('alumno')) return '/alumno/dashboard';
-        if ($this->hasRole('docente')) return '/docente/dashboard';
-        if ($this->hasRole('director_carrera')) return '/director/dashboard';
         if ($this->hasRole('servicios_escolares')) return '/servicios/dashboard';
+        if ($this->hasRole('director_carrera')) return '/director/dashboard';
+        if ($this->hasRole('docente')) return '/docente/dashboard';
+        if ($this->hasRole('alumno')) return '/alumno/dashboard';
         return '/dashboard';
     }
 }
