@@ -16,7 +16,7 @@ class CalificacionesController extends Controller
             ? CicloEscolar::find($request->input('ciclo_id'))
             : CicloEscolar::cicloActual();
 
-        $calificaciones = [];
+        $calificaciones = collect();
         if ($alumno && $cicloSeleccionado) {
             $calificaciones = $alumno->calificaciones()
                 ->where('id_ciclo', $cicloSeleccionado->id_ciclo)

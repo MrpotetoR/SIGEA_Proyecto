@@ -14,7 +14,7 @@ class LoginController extends Controller
     public function showLoginForm()
     {
         if (Auth::check()) {
-            return redirect()->route(Auth::user()->dashboardRoute());
+            return redirect(Auth::user()->panelUrl());
         }
 
         return view('auth.login');
@@ -34,7 +34,7 @@ class LoginController extends Controller
             $request->session()->regenerate();
 
             return redirect()->intended(
-                route(Auth::user()->dashboardRoute())
+                Auth::user()->panelUrl()
             );
         }
 

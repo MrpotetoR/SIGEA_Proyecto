@@ -52,19 +52,19 @@
         <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
             <a href="{{ route('servicios.alumnos.create') }}"
                class="block text-center bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg py-3 px-4 text-sm font-medium transition-colors">
-                ➕ Nuevo Alumno
+                 Nuevo Alumno
             </a>
             <a href="{{ route('servicios.docentes.create') }}"
                class="block text-center bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg py-3 px-4 text-sm font-medium transition-colors">
-                ➕ Nuevo Docente
+                 Nuevo Docente
             </a>
             <a href="{{ route('servicios.noticias.create') }}"
                class="block text-center bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg py-3 px-4 text-sm font-medium transition-colors">
-                📰 Publicar Noticia
+                 Publicar Noticia
             </a>
             <a href="{{ route('servicios.reportes') }}"
                class="block text-center bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg py-3 px-4 text-sm font-medium transition-colors">
-                📊 Ver Reportes
+                 Ver Reportes
             </a>
         </div>
     </div>

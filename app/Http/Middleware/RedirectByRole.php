@@ -15,7 +15,7 @@ class RedirectByRole
     {
         if (auth()->check()) {
             $user = auth()->user();
-            return redirect()->route($user->dashboardRoute());
+            return redirect($user->panelUrl());
         }
 
         return $next($request);

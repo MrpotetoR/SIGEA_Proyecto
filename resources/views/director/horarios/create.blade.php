@@ -1,0 +1,77 @@
+<x-panel title="Asignar Horario" panelNombre="Panel Director">
+    <x-slot name="nav">
+        @include('partials.director-nav')
+    </x-slot>
+
+    <div class="mb-5">
+        <a href="{{ route('director.horarios.index') }}" class="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-gray-700 transition-colors">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+            Volver a Horarios
+        </a>
+    </div>
+
+    <div class="max-w-2xl bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+        <h3 class="text-[15px] font-semibold text-gray-800 mb-5">Nuevo Horario</h3>
+
+        @if($errors->any())
+            <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm mb-5">
+                <ul class="list-disc list-inside">@foreach($errors->all() as $error) <li>{{ $error }}</li> @endforeach</ul>
+            </div>
+        @endif
+
+        <form method="POST" action="{{ route('director.horarios.store') }}" class="space-y-5">
+            @csrf
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs text-gray-500 mb-1.5">Grupo *</label>
+                    <select name="id_grupo" required class="w-full text-sm border border-gray-200 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-400">
+                        <option value="">Seleccionar...</option>
+                        @foreach($grupos as $g)
+                            <option value="{{ $g->id_grupo }}" {{ old('id_grupo') == $g->id_grupo ? 'selected' : '' }}>{{ $g->clave_grupo }} ({{ $g->carrera?->nombre_carrera ?? '' }})</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs text-gray-500 mb-1.5">Materia *</label>
+                    <select name="id_materia" required class="w-full text-sm border border-gray-200 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-400">
+                        <option value="">Seleccionar...</option>
+                        @foreach($materias as $m)
+                            <option value="{{ $m->id_materia }}" {{ old('id_materia') == $m->id_materia ? 'selected' : '' }}>{{ $m->nombre_materia }}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+            <div>
+                <label class="block text-xs text-gray-500 mb-1.5">Docente *</label>
+                <select name="id_docente" required class="w-full text-sm border border-gray-200 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-400">
+                    <option value="">Seleccionar...</option>
+                    @foreach($docentes as $doc)
+                        <option value="{{ $doc->id_docente }}" {{ old('id_docente') == $doc->id_docente ? 'selected' : '' }}>{{ $doc->nombre_completo }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="grid grid-cols-3 gap-4">
+                <div>
+                    <label class="block text-xs text-gray-500 mb-1.5">Dia *</label>
+                    <select name="dia_semana" required class="w-full text-sm border border-gray-200 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-400">
+                        @foreach(['lunes','martes','miercoles','jueves','viernes','sabado'] as $dia)
+                            <option value="{{ $dia }}" {{ old('dia_semana') == $dia ? 'selected' : '' }} class="capitalize">{{ ucfirst($dia) }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs text-gray-500 mb-1.5">Hora Inicio *</label>
+                    <input type="time" name="hora_inicio" value="{{ old('hora_inicio') }}" required class="w-full text-sm border border-gray-200 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-400">
+                </div>
+                <div>
+                    <label class="block text-xs text-gray-500 mb-1.5">Hora Fin *</label>
+                    <input type="time" name="hora_fin" value="{{ old('hora_fin') }}" required class="w-full text-sm border border-gray-200 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-400">
+                </div>
+            </div>
+            <div class="flex gap-3 pt-2">
+                <button type="submit" class="px-6 py-2.5 bg-gray-900 text-white text-sm font-medium rounded-xl hover:bg-gray-800 transition-colors">Asignar Horario</button>
+                <a href="{{ route('director.horarios.index') }}" class="px-6 py-2.5 bg-gray-100 text-gray-600 text-sm font-medium rounded-xl hover:bg-gray-200 transition-colors">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</x-panel>

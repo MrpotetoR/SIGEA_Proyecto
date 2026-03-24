@@ -83,11 +83,39 @@ Route::prefix('docente')->name('docente.')->middleware(['auth', 'verified', 'rol
 });
 
 // ============================================================
-// PANEL DIRECTOR DE CARRERA (en desarrollo)
+// PANEL DIRECTOR DE CARRERA
 // ============================================================
 Route::prefix('director')->name('director.')->middleware(['auth', 'verified', 'role:director_carrera'])->group(function () {
-    Route::get('/dashboard', fn() => view('coming-soon', ['panel' => 'Panel Director de Carrera']))->name('dashboard');
-    Route::get('/{any}', fn() => redirect()->route('director.dashboard'))->where('any', '.*');
+    Route::get('/dashboard', [\App\Http\Controllers\Director\DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/perfil',    [\App\Http\Controllers\Director\PerfilController::class,    'index'])->name('perfil');
+
+    // Grupos (CRUD)
+    Route::resource('grupos', \App\Http\Controllers\Director\GruposController::class);
+
+    // Horarios (CRUD)
+    Route::resource('horarios', \App\Http\Controllers\Director\HorariosController::class);
+
+    // Docentes
+    Route::get('/docentes', [\App\Http\Controllers\Director\DocentesController::class, 'index'])->name('docentes');
+
+    // Alumnos
+    Route::get('/alumnos',              [\App\Http\Controllers\Director\AlumnosController::class, 'index'])->name('alumnos');
+    Route::get('/alumnos/{alumno}/historial', [\App\Http\Controllers\Director\AlumnosController::class, 'historial'])->name('alumnos.historial');
+
+    // Asistencia
+    Route::get('/asistencia', [\App\Http\Controllers\Director\AsistenciaController::class, 'index'])->name('asistencia');
+
+    // Índice de aprobación
+    Route::get('/indice-aprobacion', [\App\Http\Controllers\Director\IndiceAprobacionController::class, 'index'])->name('indice-aprobacion');
+
+    // Evaluación docente
+    Route::get('/evaluacion-docente', [\App\Http\Controllers\Director\EvaluacionDocenteController::class, 'index'])->name('evaluacion-docente');
+
+    // Plan de estudios
+    Route::get('/plan-estudios', [\App\Http\Controllers\Director\PlanEstudiosController::class, 'index'])->name('plan-estudios');
+
+    // Noticias
+    Route::get('/noticias', [\App\Http\Controllers\Director\NoticiasController::class, 'index'])->name('noticias');
 });
 
 // ============================================================

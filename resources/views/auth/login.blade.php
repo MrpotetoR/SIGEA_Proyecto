@@ -55,7 +55,7 @@
                 </div>
                 <input id="password" type="password" name="password"
                        required autocomplete="current-password"
-                       placeholder="••••••••"
+                       placeholder="•••••"
                        class="input-field w-full bg-gray-50/80 border border-gray-200 rounded-xl pl-12 pr-12 py-3.5 text-[14px] text-gray-800 placeholder-gray-300 outline-none hover:border-gray-300">
                 <button type="button" onclick="togglePassword()" class="absolute inset-y-0 right-0 pr-4 flex items-center">
                     <svg id="eye-off" class="w-[18px] h-[18px] text-gray-300 hover:text-gray-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
