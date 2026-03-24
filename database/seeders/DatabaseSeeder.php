@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Models\Carrera;
+use App\Models\Docente;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 
@@ -37,6 +39,33 @@ class DatabaseSeeder extends Seeder
             ]
         );
         $docente->assignRole('docente');
+
+        // Usuario de prueba: director
+        $directorUser = User::firstOrCreate(
+            ['email' => 'director@sigea.edu.mx'],
+            [
+                'name' => 'Director Carrera',
+                'password' => bcrypt('password'),
+                'activo' => true,
+            ]
+        );
+        $directorUser->assignRole('director_carrera');
+
+        $directorDocente = Docente::firstOrCreate(
+            ['user_id' => $directorUser->id],
+            [
+                'nombre'       => 'Director',
+                'apellidos'    => 'De Carrera',
+                'especialidad' => 'Administración Educativa',
+                'horas_contrato' => null,
+                'es_tutor'     => false,
+            ]
+        );
+
+        $carrera = Carrera::first();
+        if ($carrera) {
+            $carrera->update(['id_director' => $directorDocente->id_docente]);
+        }
 
         // Usuario de prueba: alumno
         $alumno = User::firstOrCreate(
