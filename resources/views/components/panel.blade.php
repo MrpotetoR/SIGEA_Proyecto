@@ -62,12 +62,12 @@
                 <p class="text-[13px] font-semibold text-gray-800 truncate">{{ auth()->user()->name }}</p>
                 <p class="text-[11px] text-gray-400 truncate">
                     @php
-                        $roles = auth()->user()->getRoleNames();
-                        $rolLabel = match($roles->first()) {
-                            'alumno' => 'Alumno',
-                            'docente' => 'Docente',
-                            'director_carrera' => 'Director',
-                            'servicios_escolares' => 'Servicios Escolares',
+                        $user = auth()->user();
+                        $rolLabel = match(true) {
+                            $user->hasRole('servicios_escolares') => 'Servicios Escolares',
+                            $user->hasRole('director_carrera') => 'Director de Carrera',
+                            $user->hasRole('docente') => 'Docente',
+                            $user->hasRole('alumno') => 'Alumno',
                             default => 'Usuario',
                         };
                     @endphp
