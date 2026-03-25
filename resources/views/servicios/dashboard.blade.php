@@ -126,8 +126,8 @@
                         <span>{{ $inicio->format('d/m/Y') }}</span>
                         <span>{{ $fin->format('d/m/Y') }}</span>
                     </div>
-                    <div class="w-full bg-gray-100 rounded-full h-1.5">
-                        <div class="bg-emerald-500 h-1.5 rounded-full progress-bar" style="width: {{ $pct }}%"></div>
+                    <div class="rainbow-track h-2 rainbow-glow">
+                        <div class="rainbow-bar" style="width: {{ $pct }}%"></div>
                     </div>
                     <p class="text-[11px] text-gray-400 mt-1.5">{{ $pct }}% transcurrido · {{ max(0, now()->diffInDays($fin, false)) }} días restantes</p>
                 @else

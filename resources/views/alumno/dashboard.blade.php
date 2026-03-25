@@ -1,10 +1,7 @@
 <x-panel title="Overview" panelNombre="Panel Alumno">
 <x-slot name="nav">@include('partials.alumno-nav')</x-slot>
 
-<div class="flex gap-6">
-
-    {{-- ============== COLUMNA PRINCIPAL ============== --}}
-    <div class="flex-1 min-w-0 space-y-5">
+<div class="space-y-5">
 
         {{-- Saludo --}}
         <div>
@@ -79,9 +76,9 @@
                         <span class="text-[11px] text-gray-400">de 9</span>
                     </div>
                     <p class="text-[22px] font-bold text-gray-900 leading-none">{{ $alumno?->cuatrimestre_actual ?? '—' }}°</p>
-                    <div class="mt-2.5 w-full bg-gray-100 rounded-full h-1.5">
+                    <div class="mt-2.5 rainbow-track h-2 rainbow-glow">
                         @php $pct = min(100, (($alumno?->cuatrimestre_actual ?? 0) / 9) * 100); @endphp
-                        <div class="progress-bar bg-violet-500 h-1.5 rounded-full" style="width: {{ $pct }}%"></div>
+                        <div class="rainbow-bar" style="width: {{ $pct }}%"></div>
                     </div>
                 </div>
 
@@ -188,126 +185,6 @@
             </div>
         </div>
 
-    </div>
-
-    {{-- ============== PANEL IA (estilo mockup) ============== --}}
-    <div class="w-[300px] flex-shrink-0 hidden xl:flex flex-col bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden"
-         style="height: fit-content; max-height: calc(100vh - 120px);">
-
-        {{-- Header --}}
-        <div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
-            <span class="text-[13px] font-bold text-gray-800">Asistente SIGEA</span>
-            <div class="flex items-center gap-2">
-                <span class="text-[10px] font-semibold bg-gray-900 text-white px-2.5 py-0.5 rounded-full">IA</span>
-            </div>
-        </div>
-
-        {{-- Mensajes --}}
-        <div id="chat-messages" class="flex-1 overflow-y-auto custom-scrollbar p-5 space-y-3" style="min-height: 300px; max-height: 420px;">
-            {{-- Bienvenida --}}
-            <div class="text-center py-4" id="chat-welcome">
-                <div class="w-14 h-14 mx-auto rounded-2xl bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center mb-4 shadow-lg shadow-indigo-200">
-                    <svg class="w-7 h-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
-                    </svg>
-                </div>
-                <h3 class="text-[16px] font-bold text-gray-800 mb-1">¿En qué te ayudo?</h3>
-                <p class="text-[11px] text-gray-400 leading-relaxed px-2">Pregunta sobre calificaciones, horario, horas ACUDE y más.</p>
-            </div>
-
-            {{-- Sugerencias rápidas --}}
-            <div class="flex flex-wrap gap-1.5 justify-center" id="sugerencias">
-                @foreach(['Calificaciones', 'Horas ACUDE', 'Horario', 'Servicio Social', 'Kardex', 'Docentes'] as $sug)
-                    <button onclick="enviarSugerencia(this)"
-                        class="chip text-[11px] font-medium bg-gray-100 hover:bg-gray-200 text-gray-600 px-3 py-1.5 rounded-full">
-                        {{ $sug }}
-                    </button>
-                @endforeach
-            </div>
-        </div>
-
-        {{-- Input --}}
-        <div class="p-4 border-t border-gray-100">
-            <div class="flex items-center gap-2 bg-gray-50 rounded-xl px-3.5 py-2.5">
-                <input
-                    type="text"
-                    id="chat-input"
-                    placeholder="Escribe tu pregunta..."
-                    class="flex-1 bg-transparent text-[13px] text-gray-700 outline-none placeholder-gray-400"
-                    onkeydown="if(event.key==='Enter') enviarMensaje()"
-                />
-                <button onclick="enviarMensaje()"
-                    class="w-8 h-8 bg-gray-900 rounded-lg flex items-center justify-center hover:bg-gray-700 flex-shrink-0">
-                    <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
-                    </svg>
-                </button>
-            </div>
-        </div>
-    </div>
-
 </div>
-
-@push('scripts')
-<script>
-const CSRF = document.querySelector('meta[name="csrf-token"]').content;
-
-function agregarMensaje(texto, esUsuario) {
-    const c = document.getElementById('chat-messages');
-    const d = document.createElement('div');
-    d.className = 'chat-msg flex ' + (esUsuario ? 'justify-end' : 'justify-start');
-    d.innerHTML = `<div class="max-w-[85%] px-3.5 py-2.5 rounded-2xl text-[13px] leading-relaxed ${
-        esUsuario
-            ? 'bg-gray-900 text-white rounded-br-md'
-            : 'bg-gray-100 text-gray-700 rounded-bl-md'
-    }">${texto}</div>`;
-    c.appendChild(d);
-    c.scrollTop = c.scrollHeight;
-}
-
-function enviarSugerencia(btn) {
-    document.getElementById('chat-welcome')?.remove();
-    document.getElementById('sugerencias')?.remove();
-    procesarMensaje(btn.textContent.trim());
-}
-
-function enviarMensaje() {
-    const input = document.getElementById('chat-input');
-    const texto = input.value.trim();
-    if (!texto) return;
-    input.value = '';
-    document.getElementById('chat-welcome')?.remove();
-    document.getElementById('sugerencias')?.remove();
-    procesarMensaje(texto);
-}
-
-function procesarMensaje(texto) {
-    agregarMensaje(texto, true);
-
-    const c = document.getElementById('chat-messages');
-    const t = document.createElement('div');
-    t.id = 'typing';
-    t.className = 'chat-msg flex justify-start';
-    t.innerHTML = '<div class="bg-gray-100 text-gray-500 px-3.5 py-2.5 rounded-2xl rounded-bl-md"><span class="typing-dots"><span></span> <span></span> <span></span></span></div>';
-    c.appendChild(t);
-    c.scrollTop = c.scrollHeight;
-
-    fetch('{{ route("alumno.chatbot") }}', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': CSRF },
-        body: JSON.stringify({ mensaje: texto })
-    })
-    .then(r => r.json())
-    .then(data => {
-        document.getElementById('typing')?.remove();
-        agregarMensaje(data.respuesta ?? 'Sin respuesta.', false);
-    })
-    .catch(() => {
-        document.getElementById('typing')?.remove();
-        agregarMensaje('Error al contactar al asistente.', false);
-    });
-}
-</script>
-@endpush
 
 </x-panel>

@@ -33,8 +33,8 @@
                     <span>Horas acumuladas</span>
                     <span class="font-semibold">{{ $servicio->horas_acumuladas }} / {{ $requeridas }} hrs</span>
                 </div>
-                <div class="w-full bg-gray-200 rounded-full h-4">
-                    <div class="h-4 rounded-full transition-all {{ $pct >= 100 ? 'bg-green-500' : 'bg-indigo-500' }}"
+                <div class="rainbow-track h-4 rainbow-glow">
+                    <div class="rainbow-bar"
                          style="width: {{ $pct }}%"></div>
                 </div>
                 <p class="text-xs text-gray-400 mt-2">{{ $pct }}% completado</p>

@@ -10,8 +10,8 @@
                 <span class="text-2xl font-bold text-indigo-700">{{ $totalCultural }}</span>
             </div>
             @php $pctCultural = min(100, ($totalCultural / 30) * 100); @endphp
-            <div class="w-full bg-gray-200 rounded-full h-3">
-                <div class="bg-indigo-500 h-3 rounded-full transition-all" style="width: {{ $pctCultural }}%"></div>
+            <div class="rainbow-track h-3 rainbow-glow">
+                <div class="rainbow-bar" style="width: {{ $pctCultural }}%"></div>
             </div>
             <p class="text-xs text-gray-400 mt-2">{{ $totalCultural }} / 30 horas requeridas</p>
         </div>
@@ -22,8 +22,8 @@
                 <span class="text-2xl font-bold text-green-700">{{ $totalDeportiva }}</span>
             </div>
             @php $pctDeportiva = min(100, ($totalDeportiva / 30) * 100); @endphp
-            <div class="w-full bg-gray-200 rounded-full h-3">
-                <div class="bg-green-500 h-3 rounded-full transition-all" style="width: {{ $pctDeportiva }}%"></div>
+            <div class="rainbow-track h-3 rainbow-glow">
+                <div class="rainbow-bar" style="width: {{ $pctDeportiva }}%"></div>
             </div>
             <p class="text-xs text-gray-400 mt-2">{{ $totalDeportiva }} / 30 horas requeridas</p>
         </div>
