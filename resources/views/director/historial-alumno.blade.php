@@ -97,8 +97,8 @@
                 <span class="text-sm font-medium text-gray-700">Porcentaje de asistencia</span>
                 <span class="text-sm font-bold {{ $porcAsist >= 80 ? 'text-green-600' : ($porcAsist >= 60 ? 'text-yellow-600' : 'text-red-500') }}">{{ $porcAsist }}%</span>
             </div>
-            <div class="h-3 bg-gray-100 rounded-full overflow-hidden">
-                <div class="h-full rounded-full transition-all duration-500 {{ $porcAsist >= 80 ? 'bg-green-500' : ($porcAsist >= 60 ? 'bg-yellow-400' : 'bg-red-500') }}" style="width: {{ $porcAsist }}%"></div>
+            <div class="rainbow-track h-3 rainbow-glow">
+                <div class="rainbow-bar" style="width: {{ $porcAsist }}%"></div>
             </div>
         </div>
     @else

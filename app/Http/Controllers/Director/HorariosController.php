@@ -67,6 +67,7 @@ class HorariosController extends Controller
             'hora_inicio' => 'required|date_format:H:i',
             'hora_fin' => 'required|date_format:H:i|after:hora_inicio',
             'id_docente' => 'required|exists:docente,id_docente',
+            'dia_semana' => 'required|in:lunes,martes,miercoles,jueves,viernes,sabado',
         ]);
         $horario->update($request->only('hora_inicio', 'hora_fin', 'id_docente', 'dia_semana'));
         return redirect()->route('director.horarios.index')->with('success', 'Horario actualizado.');

@@ -12,7 +12,9 @@ class EvaluacionResultadosController extends Controller
     {
         $docente = $request->user()->docente;
         $ciclos = CicloEscolar::orderByDesc('fecha_inicio')->get();
-        $ciclo = CicloEscolar::cicloActual();
+        $ciclo = $request->filled('ciclo')
+            ? CicloEscolar::find($request->ciclo)
+            : CicloEscolar::cicloActual();
 
         $evaluaciones = $docente
             ? $docente->evaluaciones()

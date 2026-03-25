@@ -28,9 +28,9 @@
                         @foreach($horario[$dia] ?? [] as $h)
                             @php $color = $colores[$dia] ?? 'bg-gray-100 text-gray-700'; @endphp
                             <div class="p-2.5 rounded-xl {{ $color }} border text-center">
-                                <p class="text-[11px] font-bold truncate">{{ $h->materia->nombre_materia ?? 'Materia' }}</p>
+                                <p class="text-[11px] font-bold truncate">{{ $h->materia?->nombre_materia ?? 'Materia' }}</p>
                                 <p class="text-[10px] mt-0.5 opacity-80">{{ \Carbon\Carbon::parse($h->hora_inicio)->format('H:i') }} - {{ \Carbon\Carbon::parse($h->hora_fin)->format('H:i') }}</p>
-                                <p class="text-[9px] mt-0.5 opacity-70 truncate">{{ $h->grupo->clave_grupo ?? '' }}</p>
+                                <p class="text-[9px] mt-0.5 opacity-70 truncate">{{ $h->grupo?->clave_grupo ?? '' }}</p>
                             </div>
                         @endforeach
                         @if(empty($horario[$dia] ?? []))

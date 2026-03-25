@@ -31,15 +31,15 @@
                     </div>
                     <div class="flex justify-between items-center">
                         <span class="text-sm text-gray-600">Aprobados</span>
-                        <span class="text-lg font-bold text-green-600">{{ $aprobacion['aprobados'] ?? 0 }}</span>
+                        <span class="text-lg font-bold text-green-600">{{ $aprobacion['aprobadas'] ?? 0 }}</span>
                     </div>
                     <div>
                         <div class="flex justify-between items-center mb-2">
                             <span class="text-sm font-medium text-gray-700">Porcentaje</span>
                             <span class="text-2xl font-bold text-green-600">{{ $aprobacion['porcentaje_aprobacion'] ?? 0 }}%</span>
                         </div>
-                        <div class="h-3 bg-gray-100 rounded-full overflow-hidden">
-                            <div class="h-full bg-green-500 rounded-full transition-all duration-500" style="width: {{ $aprobacion['porcentaje_aprobacion'] ?? 0 }}%"></div>
+                        <div class="rainbow-track h-3 rainbow-glow">
+                            <div class="rainbow-bar" style="width: {{ $aprobacion['porcentaje_aprobacion'] ?? 0 }}%"></div>
                         </div>
                     </div>
                 </div>
@@ -67,15 +67,15 @@
                     </div>
                     <div class="flex justify-between items-center">
                         <span class="text-sm text-gray-600">Reprobados</span>
-                        <span class="text-lg font-bold text-red-500">{{ $reprobacion['reprobados'] ?? 0 }}</span>
+                        <span class="text-lg font-bold text-red-500">{{ $reprobacion['reprobadas'] ?? 0 }}</span>
                     </div>
                     <div>
                         <div class="flex justify-between items-center mb-2">
                             <span class="text-sm font-medium text-gray-700">Porcentaje</span>
                             <span class="text-2xl font-bold text-red-500">{{ $reprobacion['porcentaje_reprobacion'] ?? 0 }}%</span>
                         </div>
-                        <div class="h-3 bg-gray-100 rounded-full overflow-hidden">
-                            <div class="h-full bg-red-500 rounded-full transition-all duration-500" style="width: {{ $reprobacion['porcentaje_reprobacion'] ?? 0 }}%"></div>
+                        <div class="rainbow-track h-3 rainbow-glow">
+                            <div class="rainbow-bar" style="width: {{ $reprobacion['porcentaje_reprobacion'] ?? 0 }}%"></div>
                         </div>
                     </div>
                 </div>

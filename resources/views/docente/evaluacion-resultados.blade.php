@@ -49,7 +49,7 @@
                                     {{ number_format($c, 1) }}
                                 </span>
                             </td>
-                            <td class="px-5 py-3 text-[12px] text-gray-500">{{ $eval->comentario ?? 'Sin comentario' }}</td>
+                            <td class="px-5 py-3 text-[12px] text-gray-500">{{ $eval->comentarios ?? 'Sin comentario' }}</td>
                         </tr>
                     @endforeach
                 </tbody>

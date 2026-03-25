@@ -33,9 +33,12 @@ class AsistenciaController extends Controller
 
         $alumnos = $grupo->alumnos()->orderBy('apellidos')->get();
 
-        $asistencias = Asistencia::where('id_horario', $horario?->id_horario)
-            ->where('fecha', $fecha)
-            ->pluck('estatus', 'id_alumno');
+        $asistencias = collect();
+        if ($horario) {
+            $asistencias = Asistencia::where('id_horario', $horario->id_horario)
+                ->where('fecha', $fecha)
+                ->pluck('estatus', 'id_alumno');
+        }
 
         return view('docente.asistencia.show', compact('grupo', 'horario', 'alumnos', 'asistencias', 'fecha'));
     }
@@ -46,13 +49,13 @@ class AsistenciaController extends Controller
             'id_grupo' => 'required|exists:grupo,id_grupo',
             'id_horario' => 'required|exists:horario,id_horario',
             'fecha' => 'required|date',
-            'asistencias' => 'required|array',
+            'asistencia' => 'required|array',
         ]);
 
         $this->service->registrarAsistencia(
             \App\Models\Horario::find($request->id_horario),
             Carbon::parse($request->fecha),
-            $request->asistencias
+            $request->asistencia
         );
 
         return back()->with('success', 'Asistencia registrada correctamente.');

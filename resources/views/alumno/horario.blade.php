@@ -26,8 +26,8 @@
                                     @foreach($horario[$dia] ?? [] as $clase)
                                         @if(\Carbon\Carbon::parse($clase->hora_inicio)->format('H:i') === $hora)
                                             <div class="bg-indigo-100 rounded p-2 text-xs">
-                                                <p class="font-semibold text-indigo-800">{{ $clase->materia->nombre_materia }}</p>
-                                                <p class="text-indigo-600">{{ $clase->docente->nombre }}</p>
+                                                <p class="font-semibold text-indigo-800">{{ $clase->materia?->nombre_materia ?? 'Sin materia' }}</p>
+                                                <p class="text-indigo-600">{{ $clase->docente?->nombre_completo ?? 'Sin docente' }}</p>
                                                 <p class="text-indigo-400">{{ \Carbon\Carbon::parse($clase->hora_inicio)->format('H:i') }}-{{ \Carbon\Carbon::parse($clase->hora_fin)->format('H:i') }}</p>
                                             </div>
                                         @endif

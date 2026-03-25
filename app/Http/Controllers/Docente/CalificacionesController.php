@@ -31,10 +31,13 @@ class CalificacionesController extends Controller
             ->where('id_docente', $request->user()->docente->id_docente)
             ->first();
 
-        $calificaciones = Calificacion::where('id_materia', $horario?->id_materia)
-            ->where('parcial', $parcial)
-            ->whereIn('id_alumno', $alumnos->pluck('id_alumno'))
-            ->pluck('calificacion', 'id_alumno');
+        $calificaciones = collect();
+        if ($horario) {
+            $calificaciones = Calificacion::where('id_materia', $horario->id_materia)
+                ->where('parcial', $parcial)
+                ->whereIn('id_alumno', $alumnos->pluck('id_alumno'))
+                ->pluck('calificacion', 'id_alumno');
+        }
 
         return view('docente.calificaciones.show', compact('grupo', 'horario', 'alumnos', 'calificaciones', 'parcial'));
     }

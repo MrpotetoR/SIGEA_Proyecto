@@ -88,8 +88,8 @@
                         <span class="text-sm font-semibold {{ $colors[1] }} capitalize">{{ $nivel }}</span>
                         <span class="text-lg font-bold {{ $colors[1] }}">{{ $distribucion_semaforo[$nivel] }}</span>
                     </div>
-                    <div class="h-2 bg-white/60 rounded-full overflow-hidden">
-                        <div class="{{ $colors[0] }} h-full rounded-full transition-all duration-500" style="width: {{ $porcentaje }}%"></div>
+                    <div class="rainbow-track-dark h-2">
+                        <div class="rainbow-bar" style="width: {{ $porcentaje }}%"></div>
                     </div>
                     <p class="text-xs {{ $colors[1] }} mt-1.5 opacity-70">{{ $porcentaje }}% del total</p>
                 </div>

@@ -22,8 +22,8 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             @foreach($promedios as $eval)
                 @php
-                    $promedio = $eval->promedio ?? $eval['promedio'] ?? 0;
-                    $nombre = $eval->nombre_completo ?? $eval['nombre_completo'] ?? 'N/A';
+                    $promedio = $eval['promedio'] ?? 0;
+                    $nombre = $eval['docente']->nombre_completo ?? 'N/A';
                     $colorBarra = $promedio >= 9 ? 'bg-green-500' : ($promedio >= 7 ? 'bg-yellow-400' : 'bg-red-500');
                     $colorTexto = $promedio >= 9 ? 'text-green-600' : ($promedio >= 7 ? 'text-yellow-600' : 'text-red-500');
                 @endphp
@@ -40,8 +40,8 @@
                         <span class="text-xs text-gray-500">Promedio evaluacion</span>
                         <span class="text-xl font-bold {{ $colorTexto }}">{{ number_format($promedio, 1) }}</span>
                     </div>
-                    <div class="h-2 bg-gray-100 rounded-full overflow-hidden">
-                        <div class="{{ $colorBarra }} h-full rounded-full transition-all duration-500" style="width: {{ ($promedio / 10) * 100 }}%"></div>
+                    <div class="rainbow-track h-2 rainbow-glow">
+                        <div class="rainbow-bar" style="width: {{ ($promedio / 10) * 100 }}%"></div>
                     </div>
                 </div>
             @endforeach
