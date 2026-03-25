@@ -44,7 +44,7 @@ Route::prefix('alumno')->name('alumno.')->middleware(['auth', 'verified', 'role:
     Route::post('/evaluacion-docente', [\App\Http\Controllers\Alumno\EvaluacionDocenteController::class, 'store'])->name('evaluacion-docente.store');
     Route::get('/mis-docentes',     [\App\Http\Controllers\Alumno\DocentesController::class,          'index'])->name('mis-docentes');
     Route::get('/noticias',         [\App\Http\Controllers\Alumno\NoticiasController::class,          'index'])->name('noticias');
-    Route::post('/chatbot',         [\App\Http\Controllers\Alumno\ChatbotController::class,           'responder'])->name('chatbot');
+    Route::post('/chatbot',         [\App\Http\Controllers\ChatbotController::class,                  'responder'])->name('chatbot');
 });
 
 // ============================================================
@@ -80,6 +80,9 @@ Route::prefix('docente')->name('docente.')->middleware(['auth', 'verified', 'rol
     // Evaluación y Noticias
     Route::get('/evaluacion-resultados', [\App\Http\Controllers\Docente\EvaluacionResultadosController::class, 'index'])->name('evaluacion-resultados');
     Route::get('/noticias',              [\App\Http\Controllers\Docente\NoticiasController::class,              'index'])->name('noticias');
+
+    // Chatbot
+    Route::post('/chatbot', [\App\Http\Controllers\ChatbotController::class, 'responder'])->name('chatbot');
 });
 
 // ============================================================
@@ -116,6 +119,9 @@ Route::prefix('director')->name('director.')->middleware(['auth', 'verified', 'r
 
     // Noticias
     Route::get('/noticias', [\App\Http\Controllers\Director\NoticiasController::class, 'index'])->name('noticias');
+
+    // Chatbot
+    Route::post('/chatbot', [\App\Http\Controllers\ChatbotController::class, 'responder'])->name('chatbot');
 });
 
 // ============================================================
@@ -133,6 +139,10 @@ Route::prefix('servicios')->name('servicios.')->middleware(['auth', 'verified', 
         ->name('alumnos.reingreso');
 
     Route::resource('docentes', \App\Http\Controllers\Servicios\DocentesController::class);
+
+    Route::resource('directores', \App\Http\Controllers\Servicios\DirectoresController::class);
+
+    Route::resource('personal', \App\Http\Controllers\Servicios\PersonalController::class);
 
     Route::resource('carreras', \App\Http\Controllers\Servicios\CarrerasController::class);
 
@@ -160,6 +170,10 @@ Route::prefix('servicios')->name('servicios.')->middleware(['auth', 'verified', 
 
     Route::get('/reportes', [\App\Http\Controllers\Servicios\ReportesController::class, 'index'])
         ->name('reportes');
+
+    // Chatbot
+    Route::post('/chatbot', [\App\Http\Controllers\ChatbotController::class, 'responder'])
+        ->name('chatbot');
 });
 
 require __DIR__.'/auth.php';

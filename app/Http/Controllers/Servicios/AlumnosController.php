@@ -41,12 +41,15 @@ class AlumnosController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nombre' => 'required|string|max:80',
-            'apellidos' => 'required|string|max:100',
-            'email' => 'required|email|unique:users,email',
-            'id_carrera' => 'required|exists:carrera,id_carrera',
+            'nombre'              => ['required', 'string', 'max:80', 'regex:/^[\pL\s]+$/u'],
+            'apellidos'           => ['required', 'string', 'max:100', 'regex:/^[\pL\s]+$/u'],
+            'email'               => 'required|email|unique:users,email',
+            'id_carrera'          => 'required|exists:carrera,id_carrera',
             'cuatrimestre_actual' => 'required|integer|min:1|max:10',
-            'id_tutor' => 'nullable|exists:docente,id_docente',
+            'id_tutor'            => 'nullable|exists:docente,id_docente',
+        ], [
+            'nombre.regex'    => 'El nombre solo debe contener letras y espacios.',
+            'apellidos.regex' => 'Los apellidos solo deben contener letras y espacios.',
         ]);
 
         DB::transaction(function () use ($request) {
@@ -91,11 +94,14 @@ class AlumnosController extends Controller
     public function update(Request $request, Alumno $alumno)
     {
         $request->validate([
-            'nombre' => 'required|string|max:80',
-            'apellidos' => 'required|string|max:100',
-            'id_carrera' => 'required|exists:carrera,id_carrera',
+            'nombre'              => ['required', 'string', 'max:80', 'regex:/^[\pL\s]+$/u'],
+            'apellidos'           => ['required', 'string', 'max:100', 'regex:/^[\pL\s]+$/u'],
+            'id_carrera'          => 'required|exists:carrera,id_carrera',
             'cuatrimestre_actual' => 'required|integer|min:1|max:10',
-            'id_tutor' => 'nullable|exists:docente,id_docente',
+            'id_tutor'            => 'nullable|exists:docente,id_docente',
+        ], [
+            'nombre.regex'    => 'El nombre solo debe contener letras y espacios.',
+            'apellidos.regex' => 'Los apellidos solo deben contener letras y espacios.',
         ]);
 
         $alumno->update($request->only('nombre', 'apellidos', 'id_carrera', 'cuatrimestre_actual', 'id_tutor'));

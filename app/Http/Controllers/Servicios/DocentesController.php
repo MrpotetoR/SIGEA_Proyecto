@@ -31,12 +31,15 @@ class DocentesController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nombre' => 'required|string|max:80',
-            'apellidos' => 'required|string|max:100',
-            'email' => 'required|email|unique:users,email',
-            'especialidad' => 'nullable|string|max:100',
+            'nombre'         => ['required', 'string', 'max:80', 'regex:/^[\pL\s]+$/u'],
+            'apellidos'      => ['required', 'string', 'max:100', 'regex:/^[\pL\s]+$/u'],
+            'email'          => 'required|email|unique:users,email',
+            'especialidad'   => 'nullable|string|max:100',
             'horas_contrato' => 'nullable|integer|min:1|max:40',
-            'es_tutor' => 'boolean',
+            'es_tutor'       => 'boolean',
+        ], [
+            'nombre.regex'    => 'El nombre solo debe contener letras y espacios.',
+            'apellidos.regex' => 'Los apellidos solo deben contener letras y espacios.',
         ]);
 
         DB::transaction(function () use ($request) {
@@ -53,7 +56,7 @@ class DocentesController extends Controller
                 'nombre' => $request->nombre,
                 'apellidos' => $request->apellidos,
                 'especialidad' => $request->especialidad,
-                'horas_contrato' => $request->tipo_contrato === 'planta' ? null : $request->horas_contrato,
+                'horas_contrato' => $request->horas_contrato,
                 'es_tutor' => $request->boolean('es_tutor'),
             ]);
         });
@@ -75,16 +78,19 @@ class DocentesController extends Controller
     public function update(Request $request, Docente $docente)
     {
         $request->validate([
-            'nombre' => 'required|string|max:80',
-            'apellidos' => 'required|string|max:100',
-            'especialidad' => 'nullable|string|max:100',
+            'nombre'         => ['required', 'string', 'max:80', 'regex:/^[\pL\s]+$/u'],
+            'apellidos'      => ['required', 'string', 'max:100', 'regex:/^[\pL\s]+$/u'],
+            'especialidad'   => 'nullable|string|max:100',
             'horas_contrato' => 'nullable|integer|min:1|max:40',
+        ], [
+            'nombre.regex'    => 'El nombre solo debe contener letras y espacios.',
+            'apellidos.regex' => 'Los apellidos solo deben contener letras y espacios.',
         ]);
         $docente->update([
             'nombre'         => $request->nombre,
             'apellidos'      => $request->apellidos,
             'especialidad'   => $request->especialidad,
-            'horas_contrato' => $request->tipo_contrato === 'planta' ? null : $request->horas_contrato,
+            'horas_contrato' => $request->horas_contrato,
             'es_tutor'       => $request->boolean('es_tutor'),
         ]);
         return redirect()->route('servicios.docentes.index')->with('success', 'Docente actualizado.');

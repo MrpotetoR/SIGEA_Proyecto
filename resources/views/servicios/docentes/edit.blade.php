@@ -11,13 +11,19 @@
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Nombre(s) *</label>
-                        <input type="text" name="nombre" value="{{ old('nombre', $docente->nombre) }}" required
-                               class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-400 focus:outline-none">
+                        <input type="text" name="nombre" value="{{ old('nombre', $docente->nombre) }}" required maxlength="80"
+                               pattern="[A-Za-zÁÉÍÓÚáéíóúÑñÜü\s]+"
+                               title="Solo letras y espacios"
+                               oninput="this.value = this.value.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñÜü\s]/g, '');"
+                               class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-400 focus:outline-none @error('nombre') border-red-400 @enderror">
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Apellidos *</label>
-                        <input type="text" name="apellidos" value="{{ old('apellidos', $docente->apellidos) }}" required
-                               class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-400 focus:outline-none">
+                        <input type="text" name="apellidos" value="{{ old('apellidos', $docente->apellidos) }}" required maxlength="100"
+                               pattern="[A-Za-zÁÉÍÓÚáéíóúÑñÜü\s]+"
+                               title="Solo letras y espacios"
+                               oninput="this.value = this.value.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñÜü\s]/g, '');"
+                               class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-400 focus:outline-none @error('apellidos') border-red-400 @enderror">
                     </div>
                 </div>
                 <div class="grid grid-cols-2 gap-4">
