@@ -18,13 +18,36 @@ class HorariosController extends Controller
     {
         $director = $request->user()->docente;
         $carrera = $director?->carrerasDirigidas()->first();
-        $horarios = $carrera
+
+        $query = $carrera
             ? Horario::whereHas('grupo', fn($q) => $q->where('id_carrera', $carrera->id_carrera))
                 ->with('docente', 'grupo', 'materia')
-                ->get()
+            : Horario::query()->whereRaw('1=0');
+
+        if ($request->filled('grupo')) {
+            $query->where('id_grupo', $request->grupo);
+        }
+        if ($request->filled('docente')) {
+            $query->where('id_docente', $request->docente);
+        }
+        if ($request->filled('dia')) {
+            $query->where('dia_semana', $request->dia);
+        }
+
+        $horarios = $query->orderByRaw("FIELD(dia_semana, 'lunes','martes','miercoles','jueves','viernes','sabado')")
+            ->orderBy('hora_inicio')
+            ->get();
+
+        $grupos = $carrera
+            ? Grupo::where('id_carrera', $carrera->id_carrera)->orderBy('clave_grupo')->get()
             : collect();
 
-        return view('director.horarios.index', compact('director', 'carrera', 'horarios'));
+        $docentes = $carrera
+            ? Docente::whereHas('horarios.grupo', fn($q) => $q->where('id_carrera', $carrera->id_carrera))
+                ->orderBy('apellidos')->get()
+            : collect();
+
+        return view('director.horarios.index', compact('director', 'carrera', 'horarios', 'grupos', 'docentes'));
     }
 
     public function create()
@@ -41,15 +64,33 @@ class HorariosController extends Controller
             'id_grupo' => 'required|exists:grupo,id_grupo',
             'id_docente' => 'required|exists:docente,id_docente',
             'id_materia' => 'required|exists:materia,id_materia',
-            'dia_semana' => 'required|in:lunes,martes,miercoles,jueves,viernes,sabado',
-            'hora_inicio' => 'required|date_format:H:i',
-            'hora_fin' => 'required|date_format:H:i|after:hora_inicio',
+            'dias' => 'required|array|min:1',
+            'dias.*.hora_inicio' => 'required_with:dias.*.activo|date_format:H:i',
+            'dias.*.hora_fin' => 'required_with:dias.*.activo|date_format:H:i|after:dias.*.hora_inicio',
         ]);
 
-        $grupo = Grupo::findOrFail($request->id_grupo);
-        $this->service->asignarHorario($grupo, $request->all());
+        $diasSeleccionados = collect($request->dias)->filter(fn($d) => !empty($d['activo']));
 
-        return redirect()->route('director.horarios.index')->with('success', 'Horario asignado.');
+        if ($diasSeleccionados->isEmpty()) {
+            return back()->withInput()->withErrors(['dias' => 'Selecciona al menos un día.']);
+        }
+
+        $grupo = Grupo::findOrFail($request->id_grupo);
+        $count = 0;
+
+        foreach ($diasSeleccionados as $dia => $horario) {
+            $this->service->asignarHorario($grupo, [
+                'id_docente' => $request->id_docente,
+                'id_materia' => $request->id_materia,
+                'dia_semana' => $dia,
+                'hora_inicio' => $horario['hora_inicio'],
+                'hora_fin' => $horario['hora_fin'],
+            ]);
+            $count++;
+        }
+
+        return redirect()->route('director.horarios.index')
+            ->with('success', "Horario asignado para {$count} día(s).");
     }
 
     public function show(Horario $horario) { return view('director.horarios.show', compact('horario')); }
