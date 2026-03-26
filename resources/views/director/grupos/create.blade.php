@@ -47,11 +47,11 @@
                 </div>
             </div>
             <div>
-                <label class="block text-xs text-gray-500 mb-1.5">Tutor (opcional)</label>
+                <label class="block text-xs text-gray-500 mb-1.5">Tutor</label>
                 <select name="id_tutor" class="w-full text-sm border border-gray-200 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-400">
                     <option value="">Sin tutor</option>
-                    @foreach($docentes as $doc)
-                        <option value="{{ $doc->id_docente }}" {{ old('id_tutor') == $doc->id_docente ? 'selected' : '' }}>{{ $doc->nombre_completo }}</option>
+                    @foreach($docentes as $d)
+                        <option value="{{ $d->id_docente }}" {{ old('id_tutor') == $d->id_docente ? 'selected' : '' }}>{{ $d->nombre_completo }}</option>
                     @endforeach
                 </select>
             </div>

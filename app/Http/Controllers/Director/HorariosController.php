@@ -53,9 +53,9 @@ class HorariosController extends Controller
     public function create()
     {
         $grupos = Grupo::with('carrera')->orderBy('clave_grupo')->get();
-        $docentes = Docente::orderBy('apellidos')->get();
         $materias = Materia::orderBy('nombre_materia')->get();
-        return view('director.horarios.create', compact('grupos', 'docentes', 'materias'));
+        $docentes = Docente::orderBy('apellidos')->get();
+        return view('director.horarios.create', compact('grupos', 'materias', 'docentes'));
     }
 
     public function store(Request $request)
@@ -97,9 +97,9 @@ class HorariosController extends Controller
     public function edit(Horario $horario)
     {
         $grupos = Grupo::with('carrera')->orderBy('clave_grupo')->get();
-        $docentes = Docente::orderBy('apellidos')->get();
         $materias = Materia::orderBy('nombre_materia')->get();
-        return view('director.horarios.edit', compact('horario', 'grupos', 'docentes', 'materias'));
+        $docentes = Docente::orderBy('apellidos')->get();
+        return view('director.horarios.edit', compact('horario', 'grupos', 'materias', 'docentes'));
     }
 
     public function update(Request $request, Horario $horario)

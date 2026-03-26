@@ -21,9 +21,7 @@ class ConstanciasController extends Controller
             ->orderByDesc('created_at')
             ->paginate(20)->withQueryString();
 
-        $alumnos = Alumno::activos()->orderBy('apellidos')->get();
-
-        return view('servicios.constancias.index', compact('constancias', 'alumnos'));
+        return view('servicios.constancias.index', compact('constancias'));
     }
 
     public function store(Request $request)

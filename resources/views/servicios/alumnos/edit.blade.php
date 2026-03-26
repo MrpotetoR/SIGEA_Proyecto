@@ -55,18 +55,14 @@
                     </div>
                 </div>
 
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Tutor docente</label>
-                    <select name="id_tutor"
-                            class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-400 focus:outline-none">
-                        <option value="">Sin tutor asignado</option>
-                        @foreach($docentes as $d)
-                            <option value="{{ $d->id_docente }}" @selected(old('id_tutor', $alumno->id_tutor) == $d->id_docente)>
-                                {{ $d->nombre_completo }}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
+                <x-ajax-select
+                    name="id_tutor"
+                    :url="route('ajax.docentes')"
+                    label="Tutor"
+                    placeholder="Buscar docente..."
+                    :value="$alumno->id_tutor"
+                    :display="$alumno->tutor?->nombre_completo ?? ''"
+                />
 
                 <div class="flex gap-3 pt-4 border-t">
                     <button type="submit"

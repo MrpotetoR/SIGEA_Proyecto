@@ -28,6 +28,15 @@ Route::middleware('auth')->group(function () {
 });
 
 // ============================================================
+// AJAX SEARCH (compartido entre paneles)
+// ============================================================
+Route::middleware('auth')->prefix('ajax')->name('ajax.')->group(function () {
+    Route::get('/alumnos',  [\App\Http\Controllers\AjaxSearchController::class, 'alumnos'])->name('alumnos');
+    Route::get('/docentes', [\App\Http\Controllers\AjaxSearchController::class, 'docentes'])->name('docentes');
+    Route::get('/grupos',   [\App\Http\Controllers\AjaxSearchController::class, 'grupos'])->name('grupos');
+});
+
+// ============================================================
 // PANEL ALUMNO
 // ============================================================
 Route::prefix('alumno')->name('alumno.')->middleware(['auth', 'verified', 'role:alumno'])->group(function () {

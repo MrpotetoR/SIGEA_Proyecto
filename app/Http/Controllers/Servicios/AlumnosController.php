@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Servicios;
 use App\Http\Controllers\Controller;
 use App\Models\Alumno;
 use App\Models\Carrera;
-use App\Models\Docente;
 use App\Models\HistorialBaja;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -34,8 +33,7 @@ class AlumnosController extends Controller
     public function create()
     {
         $carreras = Carrera::orderBy('nombre_carrera')->get();
-        $docentes = Docente::orderBy('apellidos')->get();
-        return view('servicios.alumnos.create', compact('carreras', 'docentes'));
+        return view('servicios.alumnos.create', compact('carreras'));
     }
 
     public function store(Request $request)
@@ -87,8 +85,7 @@ class AlumnosController extends Controller
     public function edit(Alumno $alumno)
     {
         $carreras = Carrera::orderBy('nombre_carrera')->get();
-        $docentes = Docente::orderBy('apellidos')->get();
-        return view('servicios.alumnos.edit', compact('alumno', 'carreras', 'docentes'));
+        return view('servicios.alumnos.edit', compact('alumno', 'carreras'));
     }
 
     public function update(Request $request, Alumno $alumno)

@@ -17,8 +17,7 @@ class CarrerasController extends Controller
 
     public function create()
     {
-        $docentes = Docente::orderBy('apellidos')->get();
-        return view('servicios.carreras.create', compact('docentes'));
+        return view('servicios.carreras.create');
     }
 
     public function store(Request $request)
@@ -42,8 +41,7 @@ class CarrerasController extends Controller
 
     public function edit(Carrera $carrera)
     {
-        $docentes = Docente::orderBy('apellidos')->get();
-        return view('servicios.carreras.edit', compact('carrera', 'docentes'));
+        return view('servicios.carreras.edit', compact('carrera'));
     }
 
     public function update(Request $request, Carrera $carrera)
