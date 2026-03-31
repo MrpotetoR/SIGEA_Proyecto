@@ -3,7 +3,7 @@
 
 <div class="space-y-5">
 
-    <h1 class="text-[22px] font-bold text-gray-900">Mi Horario</h1>
+    <h1 class="text-[22px] font-bold text-gray-900 dark:text-gray-100">Mi Horario</h1>
 
     @php
         $diasOrden = ['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado'];
@@ -17,12 +17,12 @@
         ];
     @endphp
 
-    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-        <div class="grid grid-cols-6 divide-x divide-gray-100">
+    <div class="bg-white dark:bg-gray-800 dark:border-gray-700 dark:shadow-gray-900/20 rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+        <div class="grid grid-cols-6 divide-x divide-gray-100 dark:divide-gray-700">
             @foreach($diasOrden as $dia)
                 <div class="min-w-0">
-                    <div class="px-3 py-3 bg-gray-50 border-b border-gray-100 text-center">
-                        <p class="text-[12px] font-bold text-gray-700 capitalize">{{ $dia }}</p>
+                    <div class="px-3 py-3 bg-gray-50 dark:bg-gray-700/50 border-b border-gray-100 dark:border-gray-700 text-center">
+                        <p class="text-[12px] font-bold text-gray-700 dark:text-gray-300 capitalize">{{ $dia }}</p>
                     </div>
                     <div class="p-2 space-y-2 min-h-[200px]">
                         @foreach($horario[$dia] ?? [] as $h)
@@ -34,7 +34,7 @@
                             </div>
                         @endforeach
                         @if(empty($horario[$dia] ?? []))
-                            <p class="text-[11px] text-gray-300 text-center pt-8">Sin clases</p>
+                            <p class="text-[11px] text-gray-300 dark:text-gray-600 text-center pt-8">Sin clases</p>
                         @endif
                     </div>
                 </div>

@@ -8,9 +8,9 @@
         </a>
     </div>
 
-    <div class="bg-white rounded-xl shadow overflow-hidden">
-        <table class="min-w-full divide-y divide-gray-200 text-sm">
-            <thead class="bg-gray-50 text-xs uppercase text-gray-500">
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow dark:shadow-gray-900/20 overflow-hidden border border-transparent dark:border-gray-700">
+        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700 text-sm">
+            <thead class="bg-gray-50 dark:bg-gray-700/50 text-xs uppercase text-gray-500 dark:text-gray-400">
                 <tr>
                     <th class="px-4 py-3 text-left">Clave</th>
                     <th class="px-4 py-3 text-left">Nombre</th>
@@ -20,28 +20,28 @@
                     <th class="px-4 py-3 text-center">Acciones</th>
                 </tr>
             </thead>
-            <tbody class="divide-y divide-gray-100">
+            <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
                 @forelse($carreras as $c)
-                    <tr class="hover:bg-gray-50">
-                        <td class="px-4 py-3 font-mono font-bold text-indigo-700">{{ $c->clave_carrera }}</td>
-                        <td class="px-4 py-3 font-medium text-gray-900">{{ $c->nombre_carrera }}</td>
+                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                        <td class="px-4 py-3 font-mono font-bold text-indigo-700 dark:text-indigo-400">{{ $c->clave_carrera }}</td>
+                        <td class="px-4 py-3 font-medium text-gray-900 dark:text-gray-100">{{ $c->nombre_carrera }}</td>
                         <td class="px-4 py-3 text-center">{{ $c->alumnos_count ?? 0 }}</td>
                         <td class="px-4 py-3 text-center">{{ $c->materias_count ?? 0 }}</td>
-                        <td class="px-4 py-3 text-gray-600">{{ $c->director?->nombre_completo ?? '—' }}</td>
+                        <td class="px-4 py-3 text-gray-600 dark:text-gray-400">{{ $c->director?->nombre_completo ?? '—' }}</td>
                         <td class="px-4 py-3 text-center">
                             <div class="flex justify-center gap-2">
                                 <a href="{{ route('servicios.carreras.edit', $c) }}"
-                                   class="text-yellow-600 hover:text-yellow-900 font-medium">Editar</a>
+                                   class="text-yellow-600 dark:text-yellow-400 hover:text-yellow-900 font-medium">Editar</a>
                                 <form method="POST" action="{{ route('servicios.carreras.destroy', $c) }}" class="inline">
                                     @csrf @method('DELETE')
-                                    <button type="submit" class="text-red-600 hover:text-red-900 font-medium"
+                                    <button type="submit" class="text-red-600 dark:text-red-400 hover:text-red-900 font-medium"
                                             onclick="return confirm('¿Eliminar carrera?')">Eliminar</button>
                                 </form>
                             </div>
                         </td>
                     </tr>
                 @empty
-                    <tr><td colspan="6" class="px-4 py-10 text-center text-gray-400">No hay carreras registradas.</td></tr>
+                    <tr><td colspan="6" class="px-4 py-10 text-center text-gray-400 dark:text-gray-400">No hay carreras registradas.</td></tr>
                 @endforelse
             </tbody>
         </table>

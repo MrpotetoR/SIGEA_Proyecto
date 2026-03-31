@@ -3,16 +3,16 @@
 
 <div class="max-w-3xl space-y-5">
 
-    <h1 class="text-[22px] font-bold text-gray-900">Mi Perfil</h1>
+    <h1 class="text-[22px] font-bold text-gray-900 dark:text-gray-100">Mi Perfil</h1>
 
-    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
+    <div class="bg-white dark:bg-gray-800 dark:border-gray-700 dark:shadow-gray-900/20 rounded-2xl border border-gray-100 shadow-sm p-6">
         <div class="flex items-center gap-5 mb-6">
             <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center text-white text-xl font-bold shadow-lg shadow-indigo-200">
                 {{ strtoupper(substr($docente?->nombre ?? 'D', 0, 1)) }}{{ strtoupper(substr($docente?->apellidos ?? 'C', 0, 1)) }}
             </div>
             <div>
-                <h2 class="text-[18px] font-bold text-gray-900">{{ $docente?->nombre_completo ?? 'Sin datos' }}</h2>
-                <p class="text-[13px] text-gray-400">Docente</p>
+                <h2 class="text-[18px] font-bold text-gray-900 dark:text-gray-100">{{ $docente?->nombre_completo ?? 'Sin datos' }}</h2>
+                <p class="text-[13px] text-gray-400 dark:text-gray-500">Docente</p>
             </div>
         </div>
 
@@ -28,9 +28,9 @@
             ];
             @endphp
             @foreach($campos as $campo)
-                <div class="p-4 bg-gray-50/70 rounded-xl">
-                    <p class="text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1">{{ $campo['label'] }}</p>
-                    <p class="text-[14px] font-medium text-gray-800">{{ $campo['value'] }}</p>
+                <div class="p-4 bg-gray-50/70 dark:bg-gray-700/50 rounded-xl">
+                    <p class="text-[11px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-1">{{ $campo['label'] }}</p>
+                    <p class="text-[14px] font-medium text-gray-800 dark:text-gray-200">{{ $campo['value'] }}</p>
                 </div>
             @endforeach
         </div>

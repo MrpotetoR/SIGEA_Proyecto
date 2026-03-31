@@ -3,31 +3,31 @@
 
 <div class="space-y-5">
 
-    <h1 class="text-[22px] font-bold text-gray-900">Calificaciones</h1>
-    <p class="text-[13px] text-gray-400">Selecciona un grupo para registrar o consultar calificaciones.</p>
+    <h1 class="text-[22px] font-bold text-gray-900 dark:text-gray-100">Calificaciones</h1>
+    <p class="text-[13px] text-gray-400 dark:text-gray-500">Selecciona un grupo para registrar o consultar calificaciones.</p>
 
     @if($grupos->isNotEmpty())
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             @foreach($grupos as $grupoId => $horarios)
                 @php $g = $horarios->first()->grupo; @endphp
                 <a href="{{ route('docente.calificaciones.show', $g->id_grupo) }}"
-                   class="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 hover:shadow-md hover:border-gray-200 transition-all group">
+                   class="bg-white dark:bg-gray-800 dark:border-gray-700 dark:shadow-gray-900/20 rounded-2xl border border-gray-100 shadow-sm p-5 hover:shadow-md hover:border-gray-200 dark:hover:border-gray-600 transition-all group">
                     <div class="flex items-center gap-3 mb-3">
-                        <div class="w-10 h-10 rounded-xl bg-sky-100 flex items-center justify-center text-[11px] font-bold text-sky-700">
+                        <div class="w-10 h-10 rounded-xl bg-sky-100 dark:bg-sky-900/30 flex items-center justify-center text-[11px] font-bold text-sky-700 dark:text-sky-300">
                             {{ $g->clave_grupo }}
                         </div>
                         <div>
-                            <p class="text-[14px] font-bold text-gray-800 group-hover:text-violet-700 transition-colors">{{ $g->clave_grupo }}</p>
-                            <p class="text-[11px] text-gray-400">{{ $horarios->map(fn($h) => $h->materia->nombre_materia)->unique()->join(', ') }}</p>
+                            <p class="text-[14px] font-bold text-gray-800 dark:text-gray-200 group-hover:text-violet-700 dark:group-hover:text-violet-400 transition-colors">{{ $g->clave_grupo }}</p>
+                            <p class="text-[11px] text-gray-400 dark:text-gray-500">{{ $horarios->map(fn($h) => $h->materia->nombre_materia)->unique()->join(', ') }}</p>
                         </div>
                     </div>
-                    <div class="text-[11px] font-medium text-violet-600">Gestionar calificaciones &rarr;</div>
+                    <div class="text-[11px] font-medium text-violet-600 dark:text-indigo-400">Gestionar calificaciones &rarr;</div>
                 </a>
             @endforeach
         </div>
     @else
-        <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-12 text-center">
-            <p class="text-[14px] text-gray-400">Sin grupos asignados.</p>
+        <div class="bg-white dark:bg-gray-800 dark:border-gray-700 dark:shadow-gray-900/20 rounded-2xl border border-gray-100 shadow-sm p-12 text-center">
+            <p class="text-[14px] text-gray-400 dark:text-gray-500">Sin grupos asignados.</p>
         </div>
     @endif
 

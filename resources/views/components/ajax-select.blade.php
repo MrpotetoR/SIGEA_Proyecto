@@ -17,16 +17,16 @@
     @endif
 
     <input type="text" id="input-{{ $uid }}" placeholder="{{ $placeholder }}" autocomplete="off"
-           class="w-full text-sm border border-gray-200 rounded-xl px-3 py-2 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-400 {{ $value ? 'hidden' : '' }}">
+           class="w-full text-sm border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-xl px-3 py-2 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-400 dark:placeholder-gray-400 {{ $value ? 'hidden' : '' }}">
     <input type="hidden" name="{{ $name }}" id="hidden-{{ $uid }}" value="{{ $value }}" {{ $required ? 'required' : '' }}>
 
     {{-- Dropdown resultados --}}
-    <div id="results-{{ $uid }}" class="hidden absolute z-20 mt-1 w-full bg-white border border-gray-200 rounded-xl shadow-lg max-h-48 overflow-y-auto"></div>
+    <div id="results-{{ $uid }}" class="hidden absolute z-20 mt-1 w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-xl shadow-lg dark:shadow-gray-900/30 max-h-48 overflow-y-auto"></div>
 
     {{-- Seleccionado --}}
-    <div id="selected-{{ $uid }}" class="{{ $value ? '' : 'hidden' }} mt-1 flex items-center justify-between bg-indigo-50 border border-indigo-200 rounded-xl px-3 py-2">
-        <span id="text-{{ $uid }}" class="text-sm text-indigo-700 font-medium">{{ $display }}</span>
-        <button type="button" id="clear-{{ $uid }}" class="text-indigo-400 hover:text-indigo-600 flex-shrink-0">
+    <div id="selected-{{ $uid }}" class="{{ $value ? '' : 'hidden' }} mt-1 flex items-center justify-between bg-indigo-50 dark:bg-indigo-900/30 border border-indigo-200 dark:border-indigo-700 rounded-xl px-3 py-2">
+        <span id="text-{{ $uid }}" class="text-sm text-indigo-700 dark:text-indigo-300 font-medium">{{ $display }}</span>
+        <button type="button" id="clear-{{ $uid }}" class="text-indigo-400 hover:text-indigo-600 dark:hover:text-indigo-300 flex-shrink-0">
             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
         </button>
     </div>
@@ -47,14 +47,14 @@ function initAjaxSelect(uid, url, minChars) {
     const text     = document.getElementById('text-' + uid);
     const clear    = document.getElementById('clear-' + uid);
     const hint     = document.getElementById('hint-' + uid);
+    const isDark   = () => document.documentElement.classList.contains('dark');
     let timer = null;
 
     function search(q) {
         if (q.length < minChars) { results.classList.add('hidden'); return; }
 
         const params = new URLSearchParams({ q });
-        // Buscar filtros en el mismo formulario
-        const form = input.closest('form') || input.closest('.bg-white');
+        const form = input.closest('form') || input.closest('.bg-white') || input.closest('.dark\\:bg-gray-800');
         if (form) {
             const carrera = form.querySelector('[id*="filtro-carrera"], [name="carrera_filter"]');
             if (carrera && carrera.value) params.append('carrera', carrera.value);
@@ -63,11 +63,12 @@ function initAjaxSelect(uid, url, minChars) {
         fetch(`${url}?${params}`)
             .then(r => r.json())
             .then(data => {
+                const dk = isDark();
                 if (!data.length) {
                     results.innerHTML = '<div class="px-3 py-3 text-sm text-gray-400 text-center">Sin resultados</div>';
                 } else {
                     results.innerHTML = data.map(item =>
-                        `<div class="px-3 py-2.5 text-sm text-gray-700 hover:bg-indigo-50 cursor-pointer transition-colors" data-id="${item.id}" data-texto="${item.texto}">
+                        `<div class="px-3 py-2.5 text-sm ${dk ? 'text-gray-200 hover:bg-gray-700' : 'text-gray-700 hover:bg-indigo-50'} cursor-pointer transition-colors" data-id="${item.id}" data-texto="${item.texto}">
                             <span class="font-medium">${item.texto}</span>
                             ${item.extra ? `<span class="text-[10px] text-gray-400 ml-1">${item.extra}</span>` : ''}
                         </div>`
