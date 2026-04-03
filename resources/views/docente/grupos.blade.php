@@ -10,13 +10,13 @@
 
     @if($grupos->isNotEmpty())
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            @php $colors = ['border-violet-200 bg-violet-50/30', 'border-emerald-200 bg-emerald-50/30', 'border-amber-200 bg-amber-50/30', 'border-sky-200 bg-sky-50/30', 'border-rose-200 bg-rose-50/30']; @endphp
+            @php $colors = ['border-sky-200 bg-sky-50/30', 'border-emerald-200 bg-emerald-50/30', 'border-amber-200 bg-amber-50/30', 'border-sky-200 bg-sky-50/30', 'border-rose-200 bg-rose-50/30']; @endphp
             @foreach($grupos as $grupoId => $horariosDel)
                 @php $grupo = $horariosDel->first()->grupo; @endphp
                 <div class="bg-white dark:bg-gray-800 dark:border-gray-700 dark:shadow-gray-900/20 rounded-2xl border border-gray-100 shadow-sm overflow-hidden hover:shadow-md transition-shadow">
                     <div class="p-5">
                         <div class="flex items-center gap-3 mb-4">
-                            <div class="w-10 h-10 rounded-xl bg-gray-900 dark:bg-indigo-600 text-white flex items-center justify-center text-[11px] font-bold">
+                            <div class="w-10 h-10 rounded-xl bg-[#0606F0] dark:bg-[#0606F0] text-white flex items-center justify-center text-[11px] font-bold">
                                 {{ $grupo->clave_grupo }}
                             </div>
                             <div>
@@ -42,7 +42,7 @@
 
                         <div class="flex gap-2">
                             <a href="{{ route('docente.asistencia.show', $grupo->id_grupo) }}"
-                               class="flex-1 text-center text-[11px] font-medium bg-gray-900 dark:bg-indigo-600 dark:hover:bg-indigo-500 text-white px-3 py-2 rounded-xl hover:bg-gray-700 transition-colors">
+                               class="flex-1 text-center text-[11px] font-medium bg-[#0606F0] dark:bg-[#0606F0] dark:hover:bg-blue-400 text-white px-3 py-2 rounded-xl hover:bg-[#04276B] transition-colors">
                                 Asistencia
                             </a>
                             <a href="{{ route('docente.calificaciones.show', $grupo->id_grupo) }}"

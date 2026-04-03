@@ -10,144 +10,199 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Inter', system-ui, sans-serif; background: #000; color: #fff; }
+        body { font-family: 'Inter', system-ui, sans-serif; }
 
-        /* ─── Left panel ─── */
+        .page-wrap {
+            min-height: 100vh;
+            display: flex;
+        }
+
+        /* ─── Split card ─── */
+        .split-card {
+            display: flex;
+            width: 100%;
+            min-height: 100vh;
+        }
+
+        /* ═══════════════════════════════════════════
+           LEFT PANEL — Fluid animated gradient
+           ═══════════════════════════════════════════ */
         .left-panel {
-            background: #0a0a0a;
+            width: 44%;
             position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 40px 36px;
             overflow: hidden;
+            background: linear-gradient(135deg, #1a3a8a 0%, #1e56c7 30%, #2b6dd6 50%, #1a3a8a 100%);
         }
 
-        /* Subtle grid lines behind asterisk */
-        .grid-lines {
+        /* Fluid blobs that animate to create liquid gradient effect */
+        .fluid-blob {
             position: absolute;
-            inset: 0;
-            background-image:
-                linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
-            background-size: 80px 80px;
+            border-radius: 50%;
+            filter: blur(50px);
+            pointer-events: none;
+            mix-blend-mode: screen;
+            will-change: transform;
+        }
+        .blob-1 {
+            width: 320px; height: 320px;
+            background: radial-gradient(circle, rgba(56, 152, 255, 0.7) 0%, rgba(30, 90, 200, 0.3) 50%, transparent 70%);
+            top: -15%; left: -20%;
+            animation: blobMove1 8s ease-in-out infinite;
+        }
+        .blob-2 {
+            width: 280px; height: 280px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.6) 0%, rgba(60, 120, 220, 0.25) 50%, transparent 70%);
+            top: 25%; right: -25%;
+            animation: blobMove2 10s ease-in-out infinite;
+        }
+        .blob-3 {
+            width: 350px; height: 350px;
+            background: radial-gradient(circle, rgba(80, 100, 240, 0.55) 0%, rgba(100, 60, 200, 0.2) 50%, transparent 70%);
+            bottom: -20%; left: 10%;
+            animation: blobMove3 12s ease-in-out infinite;
+        }
+        .blob-4 {
+            width: 200px; height: 200px;
+            background: radial-gradient(circle, hsla(204, 100%, 99%, 0.50) 0%, rgba(199, 227, 255, 0.15) 50%, transparent 70%);
+            top: 50%; left: 30%;
+            animation: blobMove4 9s ease-in-out infinite;
+        }
+        .blob-5 {
+            width: 240px; height: 240px;
+            background: radial-gradient(circle, rgba(140, 100, 255, 0.4) 0%, rgba(100, 60, 200, 0.15) 50%, transparent 70%);
+            top: 10%; left: 50%;
+            animation: blobMove5 11s ease-in-out infinite;
         }
 
-        /* Diagonal cross lines across the panel — replicates the X in the reference */
-        .cross-lines {
-            position: absolute;
-            inset: 0;
-            overflow: hidden;
+
+        @keyframes blobMove1 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(40px, 30px) scale(1.1); }
+            50% { transform: translate(20px, 60px) scale(0.95); }
+            75% { transform: translate(-20px, 20px) scale(1.05); }
         }
-        .cross-lines::before,
-        .cross-lines::after {
+        @keyframes blobMove2 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(-30px, 40px) scale(1.08); }
+            50% { transform: translate(-50px, -20px) scale(0.92); }
+            75% { transform: translate(10px, -40px) scale(1.04); }
+        }
+        @keyframes blobMove3 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(40px, -30px) scale(1.12); }
+            66% { transform: translate(-30px, -50px) scale(0.9); }
+        }
+        @keyframes blobMove4 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            30% { transform: translate(-40px, -25px) scale(1.15); }
+            60% { transform: translate(30px, 20px) scale(0.88); }
+        }
+        @keyframes blobMove5 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            40% { transform: translate(-30px, 40px) scale(1.1); }
+            70% { transform: translate(20px, -30px) scale(0.95); }
+        }
+
+        /* Glass texture overlay on left panel */
+        .left-panel::after {
             content: '';
             position: absolute;
-            background: rgba(255,255,255,0.06);
-            width: 1px;
-            height: 200%;
-            top: -50%;
-            left: 50%;
-            transform-origin: center center;
-        }
-        .cross-lines::before { transform: rotate(35deg); }
-        .cross-lines::after  { transform: rotate(-35deg); }
-
-        /* ─── Asterisk icon ─── */
-        .asterisk-wrap {
-            position: relative;
-            z-index: 10;
+            inset: 0;
+            background:
+                radial-gradient(ellipse at 30% 20%, rgba(255,255,255,0.06) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 80%, rgba(255,255,255,0.04) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 1;
         }
 
-        /* ─── Right panel (form area) ─── */
+        /* ═══════════════════════════════════════════
+           RIGHT PANEL — Clean white
+           ═══════════════════════════════════════════ */
         .right-panel {
-            background: #111;
-            position: relative;
+            flex: 1;
+            background: #ffffff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 52px 48px;
         }
 
-        /* ─── Input: line-only style ─── */
-        .line-input {
-            background: transparent;
-            border: none;
-            border-bottom: 1px solid rgba(255,255,255,0.25);
-            color: #fff;
-            font-size: 14px;
-            padding: 10px 0;
+        /* ─── Inputs ─── */
+        .login-input {
             width: 100%;
+            background: #F9FAFB;
+            border: 1.5px solid #E5E7EB;
+            border-radius: 10px;
+            padding: 12px 16px;
+            font-size: 14px;
+            color: #111827;
             outline: none;
-            transition: border-color 0.2s ease;
+            transition: all 0.2s ease;
             font-family: 'Inter', sans-serif;
         }
-        .line-input::placeholder { color: rgba(255,255,255,0.25); }
-        .line-input:focus { border-bottom-color: rgba(255,255,255,0.8); }
-        .line-input option { background: #1a1a1a; color: #fff; }
+        .login-input::placeholder { color: #9CA3AF; }
+        .login-input:focus {
+            border-color: #3B6CF6;
+            box-shadow: 0 0 0 3px rgba(59,108,246,0.1);
+            background: #fff;
+        }
 
-        /* ─── Label ─── */
         .field-label {
             display: block;
-            font-size: 11px;
-            font-weight: 500;
-            color: rgba(255,255,255,0.45);
-            letter-spacing: 0.04em;
-            margin-bottom: 4px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 6px;
         }
 
-        /* ─── Sign In button ─── */
-        .signin-btn {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            background: #fff;
-            color: #000;
-            font-size: 9px;
-            font-weight: 700;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
+        /* ─── Submit button ─── */
+        .login-btn {
+            width: 100%;
+            padding: 13px;
             border: none;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #3B6CF6 0%, #2952E3 100%);
+            color: #fff;
+            font-size: 15px;
+            font-weight: 600;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background 0.2s ease, transform 0.15s ease;
-            line-height: 1.2;
-            text-align: center;
+            transition: all 0.2s ease;
+            font-family: 'Inter', sans-serif;
         }
-        .signin-btn:hover { background: #e5e5e5; transform: scale(1.04); }
-        .signin-btn:active { transform: scale(0.97); }
-
-        /* ─── Select arrow override ─── */
-        select.line-input {
-            -webkit-appearance: none;
-            -moz-appearance: none;
-            appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='rgba(255,255,255,0.4)' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 4px center;
-            padding-right: 24px;
-            cursor: pointer;
+        .login-btn:hover {
+            transform: translateY(-2px);
         }
+        .login-btn:active { transform: scale(0.98); }
 
-        /* ─── Password toggle button ─── */
         .pass-toggle {
             background: none;
             border: none;
             cursor: pointer;
             padding: 0;
             position: absolute;
-            right: 0;
+            right: 14px;
             top: 50%;
             transform: translateY(-50%);
-            color: rgba(255,255,255,0.35);
+            color: #9CA3AF;
             display: flex;
             align-items: center;
             transition: color 0.15s;
         }
-        .pass-toggle:hover { color: rgba(255,255,255,0.7); }
+        .pass-toggle:hover { color: #3B6CF6; }
 
-        /* ─── Fade-in ─── */
-        .fade-in {
-            animation: fadeIn 0.5s ease forwards;
+        /* ─── Animations ─── */
+        .fade-up {
+            animation: fadeUp 0.55s cubic-bezier(0.16, 1, 0.3, 1) forwards;
             opacity: 0;
+            transform: translateY(14px);
         }
-        @keyframes fadeIn { to { opacity: 1; } }
-
-        /* ─── Shake for errors ─── */
+        @keyframes fadeUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
         .shake { animation: shake 0.45s cubic-bezier(.36,.07,.19,.97) both; }
         @keyframes shake {
             10%, 90% { transform: translateX(-1px); }
@@ -156,64 +211,69 @@
             40%, 60% { transform: translateX(3px); }
         }
 
-        ::-webkit-scrollbar { width: 0; }
+        /* ─── Responsive ─── */
+        @media (max-width: 768px) {
+            .left-panel { display: none; }
+            .right-panel { padding: 40px 28px; }
+        }
+        @media (max-width: 440px) {
+            .right-panel { padding: 32px 20px; }
+        }
     </style>
 </head>
-<body class="min-h-screen">
+<body class="antialiased">
 
-    <div class="flex min-h-screen">
+    <div class="page-wrap">
+        <div class="split-card">
 
-        {{-- ════════ LEFT PANEL ════════ --}}
-        <div class="hidden lg:flex lg:w-[52%] left-panel flex-col justify-between p-10 relative">
+            {{-- ═══════ LEFT — Animated fluid gradient ═══════ --}}
+            <div class="left-panel">
 
-            {{-- Background layers --}}
-            <div class="grid-lines"></div>
-            <div class="cross-lines"></div>
+                {{-- Fluid animated blobs --}}
+                <div class="fluid-blob blob-1"></div>
+                <div class="fluid-blob blob-2"></div>
+                <div class="fluid-blob blob-3"></div>
+                <div class="fluid-blob blob-4"></div>
+                <div class="fluid-blob blob-5"></div>
 
-            {{-- Top: Brand --}}
-            <div class="relative z-10">
-                <span class="text-white text-[15px] font-bold tracking-wide">SIGEA<sup class="text-[9px] font-normal opacity-60 ml-0.5">®</sup></span>
-            </div>
-
-            {{-- Center: Asterisk icon --}}
-            <div class="relative z-10 flex items-center justify-center">
-                <div class="asterisk-wrap">
-                    <svg width="180" height="180" viewBox="0 0 180 180" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        {{-- 8-spoke asterisk --}}
-                        <line x1="90" y1="12" x2="90" y2="168" stroke="white" stroke-width="1.5"/>
-                        <line x1="12" y1="90" x2="168" y2="90" stroke="white" stroke-width="1.5"/>
-                        <line x1="31.6" y1="31.6" x2="148.4" y2="148.4" stroke="white" stroke-width="1.5"/>
-                        <line x1="148.4" y1="31.6" x2="31.6" y2="148.4" stroke="white" stroke-width="1.5"/>
-                    </svg>
+                {{-- Logo --}}
+                <div class="fade-up" style="position:relative; z-index:2;">
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <div style="width:38px; height:38px; background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.25); border-radius:10px; display:flex; align-items:center; justify-content:center; backdrop-filter:blur(8px);">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                            </svg>
+                        </div>
+                        <span style="color:rgba(255,255,255,0.9); font-size:15px; font-weight:700; letter-spacing:0.02em;">SIGEA</span>
+                    </div>
                 </div>
+
+                {{-- Headline --}}
+                <div class="fade-up" style="position:relative; z-index:2; animation-delay:0.12s;">
+                    <p style="color:rgba(255,255,255,0.55); font-size:13px; font-weight:500; margin-bottom:14px;">
+                        Plataforma educativa
+                    </p>
+                    <h2 style="color:#ffffff; font-size:70px; font-weight:800; line-height:1.12; letter-spacing:-0.025em;">
+                        Sistema de <br>Gestion<br>
+                        <span style="background: linear-gradient(135deg, rgba(255,255,255,1), rgba(180,210,255,0.8)); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">Academica</span>
+                    </h2>
+                </div>
+
+                {{-- Footer --}}
+                <div class="fade-up" style="position:relative; z-index:2; animation-delay:0.22s;">
+                    <p style="color:rgba(255,255,255,0.3); font-size:11px;">
+                        &copy; {{ date('Y') }} SIGEA — Todos los derechos reservados
+                    </p>
+                </div>
+
             </div>
 
-            {{-- Bottom: Copyright --}}
-            <div class="relative z-10">
-                <p class="text-[11px] text-white/25 font-normal">&copy; SIGEA {{ date('Y') }}. Todos los derechos reservados</p>
+            {{-- ═══════ RIGHT — Form ═══════ --}}
+            <div class="right-panel">
+                {{ $slot }}
             </div>
 
         </div>
-
-        {{-- ════════ RIGHT PANEL — Formulario ════════ --}}
-        <div class="flex-1 right-panel flex flex-col">
-
-            {{-- Top bar --}}
-            <div class="flex justify-end px-10 py-8">
-                {{-- Placeholder para accion superior si se necesita --}}
-            </div>
-
-            {{-- Form centered --}}
-            <div class="flex-1 flex items-center justify-center px-8 sm:px-16 lg:px-20 xl:px-28">
-                <div class="w-full max-w-[380px] fade-in">
-                    {{ $slot }}
-                </div>
-            </div>
-
-            {{-- Bottom spacer --}}
-            <div class="py-8"></div>
-        </div>
-
     </div>
 
 </body>

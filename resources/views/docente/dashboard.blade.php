@@ -8,7 +8,7 @@
         <h1 class="text-[26px] font-bold text-gray-900 dark:text-gray-100 leading-tight">
             @php
                 $hora = now()->hour;
-                $saludo = $hora < 12 ? 'Buenos dias' : ($hora < 18 ? 'Buenas tardes' : 'Buenas noches');
+                $saludo = $hora < 12 ? 'Buenos días' : ($hora < 18 ? 'Buenas tardes' : 'Buenas noches');
             @endphp
             {{ $saludo }}, {{ $docente?->nombre ?? auth()->user()->name }}
         </h1>
@@ -20,8 +20,8 @@
         <div class="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-gray-100 dark:divide-gray-700">
             <div class="p-5">
                 <div class="flex items-center gap-2 mb-3">
-                    <span class="w-6 h-6 rounded-lg bg-violet-100 flex items-center justify-center">
-                        <svg class="w-3.5 h-3.5 text-violet-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <span class="w-6 h-6 rounded-lg bg-sky-100 flex items-center justify-center">
+                        <svg class="w-3.5 h-3.5 text-sky-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
                         </svg>
                     </span>
@@ -71,7 +71,7 @@
             <div class="px-5 pb-5">
                 @if($grupos->isNotEmpty())
                     <div class="space-y-1">
-                        @php $colors = ['bg-violet-100 text-violet-700', 'bg-emerald-100 text-emerald-700', 'bg-amber-100 text-amber-700', 'bg-sky-100 text-sky-700', 'bg-rose-100 text-rose-700']; @endphp
+                        @php $colors = ['bg-sky-100 text-sky-700', 'bg-emerald-100 text-emerald-700', 'bg-amber-100 text-amber-700', 'bg-sky-100 text-sky-700', 'bg-rose-100 text-rose-700']; @endphp
                         @foreach($grupos as $grupoId => $horariosDel)
                             @php $g = $horariosDel->first()->grupo; $colorClass = $colors[$loop->index % count($colors)]; @endphp
                             <div class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50/70 dark:hover:bg-gray-700/50">
@@ -82,7 +82,7 @@
                                     <p class="text-[13px] font-semibold text-gray-800 dark:text-gray-200 truncate">{{ $horariosDel->map(fn($h) => $h->materia->nombre_materia)->unique()->join(', ') }}</p>
                                     <p class="text-[11px] text-gray-400 dark:text-gray-500">{{ $g->inscripciones_count ?? $g->inscripciones()->count() }} alumnos</p>
                                 </div>
-                                <a href="{{ route('docente.asistencia.show', $g->id_grupo) }}" class="text-[11px] font-medium text-violet-600 hover:text-violet-800 px-2 py-1 rounded-lg hover:bg-violet-50 dark:hover:bg-violet-900/30">Pasar lista</a>
+                                <a href="{{ route('docente.asistencia.show', $g->id_grupo) }}" class="text-[11px] font-medium text-sky-600 hover:text-sky-800 px-2 py-1 rounded-lg hover:bg-sky-50 dark:hover:bg-sky-900/30">Pasar lista</a>
                             </div>
                         @endforeach
                     </div>
@@ -105,7 +105,7 @@
                     <div class="space-y-1">
                         @foreach($noticias as $noticia)
                             <div class="flex items-start gap-3 p-3 rounded-xl hover:bg-gray-50/70 dark:hover:bg-gray-700/50">
-                                <div class="w-2 h-2 rounded-full bg-indigo-400 mt-1.5 flex-shrink-0"></div>
+                                <div class="w-2 h-2 rounded-full bg-blue-400 mt-1.5 flex-shrink-0"></div>
                                 <div class="flex-1 min-w-0">
                                     <p class="text-[13px] font-semibold text-gray-800 dark:text-gray-200 truncate">{{ $noticia->titulo }}</p>
                                     <p class="text-[11px] text-gray-400 dark:text-gray-500 mt-0.5">{{ $noticia->fecha_publicacion->diffForHumans() }}</p>

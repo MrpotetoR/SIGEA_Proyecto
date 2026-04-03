@@ -59,7 +59,7 @@
         </div>
 
         <div class="slide-up" style="animation-delay: 0.3s;">
-            <button type="submit" class="btn-primary w-full bg-gray-900 hover:bg-gray-800 text-white font-semibold py-3.5 rounded-xl text-[14px] shadow-lg shadow-gray-900/10">
+            <button type="submit" class="btn-primary w-full bg-[#0606F0] hover:bg-[#04276B] text-white font-semibold py-3.5 rounded-xl text-[14px] shadow-lg shadow-gray-900/10">
                 Restablecer contrasena
             </button>
         </div>

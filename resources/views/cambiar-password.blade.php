@@ -7,7 +7,7 @@
 
         <div class="text-center">
             <div
-                class="w-14 h-14 mx-auto rounded-2xl bg-gradient-to-br from-black to-gray-800 flex items-center justify-center mb-4 shadow-lg shadow-indigo-200">
+                class="w-14 h-14 mx-auto rounded-2xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center mb-4 shadow-lg shadow-blue-200">
                 <svg class="w-7 h-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"
                     stroke-width="1.5">
                     <path stroke-linecap="round" stroke-linejoin="round"
@@ -40,7 +40,7 @@
                     actual</label>
                 <div class="relative">
                     <input type="password" name="current_password" required id="current_password" placeholder="••••••••"
-                        class="w-full border border-gray-200 rounded-xl px-4 py-3 text-[14px] text-gray-800 focus:ring-2 focus:ring-violet-300 focus:border-violet-400 outline-none @error('current_password') border-red-300 @enderror">
+                        class="w-full border border-gray-200 rounded-xl px-4 py-3 text-[14px] text-gray-800 focus:ring-2 focus:ring-sky-300 focus:border-sky-400 outline-none @error('current_password') border-red-300 @enderror">
                 </div>
                 @error('current_password')
                     <p class="text-red-500 text-[11px] mt-1.5 flex items-center gap-1">
@@ -60,7 +60,7 @@
                     contrasena</label>
                 <input type="password" name="password" required id="new_password" placeholder="Minimo 8 caracteres"
                     oninput="checkPasswordStrength(this.value)"
-                    class="w-full border border-gray-200 rounded-xl px-4 py-3 text-[14px] text-gray-800 focus:ring-2 focus:ring-violet-300 focus:border-violet-400 outline-none @error('password') border-red-300 @enderror">
+                    class="w-full border border-gray-200 rounded-xl px-4 py-3 text-[14px] text-gray-800 focus:ring-2 focus:ring-sky-300 focus:border-sky-400 outline-none @error('password') border-red-300 @enderror">
 
                 {{-- Indicador de fuerza --}}
                 <div class="mt-2 flex gap-1.5" id="strength-bars">
@@ -82,12 +82,12 @@
                     nueva contrasena</label>
                 <input type="password" name="password_confirmation" required placeholder="Repite la nueva contrasena"
                     oninput="checkMatch()" id="password_confirmation"
-                    class="w-full border border-gray-200 rounded-xl px-4 py-3 text-[14px] text-gray-800 focus:ring-2 focus:ring-violet-300 focus:border-violet-400 outline-none">
+                    class="w-full border border-gray-200 rounded-xl px-4 py-3 text-[14px] text-gray-800 focus:ring-2 focus:ring-sky-300 focus:border-sky-400 outline-none">
                 <p class="text-[11px] mt-1" id="match-text"></p>
             </div>
 
             <button type="submit"
-                class="w-full bg-gray-900 hover:bg-gray-700 text-white font-semibold py-3 rounded-xl transition-colors text-[14px] active:scale-[0.98]">
+                class="w-full bg-[#0606F0] hover:bg-[#04276B] text-white font-semibold py-3 rounded-xl transition-colors text-[14px] active:scale-[0.98]">
                 Actualizar contraseña
             </button>
         </form>

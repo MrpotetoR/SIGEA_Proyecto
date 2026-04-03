@@ -7,7 +7,7 @@
         <h1 class="text-[22px] font-bold text-gray-900 dark:text-gray-100">Resultados de Evaluacion Docente</h1>
         @if($ciclos->isNotEmpty())
             <form method="GET" class="flex items-center gap-2">
-                <select name="ciclo" onchange="this.form.submit()" class="border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-xl px-3 py-2 text-[12px] focus:ring-2 focus:ring-violet-300 outline-none">
+                <select name="ciclo" onchange="this.form.submit()" class="border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-xl px-3 py-2 text-[12px] focus:ring-2 focus:ring-sky-300 outline-none">
                     @foreach($ciclos as $c)
                         <option value="{{ $c->id_ciclo }}" {{ $ciclo?->id_ciclo == $c->id_ciclo ? 'selected' : '' }}>{{ $c->nombre }}</option>
                     @endforeach
@@ -30,9 +30,10 @@
     </div>
 
     @if($evaluaciones->isNotEmpty())
-        <div class="bg-white dark:bg-gray-800 dark:border-gray-700 dark:shadow-gray-900/20 rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+        <div class="bg-white dark:bg-gray-800 dark:border-gray-700 dark:shadow-gray-900/20 rounded-2xl border border-gray-100 shadow-sm flex flex-col min-h-0" style="max-height: calc(100vh - 280px);">
+            <div class="overflow-y-auto flex-1 custom-scrollbar">
             <table class="min-w-full divide-y divide-gray-100 dark:divide-gray-700">
-                <thead class="bg-gray-50 dark:bg-gray-700/50">
+                <thead class="bg-gray-50 dark:bg-gray-700/50 sticky top-0 z-10">
                     <tr>
                         <th class="px-5 py-3 text-left text-[11px] font-semibold text-gray-500 dark:text-gray-400 uppercase">#</th>
                         <th class="px-5 py-3 text-center text-[11px] font-semibold text-gray-500 dark:text-gray-400 uppercase">Calificacion</th>
@@ -54,6 +55,7 @@
                     @endforeach
                 </tbody>
             </table>
+            </div>
         </div>
     @else
         <div class="bg-white dark:bg-gray-800 dark:border-gray-700 dark:shadow-gray-900/20 rounded-2xl border border-gray-100 shadow-sm p-12 text-center">

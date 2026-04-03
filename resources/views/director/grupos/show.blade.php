@@ -15,7 +15,7 @@
         <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm dark:shadow-gray-900/20 border border-gray-100 dark:border-gray-700 p-6 mb-6">
             <div class="flex items-center justify-between mb-4">
                 <h3 class="text-lg font-bold text-gray-900 dark:text-gray-100">{{ $grupo->clave_grupo }}</h3>
-                <a href="{{ route('director.grupos.edit', $grupo->id_grupo) }}" class="px-4 py-1.5 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-400 text-xs font-medium rounded-lg hover:bg-indigo-100 dark:hover:bg-indigo-900/50 transition-colors">Editar</a>
+                <a href="{{ route('director.grupos.edit', $grupo->id_grupo) }}" class="px-4 py-1.5 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 text-xs font-medium rounded-lg hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors">Editar</a>
             </div>
             <div class="grid grid-cols-2 gap-y-4 gap-x-8">
                 <div>
@@ -43,8 +43,9 @@
             @if($grupo->horarios->isEmpty())
                 <p class="text-sm text-gray-500 dark:text-gray-400">No hay horarios asignados.</p>
             @else
+                <div class="overflow-y-auto custom-scrollbar" style="max-height: 300px;">
                 <table class="w-full text-sm">
-                    <thead class="bg-gray-50 dark:bg-gray-700 border-b border-gray-100 dark:border-gray-700">
+                    <thead class="bg-gray-50 dark:bg-gray-700 border-b border-gray-100 dark:border-gray-700 sticky top-0 z-10">
                         <tr>
                             <th class="text-left px-4 py-2.5 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Materia</th>
                             <th class="text-left px-4 py-2.5 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Docente</th>
@@ -63,6 +64,7 @@
                         @endforeach
                     </tbody>
                 </table>
+                </div>
             @endif
         </div>
 
@@ -85,7 +87,7 @@
                                     <p class="text-xs text-gray-400 dark:text-gray-500">{{ $insc->alumno?->matricula }}</p>
                                 </div>
                             </div>
-                            <a href="{{ route('director.alumnos.historial', $insc->alumno?->id_alumno) }}" class="text-xs text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300">Ver historial</a>
+                            <a href="{{ route('director.alumnos.historial', $insc->alumno?->id_alumno) }}" class="text-xs text-[#0606F0] dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300">Ver historial</a>
                         </div>
                     @endforeach
                 </div>

@@ -11,10 +11,12 @@ use Illuminate\Support\Collection;
 
 class CalificacionService
 {
+    public function __construct(private NotificacionService $notificaciones) {}
+
     public function registrarCalificaciones(array $datos): void
     {
         foreach ($datos as $fila) {
-            Calificacion::updateOrCreate(
+            $calificacion = Calificacion::updateOrCreate(
                 [
                     'id_alumno' => $fila['id_alumno'],
                     'id_materia' => $fila['id_materia'],
@@ -23,6 +25,20 @@ class CalificacionService
                 ],
                 ['calificacion' => $fila['calificacion']]
             );
+
+            // Notificar al alumno
+            $alumno = Alumno::find($fila['id_alumno']);
+            $materia = Materia::find($fila['id_materia']);
+
+            if ($alumno?->user_id && $materia) {
+                $this->notificaciones->notificarCalificacion(
+                    $alumno->user_id,
+                    $materia->nombre_materia,
+                    (int) $fila['parcial'],
+                    (float) $fila['calificacion'],
+                    route('alumno.calificaciones')
+                );
+            }
         }
     }
 

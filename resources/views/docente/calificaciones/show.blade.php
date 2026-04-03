@@ -11,7 +11,7 @@
         <div class="flex items-center gap-2">
             @for($p = 1; $p <= 3; $p++)
                 <a href="{{ route('docente.calificaciones.show', ['grupo' => $grupo->id_grupo, 'parcial' => $p]) }}"
-                   class="px-3 py-1.5 rounded-xl text-[12px] font-medium transition-colors {{ $parcial == $p ? 'bg-gray-900 dark:bg-indigo-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600' }}">
+                   class="px-3 py-1.5 rounded-xl text-[12px] font-medium transition-colors {{ $parcial == $p ? 'bg-[#0606F0] dark:bg-[#0606F0] text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600' }}">
                     Parcial {{ $p }}
                 </a>
             @endfor
@@ -28,9 +28,10 @@
         <input type="hidden" name="id_materia" value="{{ $horario?->id_materia }}">
         <input type="hidden" name="id_ciclo" value="{{ $horario?->grupo?->id_ciclo }}">
 
-        <div class="bg-white dark:bg-gray-800 dark:border-gray-700 dark:shadow-gray-900/20 rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+        <div class="bg-white dark:bg-gray-800 dark:border-gray-700 dark:shadow-gray-900/20 rounded-2xl border border-gray-100 shadow-sm flex flex-col min-h-0" style="max-height: calc(100vh - 280px);">
+            <div class="overflow-y-auto flex-1 custom-scrollbar">
             <table class="min-w-full divide-y divide-gray-100 dark:divide-gray-700">
-                <thead class="bg-gray-50 dark:bg-gray-700/50">
+                <thead class="bg-gray-50 dark:bg-gray-700/50 sticky top-0 z-10">
                     <tr>
                         <th class="px-5 py-3 text-left text-[11px] font-semibold text-gray-500 dark:text-gray-400 uppercase">#</th>
                         <th class="px-5 py-3 text-left text-[11px] font-semibold text-gray-500 dark:text-gray-400 uppercase">Alumno</th>
@@ -56,18 +57,19 @@
                                            value="{{ $cal ?? '' }}"
                                            min="0" max="10" step="0.1"
                                            placeholder="0.0"
-                                           class="w-20 text-center text-[13px] font-medium border border-gray-200 dark:border-gray-600 rounded-xl px-2 py-2 focus:ring-2 focus:ring-violet-300 dark:focus:ring-violet-700 focus:border-violet-400 outline-none bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200">
+                                           class="w-20 text-center text-[13px] font-medium border border-gray-200 dark:border-gray-600 rounded-xl px-2 py-2 focus:ring-2 focus:ring-sky-300 dark:focus:ring-sky-700 focus:border-sky-400 outline-none bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200">
                                 </div>
                             </td>
                         </tr>
                     @endforeach
                 </tbody>
             </table>
+            </div>
         </div>
 
         <div class="flex justify-between items-center mt-4">
             <a href="{{ route('docente.calificaciones') }}" class="text-[12px] text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">&larr; Volver a grupos</a>
-            <button type="submit" class="bg-gray-900 dark:bg-indigo-600 text-white px-6 py-2.5 rounded-xl text-[13px] font-medium hover:bg-gray-700 dark:hover:bg-indigo-500 transition-colors">
+            <button type="submit" class="bg-[#0606F0] dark:bg-[#0606F0] text-white px-6 py-2.5 rounded-xl text-[13px] font-medium hover:bg-[#04276B] dark:hover:bg-blue-400 transition-colors">
                 Guardar Calificaciones
             </button>
         </div>

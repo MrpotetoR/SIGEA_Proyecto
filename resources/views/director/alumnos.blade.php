@@ -14,7 +14,7 @@
         <div class="flex items-end gap-4">
             <div class="flex-1">
                 <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1.5">Estatus</label>
-                <select name="estatus" class="w-full text-sm border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-xl px-3 py-2 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-400">
+                <select name="estatus" class="w-full text-sm border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-xl px-3 py-2 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400">
                     <option value="">Todos</option>
                     <option value="activo" {{ request('estatus') == 'activo' ? 'selected' : '' }}>Activo</option>
                     <option value="baja" {{ request('estatus') == 'baja' ? 'selected' : '' }}>Baja</option>
@@ -23,14 +23,14 @@
             </div>
             <div class="flex-1">
                 <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1.5">Cuatrimestre</label>
-                <select name="cuatrimestre" class="w-full text-sm border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-xl px-3 py-2 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-400">
+                <select name="cuatrimestre" class="w-full text-sm border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-xl px-3 py-2 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400">
                     <option value="">Todos</option>
                     @for($i = 1; $i <= 10; $i++)
                         <option value="{{ $i }}" {{ request('cuatrimestre') == $i ? 'selected' : '' }}>{{ $i }}o Cuatrimestre</option>
                     @endfor
                 </select>
             </div>
-            <button type="submit" class="px-5 py-2 bg-gray-900 dark:bg-gray-700 text-white text-sm font-medium rounded-xl hover:bg-gray-800 dark:hover:bg-gray-600 transition-colors">
+            <button type="submit" class="px-5 py-2 bg-[#0606F0] dark:bg-[#0606F0] text-white text-sm font-medium rounded-xl hover:bg-[#04276B] dark:hover:bg-blue-400 transition-colors">
                 Filtrar
             </button>
         </div>
@@ -42,9 +42,10 @@
             <p class="text-gray-500 dark:text-gray-400 text-sm">No se encontraron alumnos con los filtros seleccionados.</p>
         </div>
     @else
-        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm dark:shadow-gray-900/20 border border-gray-100 dark:border-gray-700 overflow-hidden">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm dark:shadow-gray-900/20 border border-gray-100 dark:border-gray-700 flex flex-col min-h-0" style="max-height: calc(100vh - 280px);">
+            <div class="overflow-y-auto flex-1 custom-scrollbar">
             <table class="w-full text-sm">
-                <thead class="bg-gray-50 dark:bg-gray-700/50 border-b border-gray-100 dark:border-gray-700">
+                <thead class="bg-gray-50 dark:bg-gray-700/50 border-b border-gray-100 dark:border-gray-700 sticky top-0 z-10">
                     <tr>
                         <th class="text-left px-5 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Matricula</th>
                         <th class="text-left px-5 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Alumno</th>
@@ -86,7 +87,7 @@
                             </td>
                             <td class="px-5 py-3 text-center">
                                 <a href="{{ route('director.alumnos.historial', $alumno->id_alumno) }}"
-                                   class="inline-flex items-center gap-1 px-3 py-1.5 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-400 text-xs font-medium rounded-lg hover:bg-indigo-100 dark:hover:bg-indigo-900/50 transition-colors">
+                                   class="inline-flex items-center gap-1 px-3 py-1.5 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 text-xs font-medium rounded-lg hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors">
                                     <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
@@ -98,6 +99,7 @@
                     @endforeach
                 </tbody>
             </table>
+            </div>
         </div>
 
         @if($alumnos instanceof \Illuminate\Pagination\LengthAwarePaginator)

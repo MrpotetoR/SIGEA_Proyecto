@@ -21,9 +21,10 @@
         <input type="hidden" name="fecha" value="{{ $fecha }}">
         <input type="hidden" name="id_horario" value="{{ $horario?->id_horario }}">
 
-        <div class="bg-white dark:bg-gray-800 dark:border-gray-700 dark:shadow-gray-900/20 rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+        <div class="bg-white dark:bg-gray-800 dark:border-gray-700 dark:shadow-gray-900/20 rounded-2xl border border-gray-100 shadow-sm flex flex-col min-h-0" style="max-height: calc(100vh - 280px);">
+            <div class="overflow-y-auto flex-1 custom-scrollbar">
             <table class="min-w-full divide-y divide-gray-100 dark:divide-gray-700">
-                <thead class="bg-gray-50 dark:bg-gray-700/50">
+                <thead class="bg-gray-50 dark:bg-gray-700/50 sticky top-0 z-10">
                     <tr>
                         <th class="px-5 py-3 text-left text-[11px] font-semibold text-gray-500 dark:text-gray-400 uppercase">#</th>
                         <th class="px-5 py-3 text-left text-[11px] font-semibold text-gray-500 dark:text-gray-400 uppercase">Alumno</th>
@@ -58,10 +59,11 @@
                     @endforeach
                 </tbody>
             </table>
+            </div>
         </div>
 
         <div class="flex justify-end mt-4">
-            <button type="submit" class="bg-gray-900 dark:bg-indigo-600 text-white px-6 py-2.5 rounded-xl text-[13px] font-medium hover:bg-gray-700 dark:hover:bg-indigo-500 transition-colors">
+            <button type="submit" class="bg-[#0606F0] dark:bg-[#0606F0] text-white px-6 py-2.5 rounded-xl text-[13px] font-medium hover:bg-[#04276B] dark:hover:bg-blue-400 transition-colors">
                 Guardar Asistencia
             </button>
         </div>

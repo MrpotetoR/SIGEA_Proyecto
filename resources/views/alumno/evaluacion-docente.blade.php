@@ -15,7 +15,7 @@
                 @php $yaEvaluado = $evaluados->contains($docente->id_docente); @endphp
                 <div class="bg-white rounded-xl shadow overflow-hidden dark:bg-gray-800 dark:shadow-gray-900/20">
                     <div class="px-6 py-4 flex items-center justify-between
-                        {{ $yaEvaluado ? 'bg-green-50 border-b border-green-200 dark:bg-green-900/20 dark:border-green-800' : 'bg-indigo-50 border-b border-indigo-200 dark:bg-indigo-900/20 dark:border-indigo-800' }}">
+                        {{ $yaEvaluado ? 'bg-green-50 border-b border-green-200 dark:bg-green-900/20 dark:border-green-800' : 'bg-blue-50 border-b border-blue-200 dark:bg-blue-900/20 dark:border-blue-800' }}">
                         <div>
                             <p class="font-semibold text-gray-900 dark:text-gray-100">{{ $docente->nombre }} {{ $docente->apellidos }}</p>
                             <p class="text-xs text-gray-500 dark:text-gray-400">{{ $docente->especialidad ?? 'Docente' }}</p>
@@ -42,7 +42,7 @@
                                             <label class="flex flex-col items-center gap-1 cursor-pointer">
                                                 <input type="radio" name="respuestas[{{ $pregunta->id_pregunta }}]"
                                                        value="{{ $v }}" required
-                                                       class="accent-indigo-600">
+                                                       class="accent-blue-600">
                                                 <span class="text-xs text-gray-500 dark:text-gray-400">{{ $v }}</span>
                                             </label>
                                         @endfor
@@ -54,13 +54,13 @@
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Comentarios (opcional)</label>
                                 <textarea name="comentarios" rows="2" maxlength="500"
-                                    class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
+                                    class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
                                     placeholder="Escribe tus comentarios..."></textarea>
                             </div>
 
                             <div class="flex justify-end">
                                 <button type="submit"
-                                    class="bg-indigo-600 text-white px-6 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors">
+                                    class="bg-[#0606F0] text-white px-6 py-2 rounded-lg text-sm font-medium hover:bg-[#04276B] transition-colors">
                                     Enviar evaluación
                                 </button>
                             </div>

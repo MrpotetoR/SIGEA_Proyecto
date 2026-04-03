@@ -14,7 +14,7 @@
                 {{-- Filtro carrera --}}
                 <div>
                     <label class="block text-[11px] font-semibold text-gray-400 dark:text-gray-400 uppercase tracking-wider mb-1.5">Carrera</label>
-                    <select id="filtro-carrera" class="w-full text-sm border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-xl px-3 py-2 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-400">
+                    <select id="filtro-carrera" class="w-full text-sm border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-xl px-3 py-2 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400">
                         <option value="">Todas las carreras</option>
                         @foreach($carreras as $c)
                             <option value="{{ $c->id_carrera }}">{{ $c->clave_carrera }} — {{ $c->nombre_carrera }}</option>
@@ -25,7 +25,7 @@
                 {{-- Filtro ciclo --}}
                 <div>
                     <label class="block text-[11px] font-semibold text-gray-400 dark:text-gray-400 uppercase tracking-wider mb-1.5">Ciclo escolar</label>
-                    <select id="filtro-ciclo" class="w-full text-sm border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-xl px-3 py-2 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-400">
+                    <select id="filtro-ciclo" class="w-full text-sm border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-xl px-3 py-2 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400">
                         <option value="">Todos los ciclos</option>
                         @foreach($ciclos as $ci)
                             <option value="{{ $ci->id_ciclo }}" {{ $ci->id_ciclo == ($ciclos->first()?->id_ciclo) ? 'selected' : '' }}>{{ $ci->nombre }}</option>
@@ -46,20 +46,20 @@
                 <div>
                     <label class="block text-[11px] font-semibold text-gray-400 dark:text-gray-400 uppercase tracking-wider mb-1.5">Grupo *</label>
                     <select name="id_grupo" id="select-grupo" required
-                            class="w-full text-sm border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-xl px-3 py-2 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-400">
+                            class="w-full text-sm border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-xl px-3 py-2 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400">
                         <option value="">Cargando grupos...</option>
                     </select>
                 </div>
 
                 <button type="submit"
-                        class="w-full bg-gray-900 hover:bg-gray-800 dark:bg-indigo-600 dark:hover:bg-indigo-500 text-white py-2.5 rounded-xl text-sm font-semibold transition-colors">
+                        class="w-full bg-[#0606F0] hover:bg-[#04276B] dark:bg-[#0606F0] dark:hover:bg-blue-400 text-white py-2.5 rounded-xl text-sm font-semibold transition-colors">
                     Inscribir alumno
                 </button>
             </form>
         </div>
 
         {{-- Lista de inscripciones --}}
-        <div class="lg:col-span-2 space-y-4">
+        <div class="lg:col-span-2 flex flex-col gap-4" style="max-height: calc(100vh - 120px);">
 
             {{-- Filtros --}}
             <form method="GET" action="{{ route('servicios.inscripciones') }}" class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm dark:shadow-gray-900/20 border border-gray-100 dark:border-gray-700 p-4">
@@ -67,11 +67,11 @@
                     <div class="flex-1 min-w-[180px]">
                         <label class="block text-[11px] font-semibold text-gray-400 dark:text-gray-400 uppercase tracking-wider mb-1.5">Buscar alumno</label>
                         <input type="text" name="buscar" value="{{ request('buscar') }}" placeholder="Matrícula o nombre..."
-                               class="w-full text-sm border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-xl px-3 py-2 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-400">
+                               class="w-full text-sm border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-xl px-3 py-2 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400">
                     </div>
                     <div class="min-w-[130px]">
                         <label class="block text-[11px] font-semibold text-gray-400 dark:text-gray-400 uppercase tracking-wider mb-1.5">Grupo</label>
-                        <select name="grupo" class="w-full text-sm border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-xl px-3 py-2 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-400">
+                        <select name="grupo" class="w-full text-sm border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-xl px-3 py-2 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400">
                             <option value="">Todos</option>
                             @foreach($grupos as $g)
                                 <option value="{{ $g->id_grupo }}" {{ request('grupo') == $g->id_grupo ? 'selected' : '' }}>{{ $g->clave_grupo }}</option>
@@ -80,7 +80,7 @@
                     </div>
                     <div class="min-w-[140px]">
                         <label class="block text-[11px] font-semibold text-gray-400 dark:text-gray-400 uppercase tracking-wider mb-1.5">Carrera</label>
-                        <select name="carrera" class="w-full text-sm border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-xl px-3 py-2 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-400">
+                        <select name="carrera" class="w-full text-sm border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-xl px-3 py-2 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400">
                             <option value="">Todas</option>
                             @foreach($carreras as $c)
                                 <option value="{{ $c->id_carrera }}" {{ request('carrera') == $c->id_carrera ? 'selected' : '' }}>{{ $c->clave_carrera }}</option>
@@ -89,7 +89,7 @@
                     </div>
                     <div class="min-w-[120px]">
                         <label class="block text-[11px] font-semibold text-gray-400 dark:text-gray-400 uppercase tracking-wider mb-1.5">Ciclo</label>
-                        <select name="ciclo" class="w-full text-sm border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-xl px-3 py-2 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-400">
+                        <select name="ciclo" class="w-full text-sm border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-xl px-3 py-2 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400">
                             <option value="">Todos</option>
                             @foreach($ciclos as $ci)
                                 <option value="{{ $ci->id_ciclo }}" {{ request('ciclo') == $ci->id_ciclo ? 'selected' : '' }}>{{ $ci->nombre }}</option>
@@ -97,7 +97,7 @@
                         </select>
                     </div>
                     <div class="flex gap-2">
-                        <button type="submit" class="px-4 py-2 bg-gray-900 dark:bg-indigo-600 dark:hover:bg-indigo-500 text-white text-sm font-medium rounded-xl hover:bg-gray-800 transition-colors">Filtrar</button>
+                        <button type="submit" class="px-4 py-2 bg-[#0606F0] dark:bg-[#0606F0] dark:hover:bg-blue-400 text-white text-sm font-medium rounded-xl hover:bg-gray-800 transition-colors">Filtrar</button>
                         @if(request()->hasAny(['buscar', 'grupo', 'carrera', 'ciclo']))
                             <a href="{{ route('servicios.inscripciones') }}" class="px-4 py-2 bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-300 text-gray-600 text-sm font-medium rounded-xl hover:bg-gray-200 transition-colors">Limpiar</a>
                         @endif
@@ -106,12 +106,13 @@
             </form>
 
             {{-- Tabla --}}
-            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm dark:shadow-gray-900/20 border border-gray-100 dark:border-gray-700 overflow-hidden">
-                <div class="px-5 py-3 border-b border-gray-100 dark:border-gray-700">
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm dark:shadow-gray-900/20 border border-gray-100 dark:border-gray-700 flex flex-col min-h-0 flex-1 overflow-hidden">
+                <div class="px-5 py-3 border-b border-gray-100 dark:border-gray-700 flex-shrink-0">
                     <span class="text-[12px] text-gray-400 dark:text-gray-400">{{ $inscripciones->total() }} inscripción(es)</span>
                 </div>
+                <div class="overflow-y-auto flex-1 custom-scrollbar">
                 <table class="min-w-full text-sm">
-                    <thead class="bg-gray-50 dark:bg-gray-700/50 border-b border-gray-100 dark:border-gray-700">
+                    <thead class="bg-gray-50 dark:bg-gray-700/50 border-b border-gray-100 dark:border-gray-700 sticky top-0 z-10">
                         <tr>
                             <th class="text-left px-5 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Alumno</th>
                             <th class="text-left px-5 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Carrera</th>
@@ -155,8 +156,9 @@
                         @endforelse
                     </tbody>
                 </table>
+                </div>
                 @if($inscripciones->hasPages())
-                    <div class="px-5 py-3 border-t border-gray-100 dark:border-gray-700">{{ $inscripciones->links() }}</div>
+                    <div class="px-5 py-3 border-t border-gray-100 dark:border-gray-700 flex-shrink-0">{{ $inscripciones->links() }}</div>
                 @endif
             </div>
         </div>

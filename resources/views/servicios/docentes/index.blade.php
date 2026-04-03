@@ -6,10 +6,10 @@
             <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1">Buscar</label>
             <input type="text" name="buscar" value="{{ request('buscar') }}"
                    placeholder="Nombre o apellido..."
-                   class="border dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-lg px-3 py-2 text-sm w-56 focus:ring-2 focus:ring-indigo-400 focus:outline-none">
+                   class="border dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-lg px-3 py-2 text-sm w-56 focus:ring-2 focus:ring-blue-400 focus:outline-none">
         </div>
         <button type="submit"
-                class="bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-600 dark:hover:bg-indigo-500 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                class="bg-[#0606F0] hover:bg-[#04276B] dark:bg-[#0606F0] dark:hover:bg-blue-400 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
             Filtrar
         </button>
         <a href="{{ route('servicios.docentes.create') }}"
@@ -18,9 +18,10 @@
         </a>
     </form>
 
-    <div class="bg-white dark:bg-gray-800 rounded-xl shadow dark:shadow-gray-900/20 overflow-hidden border border-transparent dark:border-gray-700">
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow dark:shadow-gray-900/20 border border-transparent dark:border-gray-700 flex flex-col min-h-0" style="max-height: calc(100vh - 220px);">
+        <div class="overflow-y-auto flex-1 custom-scrollbar">
         <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700 text-sm">
-            <thead class="bg-gray-50 dark:bg-gray-700/50 text-xs uppercase text-gray-500 dark:text-gray-400">
+            <thead class="bg-gray-50 dark:bg-gray-700/50 text-xs uppercase text-gray-500 dark:text-gray-400 sticky top-0 z-10">
                 <tr>
                     <th class="px-4 py-3 text-left">Nombre</th>
                     <th class="px-4 py-3 text-left">Correo</th>
@@ -45,13 +46,13 @@
                         </td>
                         <td class="px-4 py-3 text-center">
                             @if($d->es_tutor)
-                                <span class="px-2 py-1 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-300">Sí</span>
+                                <span class="px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300">Sí</span>
                             @endif
                         </td>
                         <td class="px-4 py-3 text-center">
                             <div class="flex justify-center gap-2">
                                 <a href="{{ route('servicios.docentes.show', $d) }}"
-                                   class="text-indigo-600 dark:text-indigo-400 hover:text-indigo-900 dark:hover:text-indigo-300 font-medium">Ver</a>
+                                   class="text-[#0606F0] dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 font-medium">Ver</a>
                                 <a href="{{ route('servicios.docentes.edit', $d) }}"
                                    class="text-yellow-600 dark:text-yellow-400 hover:text-yellow-900 dark:hover:text-yellow-300 font-medium">Editar</a>
                             </div>
@@ -62,8 +63,9 @@
                 @endforelse
             </tbody>
         </table>
+        </div>
         @if($docentes instanceof \Illuminate\Pagination\LengthAwarePaginator)
-            <div class="px-4 py-3 border-t dark:border-gray-700">{{ $docentes->links() }}</div>
+            <div class="px-4 py-3 border-t dark:border-gray-700 flex-shrink-0">{{ $docentes->links() }}</div>
         @endif
     </div>
 </x-panel>

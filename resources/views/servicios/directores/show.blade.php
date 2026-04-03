@@ -3,7 +3,7 @@
 
     <div class="max-w-3xl space-y-6">
         <div class="flex items-center justify-between">
-            <a href="{{ route('servicios.directores.index') }}" class="text-sm text-indigo-600 dark:text-indigo-400 hover:underline">← Volver</a>
+            <a href="{{ route('servicios.directores.index') }}" class="text-sm text-[#0606F0] dark:text-blue-400 hover:underline">← Volver</a>
             <a href="{{ route('servicios.directores.edit', $director) }}"
                class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
                 Editar
@@ -36,7 +36,7 @@
                     <dd>
                         @if($director->carrerasDirigidas->isNotEmpty())
                             @foreach($director->carrerasDirigidas as $c)
-                                <span class="inline-block px-2 py-1 rounded-full text-xs font-medium bg-indigo-100 dark:bg-indigo-900/30 text-indigo-800 dark:text-indigo-300">{{ $c->nombre_carrera }}</span>
+                                <span class="inline-block px-2 py-1 rounded-full text-xs font-medium bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300">{{ $c->nombre_carrera }}</span>
                             @endforeach
                         @else
                             <span class="text-gray-400 dark:text-gray-400">Sin asignar</span>

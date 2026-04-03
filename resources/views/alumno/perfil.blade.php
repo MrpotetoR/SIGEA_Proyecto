@@ -10,12 +10,12 @@
 
             {{-- Encabezado --}}
             <div class="bg-white dark:bg-gray-800 dark:border dark:border-gray-700 dark:shadow-gray-900/20 rounded-xl shadow p-6 flex items-center gap-6">
-                <div class="w-20 h-20 rounded-full bg-indigo-100 flex items-center justify-center text-4xl flex-shrink-0">
+                <div class="w-20 h-20 rounded-full bg-blue-100 flex items-center justify-center text-4xl flex-shrink-0">
                     👤
                 </div>
                 <div>
                     <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100">{{ $alumno->nombre_completo }}</h2>
-                    <p class="text-indigo-600 font-mono text-sm mt-1">Matrícula: {{ $alumno->matricula }}</p>
+                    <p class="text-[#0606F0] font-mono text-sm mt-1">Matrícula: {{ $alumno->matricula }}</p>
                     <span class="inline-block mt-2 px-3 py-1 rounded-full text-xs font-semibold
                         {{ $alumno->estatus === 'activo' ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300' :
                            ($alumno->estatus === 'baja_temporal' ? 'bg-yellow-100 text-yellow-800 dark:bg-amber-900/30 dark:text-amber-300' : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400') }}">
@@ -40,7 +40,7 @@
                         </div>
                         <div class="flex justify-between">
                             <dt class="text-sm text-gray-500 dark:text-gray-400">Promedio General</dt>
-                            <dd class="text-sm font-bold text-indigo-700">{{ $alumno->promedio_general }}</dd>
+                            <dd class="text-sm font-bold text-blue-700">{{ $alumno->promedio_general }}</dd>
                         </div>
                     </dl>
                 </div>

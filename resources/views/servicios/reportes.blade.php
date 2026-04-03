@@ -5,7 +5,7 @@
     <form method="GET" class="bg-white dark:bg-gray-800 rounded-xl shadow dark:shadow-gray-900/20 border border-transparent dark:border-gray-700 p-5 mb-6 flex flex-wrap gap-4 items-end">
         <div>
             <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1">Carrera *</label>
-            <select name="carrera_id" required class="border dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-400 focus:outline-none">
+            <select name="carrera_id" required class="border dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400 focus:outline-none">
                 <option value="">Seleccionar...</option>
                 @foreach($carreras as $c)
                     <option value="{{ $c->id_carrera }}" @selected(request('carrera_id') == $c->id_carrera)>{{ $c->nombre_carrera }}</option>
@@ -14,22 +14,22 @@
         </div>
         <div>
             <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1">Ciclo escolar *</label>
-            <select name="ciclo_id" required class="border dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-400 focus:outline-none">
+            <select name="ciclo_id" required class="border dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400 focus:outline-none">
                 <option value="">Seleccionar...</option>
                 @foreach($ciclos as $ciclo)
                     <option value="{{ $ciclo->id_ciclo }}" @selected(request('ciclo_id') == $ciclo->id_ciclo)>{{ $ciclo->nombre }}</option>
                 @endforeach
             </select>
         </div>
-        <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-600 dark:hover:bg-indigo-500 text-white px-5 py-2 rounded-lg text-sm font-medium transition-colors">
+        <button type="submit" class="bg-[#0606F0] hover:bg-[#04276B] dark:bg-[#0606F0] dark:hover:bg-blue-400 text-white px-5 py-2 rounded-lg text-sm font-medium transition-colors">
             Generar reporte
         </button>
     </form>
 
     @if($reporte)
         <div class="space-y-6">
-            <div class="bg-indigo-50 dark:bg-indigo-900/30 border border-indigo-200 dark:border-indigo-700 rounded-xl p-4">
-                <p class="text-sm text-indigo-500 dark:text-indigo-300">Reporte: <strong>{{ $reporte['carrera']->nombre_carrera }}</strong> — Ciclo <strong>{{ $reporte['ciclo']->nombre }}</strong></p>
+            <div class="bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-700 rounded-xl p-4">
+                <p class="text-sm text-[#0606F0] dark:text-blue-300">Reporte: <strong>{{ $reporte['carrera']->nombre_carrera }}</strong> — Ciclo <strong>{{ $reporte['ciclo']->nombre }}</strong></p>
             </div>
 
             {{-- Aprobación --}}
@@ -69,10 +69,11 @@
 
             {{-- Evaluación docentes --}}
             @if($reporte['evaluacion_docentes']->isNotEmpty())
-                <div class="bg-white dark:bg-gray-800 rounded-xl shadow dark:shadow-gray-900/20 border border-transparent dark:border-gray-700 overflow-hidden">
-                    <div class="px-6 py-4 border-b dark:border-gray-700"><h3 class="font-semibold text-gray-700 dark:text-gray-300">Evaluación Docente</h3></div>
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow dark:shadow-gray-900/20 border border-transparent dark:border-gray-700 flex flex-col min-h-0" style="max-height: calc(100vh - 220px);">
+                    <div class="px-6 py-4 border-b dark:border-gray-700 flex-shrink-0"><h3 class="font-semibold text-gray-700 dark:text-gray-300">Evaluación Docente</h3></div>
+                    <div class="overflow-y-auto flex-1 custom-scrollbar">
                     <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700 text-sm">
-                        <thead class="bg-gray-50 dark:bg-gray-700/50 text-xs uppercase text-gray-500 dark:text-gray-400">
+                        <thead class="bg-gray-50 dark:bg-gray-700/50 text-xs uppercase text-gray-500 dark:text-gray-400 sticky top-0 z-10">
                             <tr>
                                 <th class="px-4 py-3 text-left">Docente</th>
                                 <th class="px-4 py-3 text-center">Promedio</th>
@@ -93,6 +94,7 @@
                             @endforeach
                         </tbody>
                     </table>
+                    </div>
                 </div>
             @endif
         </div>

@@ -5,12 +5,12 @@
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <div>
             <p class="text-sm text-gray-500 dark:text-gray-400">Alumno: <span class="font-semibold text-gray-800 dark:text-gray-200">{{ $alumno?->nombre_completo }}</span></p>
-            <p class="text-sm text-gray-500 dark:text-gray-400">Matrícula: <span class="font-mono font-semibold text-indigo-700 dark:text-indigo-400">{{ $alumno?->matricula }}</span></p>
+            <p class="text-sm text-gray-500 dark:text-gray-400">Matrícula: <span class="font-mono font-semibold text-blue-700 dark:text-blue-400">{{ $alumno?->matricula }}</span></p>
             <p class="text-sm text-gray-500 dark:text-gray-400">Carrera: <span class="font-medium text-gray-800 dark:text-gray-200">{{ $alumno?->carrera?->nombre_carrera }}</span></p>
         </div>
         @if($alumno)
             <a href="{{ route('alumno.kardex.pdf') }}"
-               class="inline-flex items-center gap-2 bg-indigo-600 text-white px-5 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors">
+               class="inline-flex items-center gap-2 bg-[#0606F0] text-white px-5 py-2 rounded-lg text-sm font-medium hover:bg-[#04276B] transition-colors">
                 📄 Descargar PDF
             </a>
         @endif
@@ -18,8 +18,8 @@
 
     {{-- Promedio general --}}
     @if($alumno)
-        <div class="bg-indigo-50 border border-indigo-200 rounded-lg px-6 py-4 mb-6 flex items-center justify-between dark:bg-indigo-900/30 dark:border-indigo-700">
-            <span class="text-sm font-medium text-indigo-700 dark:text-indigo-400">Promedio General Acumulado</span>
+        <div class="bg-blue-50 border border-blue-200 rounded-lg px-6 py-4 mb-6 flex items-center justify-between dark:bg-blue-900/30 dark:border-blue-700">
+            <span class="text-sm font-medium text-blue-700 dark:text-blue-400">Promedio General Acumulado</span>
             <span class="text-3xl font-bold {{ $promedio >= 7 ? 'text-green-700 dark:text-green-400' : 'text-red-600 dark:text-red-400' }}">
                 {{ $promedio }}
             </span>
@@ -29,12 +29,12 @@
     {{-- Historial por ciclo --}}
     @forelse($historial as $cicloNombre => $calificaciones)
         <div class="bg-white rounded-xl shadow mb-6 dark:bg-gray-800 dark:shadow-gray-900/20">
-            <div class="px-6 py-3 bg-indigo-900 rounded-t-xl">
+            <div class="px-6 py-3 bg-blue-900 rounded-t-xl">
                 <h3 class="text-sm font-semibold text-white uppercase tracking-wide">📅 {{ $cicloNombre }}</h3>
             </div>
-            <div class="overflow-x-auto">
+            <div class="overflow-y-auto custom-scrollbar" style="max-height: 350px;">
                 <table class="min-w-full divide-y divide-gray-100 dark:divide-gray-700">
-                    <thead class="bg-indigo-50 dark:bg-gray-700/50">
+                    <thead class="bg-blue-50 dark:bg-gray-700/50 sticky top-0 z-10">
                         <tr>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase dark:text-gray-400">Materia</th>
                             <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase dark:text-gray-400">Parcial 1</th>

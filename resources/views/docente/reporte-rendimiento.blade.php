@@ -10,7 +10,7 @@
         <div class="flex items-end gap-4">
             <div class="flex-1">
                 <label class="text-[11px] font-semibold text-gray-500 dark:text-gray-400 uppercase mb-1 block">Grupo</label>
-                <select name="grupo" class="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-xl px-3 py-2.5 text-[13px] focus:ring-2 focus:ring-violet-300 outline-none">
+                <select name="grupo" class="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-xl px-3 py-2.5 text-[13px] focus:ring-2 focus:ring-sky-300 outline-none">
                     <option value="">Selecciona un grupo</option>
                     @foreach($grupos as $grupoId => $horarios)
                         @php $g = $horarios->first()->grupo; @endphp
@@ -20,16 +20,17 @@
                     @endforeach
                 </select>
             </div>
-            <button type="submit" class="bg-gray-900 dark:bg-indigo-600 dark:hover:bg-indigo-500 text-white px-5 py-2.5 rounded-xl text-[13px] font-medium hover:bg-gray-700 transition-colors">
+            <button type="submit" class="bg-[#0606F0] dark:bg-[#0606F0] dark:hover:bg-blue-400 text-white px-5 py-2.5 rounded-xl text-[13px] font-medium hover:bg-[#04276B] transition-colors">
                 Generar
             </button>
         </div>
     </form>
 
     @if(!empty($reporte))
-        <div class="bg-white dark:bg-gray-800 dark:border-gray-700 dark:shadow-gray-900/20 rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+        <div class="bg-white dark:bg-gray-800 dark:border-gray-700 dark:shadow-gray-900/20 rounded-2xl border border-gray-100 shadow-sm flex flex-col min-h-0" style="max-height: calc(100vh - 280px);">
+            <div class="overflow-y-auto flex-1 custom-scrollbar">
             <table class="min-w-full divide-y divide-gray-100 dark:divide-gray-700">
-                <thead class="bg-gray-50 dark:bg-gray-700/50">
+                <thead class="bg-gray-50 dark:bg-gray-700/50 sticky top-0 z-10">
                     <tr>
                         <th class="px-5 py-3 text-left text-[11px] font-semibold text-gray-500 dark:text-gray-400 uppercase">Alumno</th>
                         <th class="px-5 py-3 text-center text-[11px] font-semibold text-gray-500 dark:text-gray-400 uppercase">Promedio</th>
@@ -69,6 +70,7 @@
                     @endforeach
                 </tbody>
             </table>
+            </div>
         </div>
     @elseif(request('grupo'))
         <div class="bg-white dark:bg-gray-800 dark:border-gray-700 dark:shadow-gray-900/20 rounded-2xl border border-gray-100 shadow-sm p-12 text-center">

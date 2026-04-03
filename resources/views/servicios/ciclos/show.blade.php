@@ -2,7 +2,7 @@
     <x-slot name="nav">@include('partials.servicios-nav')</x-slot>
 
     <div class="max-w-2xl space-y-6">
-        <a href="{{ route('servicios.ciclos.index') }}" class="text-sm text-indigo-600 dark:text-indigo-400 hover:underline inline-block">← Volver</a>
+        <a href="{{ route('servicios.ciclos.index') }}" class="text-sm text-[#0606F0] dark:text-blue-400 hover:underline inline-block">← Volver</a>
 
         <div class="bg-white dark:bg-gray-800 rounded-xl shadow dark:shadow-gray-900/20 p-6 border border-transparent dark:border-gray-700">
             <div class="flex items-start justify-between mb-6">

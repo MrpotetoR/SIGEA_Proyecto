@@ -5,9 +5,9 @@
     <form method="GET" class="flex gap-3 mb-6 items-center">
         <label class="text-sm font-medium text-gray-600 dark:text-gray-300">Desde:</label>
         <input type="date" name="desde" value="{{ request('desde') }}"
-               class="border dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400">
+               class="border dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400">
         <button type="submit"
-                class="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-indigo-700 transition-colors">
+                class="bg-[#0606F0] text-white px-4 py-2 rounded-lg text-sm hover:bg-[#04276B] transition-colors">
             Filtrar
         </button>
         @if(request('desde'))

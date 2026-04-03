@@ -46,7 +46,7 @@ $sections = [
 @endphp
 
 @foreach($sections as $section)
-    <p class="px-3 pt-4 pb-1.5 text-[10px] font-semibold text-gray-400 uppercase tracking-[0.1em] first:pt-0">
+    <p class="px-3 pt-4 pb-1.5 text-[10px] font-semibold text-[#04276B]/50 dark:text-[#E5CCBE] uppercase tracking-[0.1em] first:pt-0">
         {{ $section['label'] }}
     </p>
 
@@ -55,9 +55,9 @@ $sections = [
         <a href="{{ route($link['route']) }}"
            class="sidebar-link {{ $active ? 'active' : '' }} group flex items-center gap-3 px-3 py-2 rounded-xl text-[13px] font-medium transition-colors
                   {{ $active
-                      ? 'bg-gray-900 dark:bg-indigo-600 text-white shadow-sm'
-                      : 'text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700' }}">
-            <svg class="w-[18px] h-[18px] flex-shrink-0 {{ $active ? 'text-white' : 'text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300' }}"
+                      ? 'bg-[#0606F0] text-white shadow-sm shadow-[#0606F0]/20'
+                      : 'text-[#121D30]/70 dark:text-white/70 hover:text-[#0606F0] dark:hover:text-white hover:bg-[#04276B]/5 dark:hover:bg-white/10' }}">
+            <svg class="w-[18px] h-[18px] flex-shrink-0 {{ $active ? 'text-white' : 'text-[#04276B]/40 dark:text-white/50 group-hover:text-[#0606F0] dark:group-hover:text-white' }}"
                  fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                 <path stroke-linecap="round" stroke-linejoin="round" d="{{ $link['icon'] }}"/>
             </svg>

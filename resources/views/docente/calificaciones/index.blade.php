@@ -17,11 +17,11 @@
                             {{ $g->clave_grupo }}
                         </div>
                         <div>
-                            <p class="text-[14px] font-bold text-gray-800 dark:text-gray-200 group-hover:text-violet-700 dark:group-hover:text-violet-400 transition-colors">{{ $g->clave_grupo }}</p>
+                            <p class="text-[14px] font-bold text-gray-800 dark:text-gray-200 group-hover:text-sky-700 dark:group-hover:text-sky-400 transition-colors">{{ $g->clave_grupo }}</p>
                             <p class="text-[11px] text-gray-400 dark:text-gray-500">{{ $horarios->map(fn($h) => $h->materia->nombre_materia)->unique()->join(', ') }}</p>
                         </div>
                     </div>
-                    <div class="text-[11px] font-medium text-violet-600 dark:text-indigo-400">Gestionar calificaciones &rarr;</div>
+                    <div class="text-[11px] font-medium text-sky-600 dark:text-blue-400">Gestionar calificaciones &rarr;</div>
                 </a>
             @endforeach
         </div>

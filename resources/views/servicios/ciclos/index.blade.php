@@ -8,9 +8,10 @@
         </a>
     </div>
 
-    <div class="bg-white dark:bg-gray-800 rounded-xl shadow dark:shadow-gray-900/20 overflow-hidden border border-transparent dark:border-gray-700">
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow dark:shadow-gray-900/20 border border-transparent dark:border-gray-700 flex flex-col min-h-0" style="max-height: calc(100vh - 220px);">
+        <div class="overflow-y-auto flex-1 custom-scrollbar">
         <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700 text-sm">
-            <thead class="bg-gray-50 dark:bg-gray-700/50 text-xs uppercase text-gray-500 dark:text-gray-400">
+            <thead class="bg-gray-50 dark:bg-gray-700/50 text-xs uppercase text-gray-500 dark:text-gray-400 sticky top-0 z-10">
                 <tr>
                     <th class="px-4 py-3 text-left">Nombre</th>
                     <th class="px-4 py-3 text-center">Fecha inicio</th>
@@ -49,5 +50,6 @@
                 @endforelse
             </tbody>
         </table>
+        </div>
     </div>
 </x-panel>

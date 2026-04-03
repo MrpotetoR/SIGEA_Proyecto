@@ -8,7 +8,7 @@
     @forelse($historial as $cicloId => $calificaciones)
         @php $ciclo = $calificaciones->first()->cicloEscolar; @endphp
         <div class="bg-white rounded-xl shadow mb-6 dark:bg-gray-800 dark:shadow-gray-900/20">
-            <div class="px-6 py-3 bg-gray-800 rounded-t-xl flex justify-between items-center">
+            <div class="px-6 py-3 bg-blue-700 rounded-t-xl flex justify-between items-center">
                 <h3 class="text-sm font-semibold text-white uppercase tracking-wide">
                     📅 {{ $ciclo?->nombre ?? 'Ciclo ' . $cicloId }}
                 </h3>
@@ -19,9 +19,9 @@
                     </span>
                 @endif
             </div>
-            <div class="overflow-x-auto">
+            <div class="overflow-y-auto custom-scrollbar" style="max-height: 350px;">
                 <table class="min-w-full divide-y divide-gray-100 dark:divide-gray-700">
-                    <thead class="bg-gray-50 dark:bg-gray-700/50">
+                    <thead class="bg-gray-50 dark:bg-gray-700/50 sticky top-0 z-10">
                         <tr>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase dark:text-gray-400">Materia</th>
                             <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase dark:text-gray-400">Parcial 1</th>

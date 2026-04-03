@@ -11,15 +11,16 @@
                 </option>
             @endforeach
         </select>
-        <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-indigo-700">
+        <button type="submit" class="bg-[#0606F0] text-white px-4 py-2 rounded-lg text-sm hover:bg-[#04276B]">
             Filtrar
         </button>
     </form>
 
     @if($calificaciones->isNotEmpty())
-        <div class="bg-white rounded-xl shadow overflow-hidden dark:bg-gray-800 dark:shadow-gray-900/20">
+        <div class="bg-white rounded-xl shadow dark:bg-gray-800 dark:shadow-gray-900/20 flex flex-col min-h-0" style="max-height: calc(100vh - 220px);">
+            <div class="overflow-y-auto flex-1 custom-scrollbar">
             <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                <thead class="bg-indigo-50 dark:bg-gray-700/50">
+                <thead class="bg-blue-50 dark:bg-gray-700/50 sticky top-0 z-10">
                     <tr>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase dark:text-gray-400">Materia</th>
                         <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase dark:text-gray-400">Parcial 1</th>
@@ -57,6 +58,7 @@
                     @endforeach
                 </tbody>
             </table>
+            </div>
         </div>
     @else
         <div class="bg-white rounded-xl shadow p-12 text-center text-gray-400 dark:bg-gray-800 dark:shadow-gray-900/20 dark:text-gray-600">

@@ -66,8 +66,8 @@
                 <div class="p-5 card-hover">
                     <div class="flex items-center justify-between mb-3">
                         <div class="flex items-center gap-2">
-                            <span class="w-6 h-6 rounded-lg bg-violet-100 flex items-center justify-center">
-                                <svg class="w-3.5 h-3.5 text-violet-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <span class="w-6 h-6 rounded-lg bg-sky-100 flex items-center justify-center">
+                                <svg class="w-3.5 h-3.5 text-sky-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
                                 </svg>
                             </span>
@@ -117,7 +117,7 @@
                     @if($proximasClases->isNotEmpty())
                         <div class="space-y-1">
                             @php
-                                $colors = ['bg-violet-100 border-violet-300 text-violet-700', 'bg-emerald-100 border-emerald-300 text-emerald-700', 'bg-amber-100 border-amber-300 text-amber-700', 'bg-sky-100 border-sky-300 text-sky-700', 'bg-rose-100 border-rose-300 text-rose-700'];
+                                $colors = ['bg-sky-100 border-sky-300 text-sky-700', 'bg-emerald-100 border-emerald-300 text-emerald-700', 'bg-amber-100 border-amber-300 text-amber-700', 'bg-sky-100 border-sky-300 text-sky-700', 'bg-rose-100 border-rose-300 text-rose-700'];
                             @endphp
                             @foreach($proximasClases as $i => $clase)
                                 @php $colorClass = $colors[$i % count($colors)]; @endphp
@@ -163,7 +163,7 @@
                         <div class="space-y-1">
                             @foreach($noticias as $noticia)
                                 <div class="flex items-start gap-3 p-3 rounded-xl hover:bg-gray-50/70 dark:hover:bg-gray-700/50">
-                                    <div class="w-2 h-2 rounded-full bg-indigo-400 mt-1.5 flex-shrink-0"></div>
+                                    <div class="w-2 h-2 rounded-full bg-blue-400 mt-1.5 flex-shrink-0"></div>
                                     <div class="flex-1 min-w-0">
                                         <p class="text-[13px] font-semibold text-gray-800 dark:text-gray-200 truncate">{{ $noticia->titulo }}</p>
                                         <p class="text-[11px] text-gray-400 dark:text-gray-500 mt-0.5">{{ $noticia->fecha_publicacion->diffForHumans() }}</p>

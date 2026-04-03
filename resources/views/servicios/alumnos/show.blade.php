@@ -4,7 +4,7 @@
     <div class="max-w-3xl space-y-6">
         <div class="flex items-center justify-between">
             <a href="{{ route('servicios.alumnos.index') }}"
-               class="text-sm text-indigo-600 dark:text-indigo-400 hover:underline">← Volver a la lista</a>
+               class="text-sm text-[#0606F0] dark:text-blue-400 hover:underline">← Volver a la lista</a>
             <a href="{{ route('servicios.alumnos.edit', $alumno) }}"
                class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
                 Editar
@@ -16,7 +16,7 @@
             <div class="flex items-start justify-between mb-4">
                 <div>
                     <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100">{{ $alumno->nombre_completo }}</h2>
-                    <p class="text-indigo-600 dark:text-indigo-400 font-mono text-sm mt-1">{{ $alumno->matricula }}</p>
+                    <p class="text-[#0606F0] dark:text-blue-400 font-mono text-sm mt-1">{{ $alumno->matricula }}</p>
                 </div>
                 @php
                     $badge = match($alumno->estatus) {
@@ -59,7 +59,7 @@
                         <div>
                             <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1">Tipo de baja</label>
                             <select name="tipo_baja" required
-                                    class="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-400 focus:outline-none">
+                                    class="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400 focus:outline-none">
                                 <option value="temporal">Temporal</option>
                                 <option value="definitiva">Definitiva</option>
                             </select>
@@ -67,12 +67,12 @@
                         <div>
                             <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1">Fecha de baja</label>
                             <input type="date" name="fecha_baja" value="{{ today()->toDateString() }}" required
-                                   class="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-400 focus:outline-none">
+                                   class="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400 focus:outline-none">
                         </div>
                         <div>
                             <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1">Motivo</label>
                             <input type="text" name="motivo" required placeholder="Motivo de la baja"
-                                   class="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-400 focus:outline-none dark:placeholder-gray-400">
+                                   class="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400 focus:outline-none dark:placeholder-gray-400">
                         </div>
                     </div>
                     <button type="submit"
@@ -90,7 +90,7 @@
                     <div>
                         <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1">Fecha de reingreso</label>
                         <input type="date" name="fecha_reingreso" value="{{ today()->toDateString() }}" required
-                               class="border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-400 focus:outline-none">
+                               class="border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400 focus:outline-none">
                     </div>
                     <button type="submit"
                             class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
@@ -126,7 +126,7 @@
                             <div class="flex gap-3 items-center">
                                 <span class="text-gray-400">{{ $c->fecha_emision?->format('d/m/Y') }}</span>
                                 <a href="{{ route('servicios.constancias.pdf', $c) }}"
-                                   class="text-indigo-600 dark:text-indigo-400 hover:underline text-xs">Descargar PDF</a>
+                                   class="text-[#0606F0] dark:text-blue-400 hover:underline text-xs">Descargar PDF</a>
                             </div>
                         </div>
                     @endforeach

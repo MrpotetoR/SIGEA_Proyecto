@@ -55,6 +55,16 @@ class User extends Authenticatable
         return $this->hasMany(ChatbotSesion::class, 'user_id');
     }
 
+    public function notificaciones()
+    {
+        return $this->hasMany(Notificacion::class, 'user_id');
+    }
+
+    public function notificacionesNoLeidas()
+    {
+        return $this->notificaciones()->noLeidas();
+    }
+
     // Helper para redirigir según rol
     public function panelUrl(): string
     {

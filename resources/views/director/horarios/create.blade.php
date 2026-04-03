@@ -27,7 +27,7 @@
             <div class="grid grid-cols-3 gap-4">
                 <div>
                     <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1.5">Grupo *</label>
-                    <select name="id_grupo" required class="w-full text-sm border border-gray-200 dark:border-gray-600 rounded-xl px-4 py-2.5 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-400">
+                    <select name="id_grupo" required class="w-full text-sm border border-gray-200 dark:border-gray-600 rounded-xl px-4 py-2.5 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400">
                         <option value="">Seleccionar...</option>
                         @foreach($grupos as $g)
                             <option value="{{ $g->id_grupo }}" {{ old('id_grupo') == $g->id_grupo ? 'selected' : '' }}>{{ $g->clave_grupo }} ({{ $g->carrera?->nombre_carrera ?? '' }})</option>
@@ -36,7 +36,7 @@
                 </div>
                 <div>
                     <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1.5">Materia *</label>
-                    <select name="id_materia" required class="w-full text-sm border border-gray-200 dark:border-gray-600 rounded-xl px-4 py-2.5 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-400">
+                    <select name="id_materia" required class="w-full text-sm border border-gray-200 dark:border-gray-600 rounded-xl px-4 py-2.5 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400">
                         <option value="">Seleccionar...</option>
                         @foreach($materias as $m)
                             <option value="{{ $m->id_materia }}" {{ old('id_materia') == $m->id_materia ? 'selected' : '' }}>{{ $m->nombre_materia }}</option>
@@ -45,7 +45,7 @@
                 </div>
                 <div>
                     <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1.5">Docente *</label>
-                    <select name="id_docente" required class="w-full text-sm border border-gray-200 dark:border-gray-600 rounded-xl px-4 py-2.5 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-400">
+                    <select name="id_docente" required class="w-full text-sm border border-gray-200 dark:border-gray-600 rounded-xl px-4 py-2.5 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400">
                         <option value="">Seleccionar...</option>
                         @foreach($docentes as $d)
                             <option value="{{ $d->id_docente }}" {{ old('id_docente') == $d->id_docente ? 'selected' : '' }}>{{ $d->nombre_completo }}</option>
@@ -62,7 +62,7 @@
                         <div class="flex items-center gap-4 p-3 rounded-xl border border-gray-100 dark:border-gray-700 hover:border-gray-200 dark:hover:border-gray-600 transition-colors dia-row">
                             <label class="flex items-center gap-2.5 w-28 flex-shrink-0 cursor-pointer">
                                 <input type="checkbox" name="dias[{{ $key }}][activo]" value="1"
-                                       class="w-4 h-4 rounded border-gray-300 dark:border-gray-600 text-indigo-600 focus:ring-indigo-500/20 dia-check"
+                                       class="w-4 h-4 rounded border-gray-300 dark:border-gray-600 text-[#0606F0] focus:ring-blue-500/20 dia-check"
                                        data-dia="{{ $key }}"
                                        {{ old("dias.{$key}.activo") ? 'checked' : '' }}>
                                 <span class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ $label }}</span>
@@ -72,13 +72,13 @@
                                     <span class="text-xs text-gray-400">De</span>
                                     <input type="time" name="dias[{{ $key }}][hora_inicio]"
                                            value="{{ old("dias.{$key}.hora_inicio", '07:00') }}"
-                                           class="text-sm border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-1.5 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-400">
+                                           class="text-sm border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-1.5 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400">
                                 </div>
                                 <div class="flex items-center gap-2">
                                     <span class="text-xs text-gray-400">A</span>
                                     <input type="time" name="dias[{{ $key }}][hora_fin]"
                                            value="{{ old("dias.{$key}.hora_fin", '08:00') }}"
-                                           class="text-sm border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-1.5 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-400">
+                                           class="text-sm border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-1.5 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400">
                                 </div>
                             </div>
                         </div>
@@ -88,7 +88,7 @@
             </div>
 
             <div class="flex gap-3 pt-2">
-                <button type="submit" class="px-6 py-2.5 bg-gray-900 dark:bg-indigo-600 text-white text-sm font-medium rounded-xl hover:bg-gray-800 dark:hover:bg-indigo-500 transition-colors">Asignar Horario</button>
+                <button type="submit" class="px-6 py-2.5 bg-[#0606F0] dark:bg-[#0606F0] text-white text-sm font-medium rounded-xl hover:bg-[#04276B] dark:hover:bg-blue-400 transition-colors">Asignar Horario</button>
                 <a href="{{ route('director.horarios.index') }}" class="px-6 py-2.5 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-sm font-medium rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">Cancelar</a>
             </div>
         </form>

@@ -6,8 +6,8 @@
     <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">Resultados de evaluacion docente — <span class="font-semibold text-gray-700 dark:text-gray-300">{{ $carrera?->nombre_carrera ?? 'Sin carrera' }}</span></p>
 
     @if($ciclo)
-        <div class="bg-indigo-50 dark:bg-indigo-900/30 border border-indigo-100 dark:border-indigo-700 rounded-2xl px-5 py-3 mb-6">
-            <p class="text-sm text-indigo-700 dark:text-indigo-400">Ciclo: <span class="font-semibold">{{ $ciclo->nombre }}</span></p>
+        <div class="bg-blue-50 dark:bg-blue-900/30 border border-blue-100 dark:border-blue-700 rounded-2xl px-5 py-3 mb-6">
+            <p class="text-sm text-blue-700 dark:text-blue-400">Ciclo: <span class="font-semibold">{{ $ciclo->nombre }}</span></p>
         </div>
     @endif
 
@@ -29,7 +29,7 @@
                 @endphp
                 <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm dark:shadow-gray-900/20 border border-gray-100 dark:border-gray-700 p-5">
                     <div class="flex items-center gap-3 mb-4">
-                        <div class="w-10 h-10 rounded-xl bg-violet-100 dark:bg-violet-900/30 flex items-center justify-center text-violet-700 dark:text-violet-400 text-sm font-bold">
+                        <div class="w-10 h-10 rounded-xl bg-sky-100 dark:bg-sky-900/30 flex items-center justify-center text-sky-700 dark:text-sky-400 text-sm font-bold">
                             {{ strtoupper(substr($nombre, 0, 2)) }}
                         </div>
                         <div class="flex-1 min-w-0">

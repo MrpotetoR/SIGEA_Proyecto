@@ -8,7 +8,7 @@
     @php
         $diasOrden = ['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado'];
         $colores = [
-            'lunes' => 'bg-violet-100 border-violet-200 text-violet-700',
+            'lunes' => 'bg-sky-100 border-sky-200 text-sky-700',
             'martes' => 'bg-emerald-100 border-emerald-200 text-emerald-700',
             'miercoles' => 'bg-amber-100 border-amber-200 text-amber-700',
             'jueves' => 'bg-sky-100 border-sky-200 text-sky-700',

@@ -17,9 +17,10 @@
             <p class="text-gray-500 dark:text-gray-400 text-sm">No hay docentes registrados en esta carrera.</p>
         </div>
     @else
-        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm dark:shadow-gray-900/20 border border-gray-100 dark:border-gray-700 overflow-hidden">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm dark:shadow-gray-900/20 border border-gray-100 dark:border-gray-700 flex flex-col min-h-0" style="max-height: calc(100vh - 220px);">
+            <div class="overflow-y-auto flex-1 custom-scrollbar">
             <table class="w-full text-sm">
-                <thead class="bg-gray-50 dark:bg-gray-700/50 border-b border-gray-100 dark:border-gray-700">
+                <thead class="bg-gray-50 dark:bg-gray-700/50 border-b border-gray-100 dark:border-gray-700 sticky top-0 z-10">
                     <tr>
                         <th class="text-left px-5 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Docente</th>
                         <th class="text-left px-5 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Especialidad</th>
@@ -32,7 +33,7 @@
                         <tr class="hover:bg-gray-50/50 dark:hover:bg-gray-700/50 transition-colors">
                             <td class="px-5 py-4">
                                 <div class="flex items-center gap-3">
-                                    <div class="w-9 h-9 rounded-xl bg-violet-100 dark:bg-violet-900/30 flex items-center justify-center text-violet-700 dark:text-violet-400 text-xs font-bold">
+                                    <div class="w-9 h-9 rounded-xl bg-sky-100 dark:bg-sky-900/30 flex items-center justify-center text-sky-700 dark:text-sky-400 text-xs font-bold">
                                         {{ strtoupper(substr($doc->nombre ?? 'D', 0, 1)) }}{{ strtoupper(substr($doc->apellidos ?? '', 0, 1)) }}
                                     </div>
                                     <div>
@@ -60,6 +61,7 @@
                     @endforeach
                 </tbody>
             </table>
+            </div>
         </div>
     @endif
 </x-panel>

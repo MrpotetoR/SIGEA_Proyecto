@@ -7,7 +7,7 @@
 
     <div class="bg-white dark:bg-gray-800 dark:border-gray-700 dark:shadow-gray-900/20 rounded-2xl border border-gray-100 shadow-sm p-6">
         <div class="flex items-center gap-5 mb-6">
-            <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center text-white text-xl font-bold shadow-lg shadow-indigo-200">
+            <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-sky-500 to-blue-600 flex items-center justify-center text-white text-xl font-bold shadow-lg shadow-blue-200">
                 {{ strtoupper(substr($docente?->nombre ?? 'D', 0, 1)) }}{{ strtoupper(substr($docente?->apellidos ?? 'C', 0, 1)) }}
             </div>
             <div>

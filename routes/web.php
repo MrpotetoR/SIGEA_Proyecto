@@ -25,6 +25,13 @@ Route::middleware('auth')->group(function () {
     // Cambiar contraseña (accesible para todos los roles)
     Route::get('/cambiar-password',  [\App\Http\Controllers\CambiarPasswordController::class, 'index'])->name('cambiar-password');
     Route::put('/cambiar-password',  [\App\Http\Controllers\CambiarPasswordController::class, 'update'])->name('cambiar-password.update');
+
+    // ── Notificaciones API ──
+    Route::prefix('notificaciones')->name('notificaciones.')->group(function () {
+        Route::get('/',           [\App\Http\Controllers\NotificacionController::class, 'index'])->name('index');
+        Route::post('/{notificacion}/leida', [\App\Http\Controllers\NotificacionController::class, 'marcarLeida'])->name('leida');
+        Route::post('/marcar-todas', [\App\Http\Controllers\NotificacionController::class, 'marcarTodasLeidas'])->name('todas-leidas');
+    });
 });
 
 // ============================================================

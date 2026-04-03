@@ -30,7 +30,7 @@
             </div>
             <div>
                 <label class="block text-xs text-gray-500 dark:text-gray-300 mb-1.5">Cuatrimestre *</label>
-                <select name="cuatrimestre" required class="w-full text-sm border border-gray-200 dark:border-gray-600 rounded-xl px-4 py-2.5 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-400">
+                <select name="cuatrimestre" required class="w-full text-sm border border-gray-200 dark:border-gray-600 rounded-xl px-4 py-2.5 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400">
                     @for($i = 1; $i <= 10; $i++)
                         <option value="{{ $i }}" {{ (old('cuatrimestre', $grupo->cuatrimestre)) == $i ? 'selected' : '' }}>{{ $i }}o Cuatrimestre</option>
                     @endfor
@@ -38,7 +38,7 @@
             </div>
             <div>
                 <label class="block text-xs text-gray-500 dark:text-gray-300 mb-1.5">Tutor</label>
-                <select name="id_tutor" class="w-full text-sm border border-gray-200 dark:border-gray-600 rounded-xl px-4 py-2.5 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-400">
+                <select name="id_tutor" class="w-full text-sm border border-gray-200 dark:border-gray-600 rounded-xl px-4 py-2.5 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400">
                     <option value="">Sin tutor</option>
                     @foreach($docentes as $d)
                         <option value="{{ $d->id_docente }}" {{ old('id_tutor', $grupo->id_tutor) == $d->id_docente ? 'selected' : '' }}>{{ $d->nombre_completo }}</option>
@@ -46,7 +46,7 @@
                 </select>
             </div>
             <div class="flex gap-3 pt-2">
-                <button type="submit" class="px-6 py-2.5 bg-gray-900 text-white text-sm font-medium rounded-xl hover:bg-gray-800 transition-colors">Guardar Cambios</button>
+                <button type="submit" class="px-6 py-2.5 bg-[#0606F0] text-white text-sm font-medium rounded-xl hover:bg-[#04276B] transition-colors">Guardar Cambios</button>
                 <a href="{{ route('director.grupos.index') }}" class="px-6 py-2.5 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-sm font-medium rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">Cancelar</a>
             </div>
         </form>

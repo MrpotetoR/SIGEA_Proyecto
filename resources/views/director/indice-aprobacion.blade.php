@@ -6,8 +6,8 @@
     <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">Estadisticas de aprobacion y reprobacion — <span class="font-semibold text-gray-700 dark:text-gray-300">{{ $carrera?->nombre_carrera ?? 'Sin carrera' }}</span></p>
 
     @if($ciclo)
-        <div class="bg-indigo-50 dark:bg-indigo-900/30 border border-indigo-100 dark:border-indigo-700 rounded-2xl px-5 py-3 mb-6">
-            <p class="text-sm text-indigo-700 dark:text-indigo-400">Ciclo actual: <span class="font-semibold">{{ $ciclo->nombre }}</span></p>
+        <div class="bg-blue-50 dark:bg-blue-900/30 border border-blue-100 dark:border-blue-700 rounded-2xl px-5 py-3 mb-6">
+            <p class="text-sm text-blue-700 dark:text-blue-400">Ciclo actual: <span class="font-semibold">{{ $ciclo->nombre }}</span></p>
         </div>
     @endif
 

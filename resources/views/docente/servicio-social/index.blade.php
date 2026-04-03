@@ -5,7 +5,7 @@
 
     <div class="flex items-center justify-between">
         <h1 class="text-[22px] font-bold text-gray-900 dark:text-gray-100">Servicio Social</h1>
-        <a href="{{ route('docente.servicio-social.create') }}" class="bg-gray-900 text-white px-4 py-2 rounded-xl text-[12px] font-medium hover:bg-gray-700 transition-colors dark:bg-indigo-600 dark:hover:bg-indigo-500">+ Registrar</a>
+        <a href="{{ route('docente.servicio-social.create') }}" class="bg-[#0606F0] text-white px-4 py-2 rounded-xl text-[12px] font-medium hover:bg-[#04276B] transition-colors dark:bg-[#0606F0] dark:hover:bg-[#0606F0]">+ Registrar</a>
     </div>
 
     @if(session('success'))
@@ -13,9 +13,10 @@
     @endif
 
     @if($alumnos->isNotEmpty())
-        <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden dark:bg-gray-800 dark:border-gray-700 dark:shadow-gray-900/20">
+        <div class="bg-white rounded-2xl border border-gray-100 shadow-sm dark:bg-gray-800 dark:border-gray-700 dark:shadow-gray-900/20 flex flex-col min-h-0" style="max-height: calc(100vh - 220px);">
+            <div class="overflow-y-auto flex-1 custom-scrollbar">
             <table class="min-w-full divide-y divide-gray-100 dark:divide-gray-700">
-                <thead class="bg-gray-50 dark:bg-gray-700/50">
+                <thead class="bg-gray-50 dark:bg-gray-700/50 sticky top-0 z-10">
                     <tr>
                         <th class="px-5 py-3 text-left text-[11px] font-semibold text-gray-500 uppercase dark:text-gray-400">Alumno</th>
                         <th class="px-5 py-3 text-center text-[11px] font-semibold text-gray-500 uppercase dark:text-gray-400">Estatus</th>
@@ -36,13 +37,14 @@
                                 </td>
                                 <td class="px-5 py-3 text-[13px] text-center font-bold text-gray-700 dark:text-gray-200">{{ $ss->horas_acumuladas ?? 0 }}</td>
                                 <td class="px-5 py-3 text-center">
-                                    <a href="{{ route('docente.servicio-social.edit', $ss->id_servicio) }}" class="text-[11px] text-violet-600 hover:text-violet-800 px-2 py-1 rounded-lg hover:bg-violet-50 dark:text-indigo-400 dark:hover:bg-gray-700">Editar</a>
+                                    <a href="{{ route('docente.servicio-social.edit', $ss->id_servicio) }}" class="text-[11px] text-sky-600 hover:text-sky-800 px-2 py-1 rounded-lg hover:bg-sky-50 dark:text-blue-400 dark:hover:bg-gray-700">Editar</a>
                                 </td>
                             </tr>
                         @endif
                     @endforeach
                 </tbody>
             </table>
+            </div>
         </div>
     @else
         <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-12 text-center dark:bg-gray-800 dark:border-gray-700 dark:shadow-gray-900/20">

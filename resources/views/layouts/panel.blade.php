@@ -14,15 +14,15 @@
 <div class="flex h-screen overflow-hidden">
 
     {{-- Sidebar --}}
-    <aside class="w-64 bg-indigo-900 text-white flex flex-col flex-shrink-0">
+    <aside class="w-64 bg-blue-900 text-white flex flex-col flex-shrink-0">
 
         {{-- Logo --}}
-        <div class="flex items-center justify-center h-16 bg-indigo-950 px-4">
+        <div class="flex items-center justify-center h-16 bg-blue-950 px-4">
             <span class="text-xl font-bold tracking-wide">SIGEA</span>
         </div>
 
         {{-- Rol badge --}}
-        <div class="px-4 py-3 bg-indigo-800 text-xs text-indigo-200 uppercase tracking-widest">
+        <div class="px-4 py-3 bg-blue-800 text-xs text-blue-200 uppercase tracking-widest">
             {{ $panelNombre ?? 'Panel' }}
         </div>
 
@@ -32,13 +32,13 @@
         </nav>
 
         {{-- Usuario y logout --}}
-        <div class="border-t border-indigo-700 p-4">
+        <div class="border-t border-blue-700 p-4">
             <p class="text-sm font-medium text-white truncate">{{ auth()->user()->name }}</p>
-            <p class="text-xs text-indigo-300 truncate">{{ auth()->user()->email }}</p>
+            <p class="text-xs text-blue-300 truncate">{{ auth()->user()->email }}</p>
             <form method="POST" action="{{ route('logout') }}" class="mt-3">
                 @csrf
                 <button type="submit"
-                    class="w-full text-left text-xs text-indigo-300 hover:text-white transition-colors">
+                    class="w-full text-left text-xs text-blue-300 hover:text-white transition-colors">
                     Cerrar sesión →
                 </button>
             </form>

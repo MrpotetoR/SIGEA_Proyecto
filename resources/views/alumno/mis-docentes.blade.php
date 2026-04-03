@@ -10,7 +10,7 @@
             @foreach($docentes as $docente)
                 <div class="bg-white dark:bg-gray-800 dark:border dark:border-gray-700 dark:shadow-gray-900/20 rounded-xl shadow p-6">
                     <div class="flex items-center gap-4 mb-4">
-                        <div class="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center text-2xl flex-shrink-0">
+                        <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-2xl flex-shrink-0">
                             👨‍🏫
                         </div>
                         <div>
@@ -24,7 +24,7 @@
                         <div class="space-y-2">
                             @foreach($docente->horarios->unique('id_materia') as $horario)
                                 <div class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
-                                    <span class="w-2 h-2 rounded-full bg-indigo-400 flex-shrink-0"></span>
+                                    <span class="w-2 h-2 rounded-full bg-blue-400 flex-shrink-0"></span>
                                     {{ $horario->materia?->nombre_materia ?? '—' }}
                                 </div>
                             @endforeach

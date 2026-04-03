@@ -31,12 +31,13 @@
 
     @forelse($historial as $cicloId => $calificaciones)
         @php $cicloNombre = $calificaciones->first()->cicloEscolar?->nombre ?? 'Ciclo #' . $cicloId; @endphp
-        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm dark:shadow-gray-900/20 border border-gray-100 dark:border-gray-700 overflow-hidden mb-4">
-            <div class="bg-gray-50 dark:bg-gray-700/50 px-5 py-3 border-b border-gray-100 dark:border-gray-700">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm dark:shadow-gray-900/20 border border-gray-100 dark:border-gray-700 flex flex-col min-h-0 mb-4" style="max-height: 400px;">
+            <div class="bg-gray-50 dark:bg-gray-700/50 px-5 py-3 border-b border-gray-100 dark:border-gray-700 flex-shrink-0">
                 <h4 class="text-sm font-semibold text-gray-700 dark:text-gray-300">{{ $cicloNombre }}</h4>
             </div>
+            <div class="overflow-y-auto flex-1 custom-scrollbar">
             <table class="w-full text-sm">
-                <thead>
+                <thead class="sticky top-0 z-10 bg-white dark:bg-gray-800">
                     <tr class="border-b border-gray-50 dark:border-gray-700">
                         <th class="text-left px-5 py-2.5 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Materia</th>
                         <th class="text-center px-5 py-2.5 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Parcial</th>
@@ -57,6 +58,7 @@
                     @endforeach
                 </tbody>
             </table>
+            </div>
         </div>
     @empty
         <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm dark:shadow-gray-900/20 border border-gray-100 dark:border-gray-700 p-8 text-center">

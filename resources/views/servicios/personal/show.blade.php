@@ -3,7 +3,7 @@
 
     <div class="max-w-3xl space-y-6">
         <div class="flex items-center justify-between">
-            <a href="{{ route('servicios.personal.index') }}" class="text-sm text-indigo-600 dark:text-indigo-400 hover:underline">← Volver</a>
+            <a href="{{ route('servicios.personal.index') }}" class="text-sm text-[#0606F0] dark:text-blue-400 hover:underline">← Volver</a>
             <a href="{{ route('servicios.personal.edit', $personal) }}"
                class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
                 Editar
