@@ -28,12 +28,8 @@
         .rainbow-bar {
             height: 100%;
             border-radius: 9999px;
-            background: linear-gradient(90deg,
-                    #0606F0, #04276B, #1C1E46, #0606F0,
-                    #E5CCBE, #0606F0, #04276B, #1C1E46,
-                    #0606F0, #E5CCBE, #0606F0);
+            background: linear-gradient(90deg, #3e3eee, #c3c3ff);
             background-size: 300% 100%;
-            animation: rainbowShift 60s linear infinite;
             position: relative;
             overflow: hidden;
         }
