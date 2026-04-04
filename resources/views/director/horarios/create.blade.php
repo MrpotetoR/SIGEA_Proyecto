@@ -72,19 +72,21 @@
                                     <span class="text-xs text-gray-400">De</span>
                                     <input type="time" name="dias[{{ $key }}][hora_inicio]"
                                            value="{{ old("dias.{$key}.hora_inicio", '07:00') }}"
+                                           min="07:00" max="18:00"
                                            class="text-sm border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-1.5 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400">
                                 </div>
                                 <div class="flex items-center gap-2">
                                     <span class="text-xs text-gray-400">A</span>
                                     <input type="time" name="dias[{{ $key }}][hora_fin]"
                                            value="{{ old("dias.{$key}.hora_fin", '08:00') }}"
+                                           min="07:00" max="18:00"
                                            class="text-sm border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-1.5 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400">
                                 </div>
                             </div>
                         </div>
                     @endforeach
                 </div>
-                <p class="text-[11px] text-gray-400 mt-2">Marca al menos un día. Puedes asignar horarios diferentes para cada día.</p>
+                <p class="text-[11px] text-gray-400 mt-2">Marca al menos un dia. Horario permitido: 7:00 a.m. — 6:00 p.m.</p>
             </div>
 
             <div class="flex gap-3 pt-2">

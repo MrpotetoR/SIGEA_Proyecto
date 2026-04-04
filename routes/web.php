@@ -71,6 +71,7 @@ Route::prefix('docente')->name('docente.')->middleware(['auth', 'verified', 'rol
     Route::get('/perfil',             [\App\Http\Controllers\Docente\PerfilController::class,             'index'])->name('perfil');
     Route::get('/grupos',             [\App\Http\Controllers\Docente\GruposController::class,             'index'])->name('grupos');
     Route::get('/horario',            [\App\Http\Controllers\Docente\HorarioController::class,            'index'])->name('horario');
+    Route::get('/tutorados',          [\App\Http\Controllers\Docente\TutoradosController::class,          'index'])->name('tutorados');
 
     // Asistencia
     Route::get('/asistencia',           [\App\Http\Controllers\Docente\AsistenciaController::class, 'index'])->name('asistencia');
@@ -110,6 +111,8 @@ Route::prefix('director')->name('director.')->middleware(['auth', 'verified', 'r
 
     // Grupos (CRUD)
     Route::resource('grupos', \App\Http\Controllers\Director\GruposController::class);
+    Route::post('grupos/{grupo}/inscribir', [\App\Http\Controllers\Director\GruposController::class, 'inscribir'])->name('grupos.inscribir');
+    Route::delete('grupos/{grupo}/desinscribir/{alumno}', [\App\Http\Controllers\Director\GruposController::class, 'desinscribir'])->name('grupos.desinscribir');
 
     // Horarios (CRUD)
     Route::resource('horarios', \App\Http\Controllers\Director\HorariosController::class);

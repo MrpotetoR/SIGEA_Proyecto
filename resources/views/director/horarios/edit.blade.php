@@ -51,11 +51,11 @@
                 </div>
                 <div>
                     <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1.5">Hora Inicio *</label>
-                    <input type="time" name="hora_inicio" value="{{ old('hora_inicio', \Carbon\Carbon::parse($horario->hora_inicio)->format('H:i')) }}" required class="w-full text-sm border border-gray-200 dark:border-gray-600 rounded-xl px-4 py-2.5 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400">
+                    <input type="time" name="hora_inicio" value="{{ old('hora_inicio', \Carbon\Carbon::parse($horario->hora_inicio)->format('H:i')) }}" required min="07:00" max="18:00" class="w-full text-sm border border-gray-200 dark:border-gray-600 rounded-xl px-4 py-2.5 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400">
                 </div>
                 <div>
-                    <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1.5">Hora Fin *</label>
-                    <input type="time" name="hora_fin" value="{{ old('hora_fin', \Carbon\Carbon::parse($horario->hora_fin)->format('H:i')) }}" required class="w-full text-sm border border-gray-200 dark:border-gray-600 rounded-xl px-4 py-2.5 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400">
+                    <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1.5">Hora Fin * <span class="text-gray-300 dark:text-gray-500">(max 6:00 p.m.)</span></label>
+                    <input type="time" name="hora_fin" value="{{ old('hora_fin', \Carbon\Carbon::parse($horario->hora_fin)->format('H:i')) }}" required min="07:00" max="18:00" class="w-full text-sm border border-gray-200 dark:border-gray-600 rounded-xl px-4 py-2.5 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400">
                 </div>
             </div>
             <div class="flex gap-3 pt-2">

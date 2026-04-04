@@ -65,8 +65,8 @@ class HorariosController extends Controller
             'id_docente' => 'required|exists:docente,id_docente',
             'id_materia' => 'required|exists:materia,id_materia',
             'dias' => 'required|array|min:1',
-            'dias.*.hora_inicio' => 'required_with:dias.*.activo|date_format:H:i',
-            'dias.*.hora_fin' => 'required_with:dias.*.activo|date_format:H:i|after:dias.*.hora_inicio',
+            'dias.*.hora_inicio' => 'required_with:dias.*.activo|date_format:H:i|before_or_equal:dias.*.hora_fin',
+            'dias.*.hora_fin' => 'required_with:dias.*.activo|date_format:H:i|after:dias.*.hora_inicio|before_or_equal:18:00',
         ]);
 
         $diasSeleccionados = collect($request->dias)->filter(fn($d) => !empty($d['activo']));
@@ -106,7 +106,7 @@ class HorariosController extends Controller
     {
         $request->validate([
             'hora_inicio' => 'required|date_format:H:i',
-            'hora_fin' => 'required|date_format:H:i|after:hora_inicio',
+            'hora_fin' => 'required|date_format:H:i|after:hora_inicio|before_or_equal:18:00',
             'id_docente' => 'required|exists:docente,id_docente',
             'dia_semana' => 'required|in:lunes,martes,miercoles,jueves,viernes,sabado',
         ]);

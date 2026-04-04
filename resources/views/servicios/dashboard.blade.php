@@ -129,7 +129,7 @@
                     <div class="rainbow-track h-2 rainbow-glow">
                         <div class="rainbow-bar" style="width: {{ $pct }}%"></div>
                     </div>
-                    <p class="text-[11px] text-gray-400 mt-1.5">{{ $pct }}% transcurrido · {{ max(0, now()->diffInDays($fin, false)) }} días restantes</p>
+                    <p class="text-[11px] text-gray-400 mt-1.5">{{ $pct }}% transcurrido · {{ max(0, (int) now()->diffInDays($fin, false)) }} días restantes</p>
                 @else
                     <div class="text-center py-8">
                         <div class="w-12 h-12 mx-auto rounded-2xl bg-gray-50 dark:bg-gray-700 flex items-center justify-center mb-3">

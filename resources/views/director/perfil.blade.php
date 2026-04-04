@@ -35,8 +35,8 @@
                     <p class="text-sm font-medium text-gray-800 dark:text-gray-200">{{ $docente->especialidad ?? 'N/A' }}</p>
                 </div>
                 <div>
-                    <p class="text-xs text-gray-400 mb-1">Horas contrato</p>
-                    <p class="text-sm font-medium text-gray-800 dark:text-gray-200">{{ $docente->horas_contrato ?? 'N/A' }} hrs</p>
+                    <p class="text-xs text-gray-400 mb-1">Tutor</p>
+                    <p class="text-sm font-medium text-gray-800 dark:text-gray-200">{{ $docente->es_tutor ? 'Si' : 'No' }}</p>
                 </div>
                 <div>
                     <p class="text-xs text-gray-400 mb-1">Correo electronico</p>

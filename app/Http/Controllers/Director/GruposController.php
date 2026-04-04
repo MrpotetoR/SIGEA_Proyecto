@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Director;
 
 use App\Http\Controllers\Controller;
+use App\Models\Alumno;
 use App\Models\CicloEscolar;
 use App\Models\Docente;
 use App\Models\Grupo;
+use App\Models\Inscripcion;
 use App\Services\GrupoService;
 use Illuminate\Http\Request;
 
@@ -43,8 +45,9 @@ class GruposController extends Controller
             'id_tutor' => 'nullable|exists:docente,id_docente',
         ]);
 
-        $this->service->crearGrupo(array_merge($request->all(), ['id_carrera' => $carrera->id_carrera]));
-        return redirect()->route('director.grupos.index')->with('success', 'Grupo creado.');
+        $grupo = $this->service->crearGrupo(array_merge($request->all(), ['id_carrera' => $carrera->id_carrera]));
+        $inscritos = $this->service->autoInscribirAlumnos($grupo);
+        return redirect()->route('director.grupos.index')->with('success', "Grupo creado. Se inscribieron $inscritos alumnos automáticamente.");
     }
 
     public function show(Grupo $grupo) { return view('director.grupos.show', compact('grupo')); }
@@ -69,5 +72,37 @@ class GruposController extends Controller
     {
         $grupo->delete();
         return redirect()->route('director.grupos.index')->with('success', 'Grupo eliminado.');
+    }
+
+    public function inscribir(Request $request, Grupo $grupo)
+    {
+        $request->validate([
+            'id_alumno' => 'required|exists:alumno,id_alumno',
+        ]);
+
+        $existe = Inscripcion::where('id_alumno', $request->id_alumno)
+            ->where('id_grupo', $grupo->id_grupo)
+            ->exists();
+
+        if ($existe) {
+            return redirect()->back()->with('error', 'El alumno ya está inscrito en este grupo.');
+        }
+
+        Inscripcion::create([
+            'id_alumno' => $request->id_alumno,
+            'id_grupo' => $grupo->id_grupo,
+            'fecha_inscripcion' => now()->toDateString(),
+        ]);
+
+        return redirect()->back()->with('success', 'Alumno inscrito correctamente.');
+    }
+
+    public function desinscribir(Grupo $grupo, Alumno $alumno)
+    {
+        Inscripcion::where('id_alumno', $alumno->id_alumno)
+            ->where('id_grupo', $grupo->id_grupo)
+            ->delete();
+
+        return redirect()->back()->with('success', 'Alumno removido del grupo.');
     }
 }

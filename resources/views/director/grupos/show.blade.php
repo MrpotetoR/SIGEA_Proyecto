@@ -70,8 +70,31 @@
 
         {{-- Alumnos inscritos --}}
         <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm dark:shadow-gray-900/20 border border-gray-100 dark:border-gray-700 p-6">
-            <h4 class="text-[15px] font-semibold text-gray-800 dark:text-gray-200 mb-4">Alumnos Inscritos ({{ $grupo->inscripciones()->count() }})</h4>
-            @php $inscritos = $grupo->inscripciones()->with('alumno')->get(); @endphp
+            @php
+                $inscritos = $grupo->inscripciones()->with('alumno')->get();
+                $inscritosIds = $grupo->inscripciones()->pluck('id_alumno');
+                $disponibles = \App\Models\Alumno::where('id_carrera', $grupo->id_carrera)
+                    ->activos()
+                    ->whereNotIn('id_alumno', $inscritosIds)
+                    ->orderBy('apellidos')
+                    ->get();
+            @endphp
+            <h4 class="text-[15px] font-semibold text-gray-800 dark:text-gray-200 mb-4">Alumnos Inscritos ({{ $inscritos->count() }})</h4>
+
+            {{-- Formulario para agregar alumno --}}
+            @if($disponibles->isNotEmpty())
+                <form action="{{ route('director.grupos.inscribir', $grupo->id_grupo) }}" method="POST" class="flex items-center gap-2 mb-4">
+                    @csrf
+                    <select name="id_alumno" required class="flex-1 text-sm rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <option value="">Seleccionar alumno...</option>
+                        @foreach($disponibles as $al)
+                            <option value="{{ $al->id_alumno }}">{{ $al->nombre_completo }} ({{ $al->matricula }})</option>
+                        @endforeach
+                    </select>
+                    <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-xl transition-colors">Inscribir</button>
+                </form>
+            @endif
+
             @if($inscritos->isEmpty())
                 <p class="text-sm text-gray-500 dark:text-gray-400">No hay alumnos inscritos.</p>
             @else
@@ -87,7 +110,16 @@
                                     <p class="text-xs text-gray-400 dark:text-gray-500">{{ $insc->alumno?->matricula }}</p>
                                 </div>
                             </div>
-                            <a href="{{ route('director.alumnos.historial', $insc->alumno?->id_alumno) }}" class="text-xs text-[#0606F0] dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300">Ver historial</a>
+                            <div class="flex items-center gap-3">
+                                <a href="{{ route('director.alumnos.historial', $insc->alumno?->id_alumno) }}" class="text-xs text-[#0606F0] dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300">Ver historial</a>
+                                <form action="{{ route('director.grupos.desinscribir', [$grupo->id_grupo, $insc->alumno?->id_alumno]) }}" method="POST" onsubmit="return confirm('¿Remover a este alumno del grupo?')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="w-7 h-7 flex items-center justify-center rounded-lg text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors" title="Remover del grupo">
+                                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                                    </button>
+                                </form>
+                            </div>
                         </div>
                     @endforeach
                 </div>

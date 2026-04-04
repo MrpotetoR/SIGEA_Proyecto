@@ -6,6 +6,7 @@ use App\Models\Alumno;
 use App\Models\Docente;
 use App\Models\Grupo;
 use App\Models\Horario;
+use App\Models\Inscripcion;
 use Illuminate\Support\Collection;
 
 class GrupoService
@@ -36,6 +37,33 @@ class GrupoService
     public function asignarTutor(Grupo $grupo, Docente $docente): void
     {
         $grupo->update(['id_tutor' => $docente->id_docente]);
+    }
+
+    public function autoInscribirAlumnos(Grupo $grupo): int
+    {
+        $alumnos = Alumno::activos()
+            ->deCarrera($grupo->id_carrera)
+            ->where('cuatrimestre_actual', $grupo->cuatrimestre)
+            ->get();
+
+        $count = 0;
+
+        foreach ($alumnos as $alumno) {
+            $exists = Inscripcion::where('id_alumno', $alumno->id_alumno)
+                ->where('id_grupo', $grupo->id_grupo)
+                ->exists();
+
+            if (!$exists) {
+                Inscripcion::create([
+                    'id_alumno' => $alumno->id_alumno,
+                    'id_grupo' => $grupo->id_grupo,
+                    'fecha_inscripcion' => now()->toDateString(),
+                ]);
+                $count++;
+            }
+        }
+
+        return $count;
     }
 
     public function obtenerAlumnosDeGrupo(Grupo $grupo): Collection
