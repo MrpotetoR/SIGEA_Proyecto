@@ -10,7 +10,7 @@
         <div class="bg-white rounded-xl shadow mb-6 dark:bg-gray-800 dark:shadow-gray-900/20">
             <div class="px-6 py-3 bg-blue-700 rounded-t-xl flex justify-between items-center">
                 <h3 class="text-sm font-semibold text-white uppercase tracking-wide">
-                    📅 {{ $ciclo?->nombre ?? 'Ciclo ' . $cicloId }}
+                    <span class="inline-flex items-center gap-1.5"><x-icon name="calendar" class="w-4 h-4" /> {{ $ciclo?->nombre ?? 'Ciclo ' . $cicloId }}</span>
                 </h3>
                 @if($ciclo)
                     <span class="text-xs text-gray-400">

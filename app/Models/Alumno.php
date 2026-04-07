@@ -70,6 +70,21 @@ class Alumno extends Model
         return $this->hasMany(Constancia::class, 'id_alumno');
     }
 
+    public function padreTutor()
+    {
+        return $this->hasOne(PadreTutor::class, 'id_alumno');
+    }
+
+    public function pagosCuatrimestre()
+    {
+        return $this->hasMany(PagoCuatrimestre::class, 'id_alumno');
+    }
+
+    public function documentos()
+    {
+        return $this->hasMany(DocumentoAlumno::class, 'id_alumno');
+    }
+
     public function historialBajas()
     {
         return $this->hasMany(HistorialBaja::class, 'id_alumno');

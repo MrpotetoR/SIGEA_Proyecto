@@ -54,15 +54,15 @@
                 <div class="grid grid-cols-3 gap-4 text-center">
                     <div class="bg-green-50 dark:bg-green-900/30 rounded-lg p-4">
                         <p class="text-2xl font-bold text-green-700 dark:text-green-300">{{ $reporte['semaforo']['verde'] }}</p>
-                        <p class="text-sm text-green-600 dark:text-green-400 mt-1">🟢 Verde</p>
+                        <p class="text-sm text-green-600 dark:text-green-400 mt-1 inline-flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-green-500 inline-block"></span> Verde</p>
                     </div>
                     <div class="bg-yellow-50 dark:bg-yellow-900/30 rounded-lg p-4">
                         <p class="text-2xl font-bold text-yellow-700 dark:text-yellow-300">{{ $reporte['semaforo']['amarillo'] }}</p>
-                        <p class="text-sm text-yellow-600 dark:text-yellow-400 mt-1">🟡 Amarillo</p>
+                        <p class="text-sm text-yellow-600 dark:text-yellow-400 mt-1 inline-flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-yellow-400 inline-block"></span> Amarillo</p>
                     </div>
                     <div class="bg-red-50 dark:bg-red-900/30 rounded-lg p-4">
                         <p class="text-2xl font-bold text-red-700 dark:text-red-300">{{ $reporte['semaforo']['rojo'] }}</p>
-                        <p class="text-sm text-red-600 dark:text-red-400 mt-1">🔴 Rojo</p>
+                        <p class="text-sm text-red-600 dark:text-red-400 mt-1 inline-flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-red-500 inline-block"></span> Rojo</p>
                     </div>
                 </div>
             </div>

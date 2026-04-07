@@ -22,7 +22,7 @@
                         </div>
                         @if($yaEvaluado)
                             <span class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-semibold dark:bg-green-900/30 dark:text-green-300">
-                                ✅ Evaluado
+                                <span class="inline-flex items-center gap-1"><x-icon name="check-circle" class="w-4 h-4" /> Evaluado</span>
                             </span>
                         @endif
                     </div>

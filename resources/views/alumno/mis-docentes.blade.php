@@ -10,8 +10,8 @@
             @foreach($docentes as $docente)
                 <div class="bg-white dark:bg-gray-800 dark:border dark:border-gray-700 dark:shadow-gray-900/20 rounded-xl shadow p-6">
                     <div class="flex items-center gap-4 mb-4">
-                        <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-2xl flex-shrink-0">
-                            👨‍🏫
+                        <div class="w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-700 dark:text-blue-300 flex-shrink-0">
+                            <x-icon name="academic" class="w-6 h-6" />
                         </div>
                         <div>
                             <p class="font-semibold text-gray-900 dark:text-gray-100">{{ $docente->nombre }} {{ $docente->apellidos }}</p>

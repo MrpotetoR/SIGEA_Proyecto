@@ -11,7 +11,7 @@
         @if($alumno)
             <a href="{{ route('alumno.kardex.pdf') }}"
                class="inline-flex items-center gap-2 bg-[#0606F0] text-white px-5 py-2 rounded-lg text-sm font-medium hover:bg-[#04276B] transition-colors">
-                📄 Descargar PDF
+                <span class="inline-flex items-center gap-1"><x-icon name="document" class="w-4 h-4" /> Descargar PDF</span>
             </a>
         @endif
     </div>
@@ -30,7 +30,7 @@
     @forelse($historial as $cicloNombre => $calificaciones)
         <div class="bg-white rounded-xl shadow mb-6 dark:bg-gray-800 dark:shadow-gray-900/20">
             <div class="px-6 py-3 bg-blue-900 rounded-t-xl">
-                <h3 class="text-sm font-semibold text-white uppercase tracking-wide">📅 {{ $cicloNombre }}</h3>
+                <h3 class="text-sm font-semibold text-white uppercase tracking-wide inline-flex items-center gap-1.5"><x-icon name="calendar" class="w-4 h-4" /> {{ $cicloNombre }}</h3>
             </div>
             <div class="overflow-y-auto custom-scrollbar" style="max-height: 350px;">
                 <table class="min-w-full divide-y divide-gray-100 dark:divide-gray-700">

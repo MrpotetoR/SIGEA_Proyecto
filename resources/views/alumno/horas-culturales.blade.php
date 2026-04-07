@@ -6,7 +6,7 @@
 
         <div class="bg-white dark:bg-gray-800 dark:border dark:border-gray-700 dark:shadow-gray-900/20 rounded-xl shadow p-6">
             <div class="flex items-center justify-between mb-3">
-                <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300">🎭 Horas Culturales</h3>
+                <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300 inline-flex items-center gap-1.5"><x-icon name="sparkles" class="w-4 h-4 text-blue-600" /> Horas Culturales</h3>
                 <span class="text-2xl font-bold text-blue-700">{{ $totalCultural }}</span>
             </div>
             @php $pctCultural = min(100, ($totalCultural / 30) * 100); @endphp
@@ -18,7 +18,7 @@
 
         <div class="bg-white dark:bg-gray-800 dark:border dark:border-gray-700 dark:shadow-gray-900/20 rounded-xl shadow p-6">
             <div class="flex items-center justify-between mb-3">
-                <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300">⚽ Horas Deportivas</h3>
+                <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300 inline-flex items-center gap-1.5"><x-icon name="trophy" class="w-4 h-4 text-green-600" /> Horas Deportivas</h3>
                 <span class="text-2xl font-bold text-green-700">{{ $totalDeportiva }}</span>
             </div>
             @php $pctDeportiva = min(100, ($totalDeportiva / 30) * 100); @endphp
@@ -48,7 +48,11 @@
                             <td class="px-6 py-3">
                                 <span class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-semibold
                                     {{ $registro->tipo === 'cultural' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300' : 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300' }}">
-                                    {{ $registro->tipo === 'cultural' ? '🎭 Cultural' : '⚽ Deportiva' }}
+                                    @if($registro->tipo === 'cultural')
+                                        <x-icon name="sparkles" class="w-3.5 h-3.5" /> Cultural
+                                    @else
+                                        <x-icon name="trophy" class="w-3.5 h-3.5" /> Deportiva
+                                    @endif
                                 </span>
                             </td>
                             <td class="px-6 py-3 text-sm text-gray-700 dark:text-gray-300">{{ $registro->descripcion ?? '—' }}</td>

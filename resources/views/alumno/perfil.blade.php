@@ -10,8 +10,8 @@
 
             {{-- Encabezado --}}
             <div class="bg-white dark:bg-gray-800 dark:border dark:border-gray-700 dark:shadow-gray-900/20 rounded-xl shadow p-6 flex items-center gap-6">
-                <div class="w-20 h-20 rounded-full bg-blue-100 flex items-center justify-center text-4xl flex-shrink-0">
-                    👤
+                <div class="w-20 h-20 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-700 dark:text-blue-300 flex-shrink-0">
+                    <x-icon name="user" class="w-10 h-10" />
                 </div>
                 <div>
                     <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100">{{ $alumno->nombre_completo }}</h2>
@@ -28,7 +28,7 @@
 
                 {{-- Datos académicos --}}
                 <div class="bg-white dark:bg-gray-800 dark:border dark:border-gray-700 dark:shadow-gray-900/20 rounded-xl shadow p-6">
-                    <h3 class="text-base font-semibold text-gray-700 dark:text-gray-300 border-b dark:border-gray-700 pb-3 mb-4">📚 Datos Académicos</h3>
+                    <h3 class="text-base font-semibold text-gray-700 dark:text-gray-300 border-b dark:border-gray-700 pb-3 mb-4 inline-flex items-center gap-2"><x-icon name="book" class="w-5 h-5 text-blue-600" /> Datos Académicos</h3>
                     <dl class="space-y-3">
                         <div class="flex justify-between">
                             <dt class="text-sm text-gray-500 dark:text-gray-400">Carrera</dt>
@@ -47,7 +47,7 @@
 
                 {{-- Tutor asignado --}}
                 <div class="bg-white dark:bg-gray-800 dark:border dark:border-gray-700 dark:shadow-gray-900/20 rounded-xl shadow p-6">
-                    <h3 class="text-base font-semibold text-gray-700 dark:text-gray-300 border-b dark:border-gray-700 pb-3 mb-4">👨‍🏫 Tutor Asignado</h3>
+                    <h3 class="text-base font-semibold text-gray-700 dark:text-gray-300 border-b dark:border-gray-700 pb-3 mb-4 inline-flex items-center gap-2"><x-icon name="academic" class="w-5 h-5 text-blue-600" /> Tutor Asignado</h3>
                     @if($alumno->tutor)
                         <dl class="space-y-3">
                             <div class="flex justify-between">
@@ -66,7 +66,7 @@
 
                 {{-- Cuenta del sistema --}}
                 <div class="bg-white dark:bg-gray-800 dark:border dark:border-gray-700 dark:shadow-gray-900/20 rounded-xl shadow p-6">
-                    <h3 class="text-base font-semibold text-gray-700 dark:text-gray-300 border-b dark:border-gray-700 pb-3 mb-4">🔐 Cuenta del Sistema</h3>
+                    <h3 class="text-base font-semibold text-gray-700 dark:text-gray-300 border-b dark:border-gray-700 pb-3 mb-4 inline-flex items-center gap-2"><x-icon name="shield" class="w-5 h-5 text-blue-600" /> Cuenta del Sistema</h3>
                     <dl class="space-y-3">
                         <div class="flex justify-between">
                             <dt class="text-sm text-gray-500 dark:text-gray-400">Usuario</dt>

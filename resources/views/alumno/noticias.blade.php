@@ -24,7 +24,7 @@
                         <div class="flex-1">
                             <h3 class="font-semibold text-gray-900 dark:text-gray-100 text-base mb-1">{{ $noticia->titulo }}</h3>
                             <p class="text-xs text-gray-400 dark:text-gray-500 mb-3">
-                                📅 {{ \Carbon\Carbon::parse($noticia->fecha_publicacion)->format('d/m/Y H:i') }}
+                                <span class="inline-flex items-center gap-1"><x-icon name="calendar" class="w-3.5 h-3.5" /> {{ \Carbon\Carbon::parse($noticia->fecha_publicacion)->format('d/m/Y H:i') }}</span>
                             </p>
                             <p class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
                                 {{ Str::limit($noticia->contenido, 250) }}

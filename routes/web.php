@@ -156,6 +156,8 @@ Route::prefix('servicios')->name('servicios.')->middleware(['auth', 'verified', 
         ->name('alumnos.baja');
     Route::post('/alumnos/{alumno}/reingreso', [\App\Http\Controllers\Servicios\AlumnosController::class, 'registrarReingreso'])
         ->name('alumnos.reingreso');
+    Route::post('/alumnos/{alumno}/baucher', [\App\Http\Controllers\Servicios\AlumnosController::class, 'subirBaucher'])
+        ->name('alumnos.baucher');
 
     Route::resource('docentes', \App\Http\Controllers\Servicios\DocentesController::class);
 

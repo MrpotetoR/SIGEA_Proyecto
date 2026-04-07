@@ -88,17 +88,16 @@
             to   { opacity: 1; transform: translateY(0); }
         }
 
-        /* ─── Sidebar nav items: staggered slide-in from left ─── */
+        /* ─── Sidebar nav items: subtle fade-in (no blocking transform) ─── */
         .sidebar-link {
-            animation: sidebarSlideIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-            opacity: 0;
-            transform: translateX(-16px);
+            animation: sidebarSlideIn 0.25s ease-out both;
         }
-        @for ($i = 1; $i <= 20; $i++)
-        .sidebar-link:nth-child({{ $i }}) { animation-delay: {{ 0.04 * $i }}s; }
-        @endfor
+        @media (prefers-reduced-motion: reduce) {
+            .sidebar-link { animation: none; }
+        }
         @keyframes sidebarSlideIn {
-            to { opacity: 1; transform: translateX(0); }
+            from { opacity: 0; }
+            to   { opacity: 1; }
         }
 
         /* ─── Cards: scale + fade entrance ─── */
