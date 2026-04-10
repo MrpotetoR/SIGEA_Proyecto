@@ -60,6 +60,8 @@ Route::prefix('alumno')->name('alumno.')->middleware(['auth', 'verified', 'role:
     Route::post('/evaluacion-docente', [\App\Http\Controllers\Alumno\EvaluacionDocenteController::class, 'store'])->name('evaluacion-docente.store');
     Route::get('/mis-docentes',     [\App\Http\Controllers\Alumno\DocentesController::class,          'index'])->name('mis-docentes');
     Route::get('/noticias',         [\App\Http\Controllers\Alumno\NoticiasController::class,          'index'])->name('noticias');
+    Route::get('/pagos',            [\App\Http\Controllers\Alumno\PagosController::class,            'index'])->name('pagos');
+    Route::post('/pagos',           [\App\Http\Controllers\Alumno\PagosController::class,            'store'])->name('pagos.store');
     Route::post('/chatbot',         [\App\Http\Controllers\ChatbotController::class,                  'responder'])->name('chatbot');
 });
 
@@ -158,6 +160,10 @@ Route::prefix('servicios')->name('servicios.')->middleware(['auth', 'verified', 
         ->name('alumnos.reingreso');
     Route::post('/alumnos/{alumno}/baucher', [\App\Http\Controllers\Servicios\AlumnosController::class, 'subirBaucher'])
         ->name('alumnos.baucher');
+    Route::post('/pagos/{pago}/aprobar', [\App\Http\Controllers\Servicios\AlumnosController::class, 'aprobarBaucher'])
+        ->name('pagos.aprobar');
+    Route::post('/pagos/{pago}/rechazar', [\App\Http\Controllers\Servicios\AlumnosController::class, 'rechazarBaucher'])
+        ->name('pagos.rechazar');
 
     Route::resource('docentes', \App\Http\Controllers\Servicios\DocentesController::class);
 

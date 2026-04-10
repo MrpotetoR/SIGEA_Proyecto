@@ -105,3 +105,12 @@
         </div>
     @endif
 </x-panel>
+
+<script>
+(function() {
+    const form = document.querySelector('form[action*="horarios"][method="GET"]');
+    const selects = form.querySelectorAll('select');
+
+    selects.forEach(s => s.addEventListener('change', () => form.submit()));
+})();
+</script>

@@ -35,10 +35,23 @@ return [
         ],
     ],
 
+    // ── Chatbot IA ─────────────────────────────────────────────
+    // CHATBOT_DRIVER: "local" (Ollama) o "groq" (nube)
+    'chatbot' => [
+        'driver' => env('CHATBOT_DRIVER', 'local'),
+    ],
+
+    // Ollama — ejecución local (sin internet, sin API key)
+    'ollama' => [
+        'url'   => env('OLLAMA_URL', 'http://localhost:11434/v1/chat/completions'),
+        'model' => env('OLLAMA_MODEL', 'llama3.1'),
+    ],
+
+    // Groq — ejecución en la nube (requiere API key)
     'groq' => [
         'api_key' => env('GROQ_API_KEY'),
-        'model' => env('GROQ_MODEL', 'llama-3.3-70b-versatile'),
-        'url' => 'https://api.groq.com/openai/v1/chat/completions',
+        'model'   => env('GROQ_MODEL', 'llama-3.3-70b-versatile'),
+        'url'     => 'https://api.groq.com/openai/v1/chat/completions',
     ],
 
 ];

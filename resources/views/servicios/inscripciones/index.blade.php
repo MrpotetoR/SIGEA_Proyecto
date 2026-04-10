@@ -164,6 +164,26 @@
         </div>
     </div>
 
+    <script>
+    (function() {
+        const filtroForm = document.querySelector('form[action*="inscripciones"][method="GET"]');
+        if (filtroForm) {
+            const buscar = filtroForm.querySelector('input[name="buscar"]');
+            const selects = filtroForm.querySelectorAll('select');
+            let timer;
+
+            if (buscar) {
+                buscar.addEventListener('input', function() {
+                    clearTimeout(timer);
+                    timer = setTimeout(() => filtroForm.submit(), 400);
+                });
+            }
+
+            selects.forEach(s => s.addEventListener('change', () => filtroForm.submit()));
+        }
+    })();
+    </script>
+
     @push('scripts')
     <script>
         const grupoUrl     = '{{ parse_url(route("ajax.grupos"), PHP_URL_PATH) }}';

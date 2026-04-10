@@ -9,26 +9,32 @@ use Illuminate\Http\Request;
 
 class CarrerasController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $carreras = Carrera::with('director')->withCount('alumnos', 'materias')->get();
+        $carreras = Carrera::with('director')->withCount('alumnos', 'materias')
+            ->when($request->tipo_periodo, fn($q, $v) => $q->where('tipo_periodo', $v))
+            ->get();
         return view('servicios.carreras.index', compact('carreras'));
     }
 
     public function create()
     {
-        return view('servicios.carreras.create');
+        $docentes = \App\Models\Docente::orderBy('apellidos')->orderBy('nombre')->get();
+        return view('servicios.carreras.create', compact('docentes'));
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'nombre_carrera' => 'required|string|max:120',
-            'clave_carrera' => 'required|string|max:20|unique:carrera,clave_carrera',
-            'id_director' => 'nullable|exists:docente,id_docente',
+            'nombre_carrera'    => 'required|string|max:120',
+            'clave_carrera'     => 'required|string|max:20|unique:carrera,clave_carrera',
+            'id_director'       => 'nullable|exists:docente,id_docente',
+            'area_academica'    => 'required|in:' . implode(',', array_keys(Carrera::AREAS_ACADEMICAS)),
+            'tipo_periodo'      => 'required|in:cuatrimestre,semestre',
+            'duracion_periodos' => 'required|integer|min:1|max:20',
         ]);
 
-        $carrera = Carrera::create($request->only('nombre_carrera', 'clave_carrera', 'id_director'));
+        $carrera = Carrera::create($request->only('nombre_carrera', 'clave_carrera', 'id_director', 'area_academica', 'tipo_periodo', 'duracion_periodos'));
         $this->syncRolDirector($request->id_director);
         return redirect()->route('servicios.carreras.index')->with('success', 'Carrera creada.');
     }
@@ -41,18 +47,22 @@ class CarrerasController extends Controller
 
     public function edit(Carrera $carrera)
     {
-        return view('servicios.carreras.edit', compact('carrera'));
+        $docentes = \App\Models\Docente::orderBy('apellidos')->orderBy('nombre')->get();
+        return view('servicios.carreras.edit', compact('carrera', 'docentes'));
     }
 
     public function update(Request $request, Carrera $carrera)
     {
         $request->validate([
-            'nombre_carrera' => 'required|string|max:120',
-            'id_director' => 'nullable|exists:docente,id_docente',
+            'nombre_carrera'    => 'required|string|max:120',
+            'id_director'       => 'nullable|exists:docente,id_docente',
+            'area_academica'    => 'required|in:' . implode(',', array_keys(Carrera::AREAS_ACADEMICAS)),
+            'tipo_periodo'      => 'required|in:cuatrimestre,semestre',
+            'duracion_periodos' => 'required|integer|min:1|max:20',
         ]);
 
         $directorAnterior = $carrera->id_director;
-        $carrera->update($request->only('nombre_carrera', 'id_director'));
+        $carrera->update($request->only('nombre_carrera', 'id_director', 'area_academica', 'tipo_periodo', 'duracion_periodos'));
 
         // Quitar rol al director anterior si ya no dirige ninguna carrera
         if ($directorAnterior && $directorAnterior != $request->id_director) {

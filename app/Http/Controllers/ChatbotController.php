@@ -40,7 +40,7 @@ class ChatbotController extends Controller
         $messages[] = ['role' => 'user', 'content' => $mensaje];
 
         try {
-            $respuesta = $this->llamarGroq($messages);
+            $respuesta = $this->llamarIA($messages);
 
             $historial[] = ['role' => 'user', 'content' => $mensaje];
             $historial[] = ['role' => 'assistant', 'content' => $respuesta];
@@ -54,7 +54,8 @@ class ChatbotController extends Controller
             return response()->json(['respuesta' => $respuesta]);
 
         } catch (\Exception $e) {
-            Log::error("Chatbot Groq error [{$rol}]: " . $e->getMessage());
+            $driver = config('services.chatbot.driver', 'local');
+            Log::error("Chatbot [{$driver}] error [{$rol}]: " . $e->getMessage());
 
             return response()->json([
                 'respuesta' => $this->respuestaFallback($mensaje, $rol),
@@ -75,7 +76,47 @@ class ChatbotController extends Controller
     }
 
     /**
-     * Llama a la API de Groq.
+     * Llama al modelo de IA según el driver configurado (local u groq).
+     */
+    private function llamarIA(array $messages): string
+    {
+        $driver = config('services.chatbot.driver', 'local');
+
+        return match ($driver) {
+            'local'  => $this->llamarOllama($messages),
+            'groq'   => $this->llamarGroq($messages),
+            default  => $this->llamarOllama($messages),
+        };
+    }
+
+    /**
+     * Llama a Ollama (modelo local — sin API key, sin internet).
+     */
+    private function llamarOllama(array $messages): string
+    {
+        $url   = config('services.ollama.url');
+        $model = config('services.ollama.model');
+
+        $response = Http::timeout(120)->post($url, [
+            'model'       => $model,
+            'messages'    => $messages,
+            'temperature' => 0.7,
+            'max_tokens'  => 1024,
+            'stream'      => false,
+        ]);
+
+        if ($response->failed()) {
+            Log::error('Ollama response: ' . $response->body());
+            throw new \Exception('Error Ollama local: ' . $response->status() . '. ¿Está corriendo ollama serve?');
+        }
+
+        $data = $response->json();
+
+        return $data['choices'][0]['message']['content'] ?? 'No pude generar una respuesta.';
+    }
+
+    /**
+     * Llama a la API de Groq (nube).
      */
     private function llamarGroq(array $messages): string
     {

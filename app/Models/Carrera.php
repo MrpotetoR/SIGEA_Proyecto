@@ -10,7 +10,38 @@ class Carrera extends Model
     protected $primaryKey = 'id_carrera';
     public $timestamps = false;
 
-    protected $fillable = ['id_director', 'nombre_carrera', 'clave_carrera'];
+    protected $fillable = ['id_director', 'nombre_carrera', 'clave_carrera', 'area_academica', 'tipo_periodo', 'duracion_periodos'];
+
+    public const AREAS_ACADEMICAS = [
+        'ciencias_salud'       => 'Ciencias de la Salud',
+        'ingenierias'          => 'Ingenierías y Tecnología',
+        'negocios'             => 'Negocios y Administración',
+        'ciencias_sociales'    => 'Ciencias Sociales y Jurídicas',
+        'educacion'            => 'Educación y Humanidades',
+        'arquitectura_diseno'  => 'Arquitectura y Diseño',
+        'gastronomia'          => 'Gastronomía',
+    ];
+
+    public const TIPOS_PERIODO = [
+        'cuatrimestre' => 'Cuatrimestre',
+        'semestre'     => 'Semestre',
+    ];
+
+    public function getDuracionEstimadaAttribute(): string
+    {
+        if ($this->tipo_periodo === 'cuatrimestre') {
+            $meses = $this->duracion_periodos * 4;
+        } else {
+            $meses = $this->duracion_periodos * 6;
+        }
+        $anios = intdiv($meses, 12);
+        $resto = $meses % 12;
+
+        if ($anios && $resto) {
+            return "{$anios} año" . ($anios > 1 ? 's' : '') . " y {$resto} mes" . ($resto > 1 ? 'es' : '');
+        }
+        return $anios ? "{$anios} año" . ($anios > 1 ? 's' : '') : "{$resto} mes" . ($resto > 1 ? 'es' : '');
+    }
 
     protected static function booted(): void
     {

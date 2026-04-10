@@ -67,3 +67,19 @@
         @endif
     </div>
 </x-panel>
+
+<script>
+(function() {
+    const form = document.querySelector('form[method="GET"]');
+    const buscar = form.querySelector('input[name="buscar"]');
+    const selects = form.querySelectorAll('select');
+    let timer;
+
+    buscar.addEventListener('input', function() {
+        clearTimeout(timer);
+        timer = setTimeout(() => form.submit(), 400);
+    });
+
+    selects.forEach(s => s.addEventListener('change', () => form.submit()));
+})();
+</script>

@@ -43,6 +43,17 @@
                            class="border dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-lg px-2 py-1.5 text-sm w-32 focus:ring-2 focus:ring-blue-400 focus:outline-none">
                     <button type="submit" class="bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-300 hover:bg-gray-200 px-3 py-1.5 rounded-lg text-sm text-gray-700">Buscar</button>
                 </form>
+                <script>
+                (function() {
+                    const form = document.querySelector('.flex.gap-2');
+                    const buscar = form.querySelector('input[name="buscar"]');
+                    let timer;
+                    buscar.addEventListener('input', function() {
+                        clearTimeout(timer);
+                        timer = setTimeout(() => form.submit(), 400);
+                    });
+                })();
+                </script>
             </div>
             <div class="overflow-y-auto flex-1 custom-scrollbar">
             <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700 text-sm">

@@ -57,3 +57,12 @@
         @endif
     </div>
 </x-panel>
+
+<script>
+(function() {
+    const form = document.querySelector('form[method="GET"]');
+    const selects = form.querySelectorAll('select');
+
+    selects.forEach(s => s.addEventListener('change', () => form.submit()));
+})();
+</script>

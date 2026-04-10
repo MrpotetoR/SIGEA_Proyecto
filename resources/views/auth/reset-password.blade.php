@@ -2,7 +2,7 @@
 
     {{-- Greeting --}}
     <div class="text-center mb-7">
-        <h2 class="text-[24px] font-extrabold text-gray-900 slide-up">Nueva contrasena</h2>
+        <h2 class="text-[24px] font-extrabold text-gray-900 slide-up">Nueva contraseña</h2>
         <p class="text-[13px] text-gray-400 mt-1.5 slide-up" style="animation-delay: 0.12s;">Ingresa tu nueva contrasena para acceder a tu cuenta.</p>
     </div>
 

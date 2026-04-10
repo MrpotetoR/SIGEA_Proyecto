@@ -16,6 +16,12 @@ use Illuminate\Support\Facades\Storage;
 
 class AlumnosController extends Controller
 {
+    private \App\Services\NotificacionService $notificaciones;
+
+    public function __construct(\App\Services\NotificacionService $notificaciones)
+    {
+        $this->notificaciones = $notificaciones;
+    }
     public function index(Request $request)
     {
         $alumnos = Alumno::with('carrera', 'user')
@@ -129,6 +135,10 @@ class AlumnosController extends Controller
                         'id_alumno'    => $alumno->id_alumno,
                         'cuatrimestre' => (int) $cuatri,
                         'baucher_path' => $path,
+                        'estatus'      => 'aprobado',
+                        'subido_por'   => auth()->id(),
+                        'revisado_por' => auth()->id(),
+                        'revisado_en'  => now(),
                     ]);
                     $esperado++;
                 }
@@ -249,25 +259,31 @@ class AlumnosController extends Controller
 
         $cuatri = (int) $request->cuatrimestre;
 
-        // Regla secuencial: el siguiente cuatrimestre permitido = cargados + 1
-        $cargados = $alumno->pagosCuatrimestre()->count();
-        $siguiente = $cargados + 1;
+        // Regla secuencial: solo aprobados cuentan como completados
+        $maxAprobado = $alumno->pagosCuatrimestre()
+            ->where('estatus', 'aprobado')
+            ->max('cuatrimestre') ?? 0;
 
-        if ($cuatri !== $siguiente) {
-            return back()->with('error', "Solo puedes cargar el baucher del {$siguiente}° cuatrimestre. Los bauchers deben subirse en orden consecutivo.");
+        if ($cuatri !== $maxAprobado + 1) {
+            return back()->with('error', "Solo puedes cargar el baucher del " . ($maxAprobado + 1) . "° cuatrimestre.");
         }
 
-        // No se permite reemplazar
-        if ($alumno->pagosCuatrimestre()->where('cuatrimestre', $cuatri)->exists()) {
-            return back()->with('error', 'Este baucher ya fue cargado y no puede modificarse.');
+        // No se permite reemplazar uno aprobado
+        if ($alumno->pagosCuatrimestre()->where('cuatrimestre', $cuatri)->where('estatus', 'aprobado')->exists()) {
+            return back()->with('error', 'Este baucher ya fue cargado y aprobado.');
         }
 
         $path = $request->file('baucher')->store("alumnos/{$alumno->id_alumno}/pagos", 'public');
-        PagoCuatrimestre::create([
-            'id_alumno'    => $alumno->id_alumno,
-            'cuatrimestre' => $cuatri,
-            'baucher_path' => $path,
-        ]);
+        PagoCuatrimestre::updateOrCreate(
+            ['id_alumno' => $alumno->id_alumno, 'cuatrimestre' => $cuatri],
+            [
+                'baucher_path' => $path,
+                'estatus'      => 'aprobado',
+                'subido_por'   => auth()->id(),
+                'revisado_por' => auth()->id(),
+                'revisado_en'  => now(),
+            ]
+        );
 
         return back()->with('success', "Baucher del {$cuatri}° cuatrimestre cargado correctamente.");
     }
@@ -304,6 +320,60 @@ class AlumnosController extends Controller
         $alumno->update(['estatus' => 'activo']);
 
         return back()->with('success', 'Reingreso registrado.');
+    }
+
+    public function aprobarBaucher(PagoCuatrimestre $pago)
+    {
+        if (!$pago->estaPendiente()) {
+            return back()->with('error', 'Este baucher ya fue revisado.');
+        }
+
+        $pago->update([
+            'estatus'      => 'aprobado',
+            'revisado_por' => auth()->id(),
+            'revisado_en'  => now(),
+            'comentario_rechazo' => null,
+        ]);
+
+        $alumno = $pago->alumno;
+        $this->notificaciones->enviar(
+            $alumno->user,
+            'pago',
+            'Baucher aprobado',
+            "Tu baucher del {$pago->cuatrimestre}° cuatrimestre ha sido validado exitosamente.",
+            ['icono' => 'clipboard-check', 'color' => 'green', 'url' => route('alumno.pagos')]
+        );
+
+        return back()->with('success', "Baucher del {$pago->cuatrimestre}° cuatrimestre aprobado.");
+    }
+
+    public function rechazarBaucher(Request $request, PagoCuatrimestre $pago)
+    {
+        $request->validate([
+            'comentario_rechazo' => 'required|string|max:500',
+        ]);
+
+        if (!$pago->estaPendiente()) {
+            return back()->with('error', 'Este baucher ya fue revisado.');
+        }
+
+        $pago->update([
+            'estatus'             => 'rechazado',
+            'revisado_por'        => auth()->id(),
+            'revisado_en'         => now(),
+            'comentario_rechazo'  => $request->comentario_rechazo,
+        ]);
+
+        $alumno = $pago->alumno;
+        $this->notificaciones->enviar(
+            $alumno->user,
+            'pago',
+            'Baucher rechazado — correcciones necesarias',
+            "Tu baucher del {$pago->cuatrimestre}° cuatrimestre fue rechazado. Observaciones: {$request->comentario_rechazo}",
+            ['icono' => 'clipboard-check', 'color' => 'red', 'url' => route('alumno.pagos')]
+        );
+
+        return back()->with('success', "Baucher del {$pago->cuatrimestre}° cuatrimestre rechazado. Se notificó al alumno.");
     }
 
     private function generarMatricula(int $carreraId): string
