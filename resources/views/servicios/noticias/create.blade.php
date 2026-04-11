@@ -3,7 +3,7 @@
     <div class="max-w-2xl">
         <a href="{{ route('servicios.noticias.index') }}" class="text-sm text-[#0606F0] dark:text-blue-400 hover:underline mb-6 inline-block">← Volver</a>
         <div class="bg-white dark:bg-gray-800 rounded-xl shadow dark:shadow-gray-900/20 border border-transparent dark:border-gray-700 p-6">
-            <form method="POST" action="{{ route('servicios.noticias.store') }}" class="space-y-5">
+            <form method="POST" action="{{ route('servicios.noticias.store') }}" enctype="multipart/form-data" class="space-y-5">
                 @csrf
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Título *</label>
@@ -17,19 +17,41 @@
                               class="w-full border dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400 focus:outline-none @error('contenido') border-red-400 @enderror">{{ old('contenido') }}</textarea>
                     @error('contenido')<p class="text-red-500 dark:text-red-400 text-xs mt-1">{{ $message }}</p>@enderror
                 </div>
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Fecha de publicación *</label>
-                        <input type="date" name="fecha_publicacion" value="{{ old('fecha_publicacion', today()->toDateString()) }}" required
+                {{-- Imagen (opcional) --}}
+                <div x-data="{ modo: 'ninguno', preview: null }" class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Imagen (opcional)</label>
+                    <div class="flex gap-2">
+                        <button type="button" @click="modo = 'archivo'; preview = null"
+                                :class="modo === 'archivo' ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border-blue-300 dark:border-blue-700' : 'bg-gray-50 dark:bg-gray-700 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-gray-600'"
+                                class="px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors">Subir archivo</button>
+                        <button type="button" @click="modo = 'url'; preview = null"
+                                :class="modo === 'url' ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border-blue-300 dark:border-blue-700' : 'bg-gray-50 dark:bg-gray-700 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-gray-600'"
+                                class="px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors">URL externa</button>
+                        <button type="button" x-show="modo !== 'ninguno'" @click="modo = 'ninguno'; preview = null"
+                                class="text-xs text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 ml-1">Quitar</button>
+                    </div>
+                    <div x-show="modo === 'archivo'" x-transition>
+                        <input type="file" name="imagen" accept="image/*"
+                               @change="preview = $event.target.files[0] ? URL.createObjectURL($event.target.files[0]) : null"
+                               class="w-full text-sm text-gray-500 dark:text-gray-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-50 dark:file:bg-blue-900/30 file:text-blue-700 dark:file:text-blue-300 hover:file:bg-blue-100 dark:hover:file:bg-blue-900/50">
+                        <p class="text-xs text-gray-400 dark:text-gray-500 mt-1">Max 512 KB · JPG, PNG, WEBP</p>
+                    </div>
+                    <div x-show="modo === 'url'" x-transition>
+                        <input type="url" name="imagen_url" placeholder="https://ejemplo.com/imagen.jpg"
+                               @input="preview = $event.target.value"
                                class="w-full border dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400 focus:outline-none">
                     </div>
-                    <div class="flex items-end">
-                        <label class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300 cursor-pointer mb-2">
-                            <input type="checkbox" name="activa" value="1" @checked(old('activa', true))
-                                   class="rounded border-gray-300 dark:border-gray-600 text-[#0606F0] focus:ring-blue-500 dark:bg-gray-700">
-                            Publicar de inmediato
-                        </label>
-                    </div>
+                    <template x-if="preview">
+                        <img :src="preview" class="mt-2 rounded-lg max-h-40 object-cover border dark:border-gray-700" alt="Vista previa">
+                    </template>
+                    @error('imagen')<p class="text-red-500 dark:text-red-400 text-xs mt-1">{{ $message }}</p>@enderror
+                    @error('imagen_url')<p class="text-red-500 dark:text-red-400 text-xs mt-1">{{ $message }}</p>@enderror
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Fecha de publicación *</label>
+                    <input type="date" name="fecha_publicacion" value="{{ old('fecha_publicacion', today()->toDateString()) }}" required
+                           class="w-full border dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400 focus:outline-none">
                 </div>
 
                 {{-- Audiencia --}}

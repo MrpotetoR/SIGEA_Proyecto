@@ -1,24 +1,34 @@
 <x-panel title="Constancias" panelNombre="Servicios Escolares">
     <x-slot name="nav">@include('partials.servicios-nav')</x-slot>
 
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-
-        {{-- Generar constancia --}}
+    <div class="max-w-lg mx-auto">
         <div class="bg-white dark:bg-gray-800 rounded-xl shadow dark:shadow-gray-900/20 border border-transparent dark:border-gray-700 p-6">
-            <h3 class="text-base font-semibold text-gray-700 dark:text-gray-300 mb-4">Generar constancia</h3>
-            <form method="POST" action="{{ route('servicios.constancias.store') }}" class="space-y-4">
+
+            {{-- Icono + titulo --}}
+            <div class="text-center mb-6">
+                <div class="inline-flex items-center justify-center w-14 h-14 rounded-full bg-blue-50 dark:bg-blue-900/30 mb-3">
+                    <svg class="w-7 h-7 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/>
+                    </svg>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200">Generar constancia</h3>
+                <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Selecciona un alumno y el tipo de constancia. El PDF se descargara automaticamente.</p>
+            </div>
+
+            {{-- Formulario --}}
+            <form method="POST" action="{{ route('servicios.constancias.store') }}" target="_blank" class="space-y-4">
                 @csrf
                 <x-ajax-select
                     name="id_alumno"
                     :url="route('ajax.alumnos')"
                     label="Alumno *"
-                    placeholder="Nombre o matrícula..."
+                    placeholder="Nombre o matricula..."
                     :required="true"
                 />
                 <div>
                     <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1">Tipo de constancia *</label>
                     <select name="tipo" required
-                            class="w-full border dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400 focus:outline-none">
+                            class="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400 focus:outline-none">
                         <option value="estudio">De estudio</option>
                         <option value="calificaciones">De calificaciones</option>
                         <option value="comportamiento">De comportamiento</option>
@@ -27,69 +37,14 @@
                     </select>
                 </div>
                 <button type="submit"
-                        class="w-full bg-blue-700 hover:bg-blue-800 dark:bg-[#0606F0] dark:hover:bg-blue-400 text-white py-2.5 rounded-lg text-sm font-semibold transition-colors">
-                    Generar PDF
+                        class="w-full bg-blue-700 hover:bg-blue-800 dark:bg-indigo-600 dark:hover:bg-indigo-500 text-white py-2.5 rounded-lg text-sm font-semibold transition-colors flex items-center justify-center gap-2">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/>
+                    </svg>
+                    Generar y descargar PDF
                 </button>
             </form>
-        </div>
 
-        {{-- Historial --}}
-        <div class="lg:col-span-2 bg-white dark:bg-gray-800 rounded-xl shadow dark:shadow-gray-900/20 border border-transparent dark:border-gray-700 flex flex-col min-h-0" style="max-height: calc(100vh - 220px);">
-            <div class="px-6 py-4 border-b dark:border-gray-700 flex items-center justify-between flex-shrink-0">
-                <h3 class="font-semibold text-gray-700 dark:text-gray-300">Constancias emitidas</h3>
-                <form method="GET" class="flex gap-2">
-                    <input type="text" name="buscar" value="{{ request('buscar') }}"
-                           placeholder="Matrícula..."
-                           class="border dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-lg px-2 py-1.5 text-sm w-32 focus:ring-2 focus:ring-blue-400 focus:outline-none">
-                    <button type="submit" class="bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-300 hover:bg-gray-200 px-3 py-1.5 rounded-lg text-sm text-gray-700">Buscar</button>
-                </form>
-                <script>
-                (function() {
-                    const form = document.querySelector('.flex.gap-2');
-                    const buscar = form.querySelector('input[name="buscar"]');
-                    let timer;
-                    buscar.addEventListener('input', function() {
-                        clearTimeout(timer);
-                        timer = setTimeout(() => form.submit(), 400);
-                    });
-                })();
-                </script>
-            </div>
-            <div class="overflow-y-auto flex-1 custom-scrollbar">
-            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700 text-sm">
-                <thead class="bg-gray-50 dark:bg-gray-700/50 text-xs uppercase text-gray-500 dark:text-gray-400 sticky top-0 z-10">
-                    <tr>
-                        <th class="px-4 py-3 text-left">Alumno</th>
-                        <th class="px-4 py-3 text-center">Tipo</th>
-                        <th class="px-4 py-3 text-center">Fecha</th>
-                        <th class="px-4 py-3 text-center">Emitida por</th>
-                        <th class="px-4 py-3 text-center">PDF</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
-                    @forelse($constancias as $c)
-                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
-                            <td class="px-4 py-3">
-                                <p class="font-medium dark:text-gray-200">{{ $c->alumno?->nombre_completo }}</p>
-                                <p class="text-xs text-gray-400 dark:text-gray-400">{{ $c->alumno?->matricula }}</p>
-                            </td>
-                            <td class="px-4 py-3 text-center capitalize dark:text-gray-300">{{ str_replace('_', ' ', $c->tipo) }}</td>
-                            <td class="px-4 py-3 text-center text-gray-500 dark:text-gray-400">{{ $c->fecha_emision?->format('d/m/Y') }}</td>
-                            <td class="px-4 py-3 text-center text-gray-500 dark:text-gray-400">{{ $c->generadaPor?->name }}</td>
-                            <td class="px-4 py-3 text-center">
-                                <a href="{{ route('servicios.constancias.pdf', $c) }}"
-                                   class="text-[#0606F0] dark:text-blue-400 hover:underline text-xs font-medium">Descargar</a>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr><td colspan="5" class="px-4 py-8 text-center text-gray-400 dark:text-gray-400">Sin constancias emitidas.</td></tr>
-                    @endforelse
-                </tbody>
-            </table>
-            </div>
-            @if($constancias instanceof \Illuminate\Pagination\LengthAwarePaginator)
-                <div class="px-4 py-3 border-t dark:border-gray-700 flex-shrink-0">{{ $constancias->links() }}</div>
-            @endif
         </div>
     </div>
 </x-panel>

@@ -29,6 +29,14 @@
                 <option value="baja_definitiva" @selected(request('estatus') === 'baja_definitiva')>Baja definitiva</option>
             </select>
         </div>
+        <div class="flex items-end">
+            <label class="flex items-center gap-2 cursor-pointer bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-2">
+                <input type="checkbox" name="adeudo" value="1" @checked(request('adeudo'))
+                       class="rounded border-gray-300 dark:border-gray-600 text-red-600 focus:ring-red-500"
+                       onchange="this.form.submit()">
+                <span class="text-sm text-red-600 dark:text-red-400 font-medium">Con adeudo</span>
+            </label>
+        </div>
         <button type="submit"
                 class="bg-[#0606F0] hover:bg-[#04276B] dark:bg-[#0606F0] dark:hover:bg-[#0606F0] text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
             Filtrar

@@ -43,6 +43,17 @@ class PDFService
         return $path;
     }
 
+    /**
+     * Crea el objeto PDF de constancia sin guardarlo en disco.
+     */
+    public function crearConstanciaPdf(Alumno $alumno, string $tipo)
+    {
+        $alumno->load('carrera');
+        $pdf = Pdf::loadView('pdf.constancia', compact('alumno', 'tipo'));
+        $pdf->setPaper('letter', 'portrait');
+        return $pdf;
+    }
+
     public function generarListaAsistencia(Grupo $grupo, Materia $materia): string
     {
         $alumnos = $grupo->alumnos()->orderBy('apellidos')->get();

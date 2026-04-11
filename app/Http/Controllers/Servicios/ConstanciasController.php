@@ -12,16 +12,9 @@ class ConstanciasController extends Controller
 {
     public function __construct(private PDFService $pdfService) {}
 
-    public function index(Request $request)
+    public function index()
     {
-        $constancias = Constancia::with('alumno', 'generadaPor')
-            ->when($request->buscar, fn($q) =>
-                $q->whereHas('alumno', fn($a) => $a->where('matricula', 'like', "%{$request->buscar}%"))
-            )
-            ->orderByDesc('created_at')
-            ->paginate(20)->withQueryString();
-
-        return view('servicios.constancias.index', compact('constancias'));
+        return view('servicios.constancias.index');
     }
 
     public function store(Request $request)
@@ -32,24 +25,32 @@ class ConstanciasController extends Controller
         ]);
 
         $alumno = Alumno::findOrFail($request->id_alumno);
-        $path = $this->pdfService->generarConstancia($alumno, $request->tipo);
 
         Constancia::create([
             'id_alumno' => $alumno->id_alumno,
             'generada_por' => auth()->id(),
             'tipo' => $request->tipo,
-            'archivo_url' => $path,
+            'archivo_url' => null,
             'fecha_emision' => today(),
         ]);
 
-        return back()->with('success', 'Constancia generada.');
+        $pdf = $this->pdfService->crearConstanciaPdf($alumno, $request->tipo);
+        $nombre = "constancia_{$alumno->matricula}_{$request->tipo}.pdf";
+
+        return $pdf->download($nombre);
     }
 
     public function pdf(Constancia $constancia)
     {
-        if (!$constancia->archivo_url || !file_exists($constancia->archivo_url)) {
-            return back()->with('error', 'Archivo no encontrado.');
+        $constancia->load('alumno');
+
+        if (!$constancia->alumno) {
+            return back()->with('error', 'Alumno no encontrado.');
         }
-        return response()->download($constancia->archivo_url);
+
+        $pdf = $this->pdfService->crearConstanciaPdf($constancia->alumno, $constancia->tipo);
+        $nombre = "constancia_{$constancia->alumno->matricula}_{$constancia->tipo}.pdf";
+
+        return $pdf->download($nombre);
     }
 }

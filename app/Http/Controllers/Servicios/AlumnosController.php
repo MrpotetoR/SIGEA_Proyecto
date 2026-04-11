@@ -32,6 +32,11 @@ class AlumnosController extends Controller
             )
             ->when($request->carrera_id, fn($q) => $q->where('id_carrera', $request->carrera_id))
             ->when($request->estatus, fn($q) => $q->where('estatus', $request->estatus))
+            ->when($request->adeudo, function ($q) {
+                $q->whereColumn('cuatrimestre_actual', '>', DB::raw(
+                    '(SELECT COALESCE(COUNT(*), 0) FROM pago_cuatrimestre WHERE pago_cuatrimestre.id_alumno = alumno.id_alumno AND pago_cuatrimestre.estatus = \'aprobado\')'
+                ));
+            })
             ->orderBy('apellidos')
             ->paginate(20)->withQueryString();
 

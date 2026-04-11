@@ -24,8 +24,8 @@ class DatosPruebaSeeder extends Seeder
         $this->command->info('Generando datos de prueba...');
 
         $ciclo = CicloEscolar::where('nombre', '2025-2')->first();
-        $dsm   = Carrera::where('clave_carrera', 'DSM')->first();
-        $ge    = Carrera::where('clave_carrera', 'GE')->first();
+        $dsm   = Carrera::where('clave_carrera', 'like', 'DSM%')->first();
+        $ge    = Carrera::where('clave_carrera', 'like', 'GE%')->first();
         $admin = User::where('email', 'servicios@sigea.edu.mx')->first();
 
         // ── 1. MATERIAS ────────────────────────────────────────────────────

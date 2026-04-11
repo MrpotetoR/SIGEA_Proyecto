@@ -9,7 +9,7 @@ class Noticia extends Model
     protected $table = 'noticia';
     protected $primaryKey = 'id_noticia';
 
-    protected $fillable = ['user_id', 'titulo', 'contenido', 'fecha_publicacion', 'activa'];
+    protected $fillable = ['user_id', 'titulo', 'contenido', 'imagen_url', 'fecha_publicacion', 'activa'];
 
     protected function casts(): array
     {

@@ -1,12 +1,12 @@
 <x-panel title="Editar Noticia" panelNombre="Servicios Escolares">
     <x-slot name="nav">@include('partials.servicios-nav')</x-slot>
     <div class="max-w-2xl">
-        <a href="{{ route('servicios.noticias.index') }}" class="text-sm text-[#0606F0] dark:text-blue-400 hover:underline mb-6 inline-block">← Volver</a>
+        <a href="{{ route('servicios.noticias.index') }}" class="text-sm text-[#0606F0] dark:text-blue-400 hover:underline mb-6 inline-block">&larr; Volver</a>
         <div class="bg-white dark:bg-gray-800 rounded-xl shadow dark:shadow-gray-900/20 border border-transparent dark:border-gray-700 p-6">
-            <form method="POST" action="{{ route('servicios.noticias.update', $noticia) }}" class="space-y-5">
+            <form method="POST" action="{{ route('servicios.noticias.update', $noticia) }}" enctype="multipart/form-data" class="space-y-5">
                 @csrf @method('PUT')
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Título *</label>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Titulo *</label>
                     <input type="text" name="titulo" value="{{ old('titulo', $noticia->titulo) }}" required
                            class="w-full border dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400 focus:outline-none">
                 </div>
@@ -15,13 +15,51 @@
                     <textarea name="contenido" rows="6" required
                               class="w-full border dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400 focus:outline-none">{{ old('contenido', $noticia->contenido) }}</textarea>
                 </div>
-                <div>
-                    <label class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300 cursor-pointer">
-                        <input type="checkbox" name="activa" value="1" @checked(old('activa', $noticia->activa))
-                               class="rounded border-gray-300 dark:border-gray-600 text-[#0606F0] focus:ring-blue-500 dark:bg-gray-700">
-                        Noticia activa (visible para todos)
-                    </label>
+
+                {{-- Imagen --}}
+                <div x-data="{
+                    modo: '{{ $noticia->imagen_url ? 'actual' : 'ninguno' }}',
+                    preview: '{{ $noticia->imagen_url }}',
+                    quitar: false
+                }" class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Imagen</label>
+
+                    {{-- Imagen actual --}}
+                    <template x-if="modo === 'actual' && preview">
+                        <div class="relative inline-block">
+                            <img :src="preview" class="rounded-lg max-h-40 object-cover border dark:border-gray-700" alt="Imagen actual">
+                            <button type="button" @click="modo = 'ninguno'; quitar = true; preview = null"
+                                    class="absolute -top-2 -right-2 w-6 h-6 bg-red-500 hover:bg-red-600 text-white rounded-full text-xs flex items-center justify-center shadow">&times;</button>
+                        </div>
+                    </template>
+                    <input type="hidden" name="quitar_imagen" :value="quitar ? '1' : '0'">
+
+                    <div class="flex gap-2" x-show="modo !== 'actual'">
+                        <button type="button" @click="modo = 'archivo'; preview = null; quitar = true"
+                                :class="modo === 'archivo' ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border-blue-300 dark:border-blue-700' : 'bg-gray-50 dark:bg-gray-700 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-gray-600'"
+                                class="px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors">Subir archivo</button>
+                        <button type="button" @click="modo = 'url'; preview = null; quitar = true"
+                                :class="modo === 'url' ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border-blue-300 dark:border-blue-700' : 'bg-gray-50 dark:bg-gray-700 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-gray-600'"
+                                class="px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors">URL externa</button>
+                    </div>
+                    <div x-show="modo === 'archivo'" x-transition>
+                        <input type="file" name="imagen" accept="image/*"
+                               @change="preview = $event.target.files[0] ? URL.createObjectURL($event.target.files[0]) : null"
+                               class="w-full text-sm text-gray-500 dark:text-gray-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-50 dark:file:bg-blue-900/30 file:text-blue-700 dark:file:text-blue-300 hover:file:bg-blue-100 dark:hover:file:bg-blue-900/50">
+                        <p class="text-xs text-gray-400 dark:text-gray-500 mt-1">Max 512 KB · JPG, PNG, WEBP</p>
+                    </div>
+                    <div x-show="modo === 'url'" x-transition>
+                        <input type="url" name="imagen_url" placeholder="https://ejemplo.com/imagen.jpg"
+                               @input="preview = $event.target.value"
+                               class="w-full border dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400 focus:outline-none">
+                    </div>
+                    <template x-if="preview && modo !== 'actual'">
+                        <img :src="preview" class="mt-2 rounded-lg max-h-40 object-cover border dark:border-gray-700" alt="Vista previa">
+                    </template>
+                    @error('imagen')<p class="text-red-500 dark:text-red-400 text-xs mt-1">{{ $message }}</p>@enderror
+                    @error('imagen_url')<p class="text-red-500 dark:text-red-400 text-xs mt-1">{{ $message }}</p>@enderror
                 </div>
+
                 <div class="flex gap-3 pt-4 border-t dark:border-gray-700">
                     <button type="submit" class="bg-blue-700 hover:bg-blue-800 dark:bg-[#0606F0] dark:hover:bg-blue-400 text-white px-6 py-2.5 rounded-lg text-sm font-semibold transition-colors">Guardar</button>
                     <a href="{{ route('servicios.noticias.index') }}" class="bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 px-6 py-2.5 rounded-lg text-sm font-medium transition-colors">Cancelar</a>
