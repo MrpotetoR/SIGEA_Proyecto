@@ -12,6 +12,16 @@ use Illuminate\Validation\Rules\Password;
 
 class PerfilController extends Controller
 {
+    /**
+     * @OA\Get(
+     *     path="/api/v1/perfil",
+     *     tags={"Perfil"},
+     *     summary="Perfil del usuario autenticado (con alumno/docente asociado)",
+     *     security={{"sanctum":{}}},
+     *
+     *     @OA\Response(response=200, description="Datos del perfil")
+     * )
+     */
     public function show(Request $request)
     {
         $user = $request->user()->load('alumno.carrera', 'docente');
@@ -23,6 +33,26 @@ class PerfilController extends Controller
         ]);
     }
 
+    /**
+     * @OA\Patch(
+     *     path="/api/v1/perfil",
+     *     tags={"Perfil"},
+     *     summary="Actualizar nombre o email del usuario",
+     *     security={{"sanctum":{}}},
+     *
+     *     @OA\RequestBody(
+     *
+     *         @OA\JsonContent(
+     *
+     *             @OA\Property(property="name", type="string", example="Juan Pérez"),
+     *             @OA\Property(property="email", type="string", format="email", example="juan@sigea.local")
+     *         )
+     *     ),
+     *
+     *     @OA\Response(response=200, description="Perfil actualizado"),
+     *     @OA\Response(response=422, description="Validación fallida")
+     * )
+     */
     public function update(Request $request)
     {
         $user = $request->user();
@@ -37,6 +67,29 @@ class PerfilController extends Controller
         return new UserResource($user);
     }
 
+    /**
+     * @OA\Put(
+     *     path="/api/v1/perfil/password",
+     *     tags={"Perfil"},
+     *     summary="Cambiar la contraseña",
+     *     security={{"sanctum":{}}},
+     *
+     *     @OA\RequestBody(
+     *         required=true,
+     *
+     *         @OA\JsonContent(
+     *             required={"current_password","password","password_confirmation"},
+     *
+     *             @OA\Property(property="current_password", type="string", format="password"),
+     *             @OA\Property(property="password", type="string", format="password", minLength=8),
+     *             @OA\Property(property="password_confirmation", type="string", format="password")
+     *         )
+     *     ),
+     *
+     *     @OA\Response(response=200, description="Contraseña actualizada"),
+     *     @OA\Response(response=422, description="Contraseña actual incorrecta o no coincide")
+     * )
+     */
     public function cambiarPassword(Request $request)
     {
         $request->validate([

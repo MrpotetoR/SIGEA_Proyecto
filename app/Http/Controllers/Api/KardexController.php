@@ -11,6 +11,28 @@ class KardexController extends Controller
 {
     public function __construct(private KardexService $kardexService) {}
 
+    /**
+     * @OA\Get(
+     *     path="/api/v1/kardex",
+     *     tags={"Kardex"},
+     *     summary="Historial académico del alumno autenticado",
+     *     security={{"sanctum":{}}},
+     *
+     *     @OA\Response(
+     *         response=200,
+     *         description="Historial agrupado por ciclo",
+     *
+     *         @OA\JsonContent(
+     *
+     *             @OA\Property(property="alumno", type="object"),
+     *             @OA\Property(property="promedio", type="number", format="float"),
+     *             @OA\Property(property="historial", type="array", @OA\Items(type="object"))
+     *         )
+     *     ),
+     *
+     *     @OA\Response(response=404, description="El usuario no es alumno")
+     * )
+     */
     public function show(Request $request)
     {
         $alumno = $request->user()?->alumno;
@@ -38,6 +60,23 @@ class KardexController extends Controller
         ]);
     }
 
+    /**
+     * @OA\Get(
+     *     path="/api/v1/kardex/pdf",
+     *     tags={"Kardex"},
+     *     summary="Descargar kardex en PDF",
+     *     security={{"sanctum":{}}},
+     *
+     *     @OA\Response(
+     *         response=200,
+     *         description="Archivo PDF",
+     *
+     *         @OA\MediaType(mediaType="application/pdf")
+     *     ),
+     *
+     *     @OA\Response(response=404, description="El usuario no es alumno")
+     * )
+     */
     public function pdf(Request $request)
     {
         $alumno = $request->user()?->alumno;

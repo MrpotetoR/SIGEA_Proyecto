@@ -1,0 +1,706 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "SIGEA REST API",
+        "description": "API REST del Sistema Integral de Gestión Educativa Académica (SIGEA). Autenticación mediante tokens Sanctum (header `Authorization: Bearer <token>`).",
+        "contact": {
+            "name": "Equipo SIGEA",
+            "email": "contacto@sigea.local"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8000",
+            "description": "Servidor local de desarrollo"
+        }
+    ],
+    "paths": {
+        "/api/v1/alumnos": {
+            "get": {
+                "tags": [
+                    "Alumnos"
+                ],
+                "summary": "Listar alumnos con filtros",
+                "operationId": "60e41cd980b4e8c9d93e1f675839d5a9",
+                "parameters": [
+                    {
+                        "name": "buscar",
+                        "in": "query",
+                        "description": "Texto a buscar en matrícula, nombre o apellidos",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "estatus",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "activo",
+                                "baja_temporal",
+                                "baja_definitiva",
+                                "egresado"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "carrera",
+                        "in": "query",
+                        "description": "ID de carrera",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "default": 15
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Listado paginado"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/alumnos/{id}": {
+            "get": {
+                "tags": [
+                    "Alumnos"
+                ],
+                "summary": "Detalle de un alumno",
+                "operationId": "f670ebce2262af876604853d043d237a",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Alumno encontrado"
+                    },
+                    "404": {
+                        "description": "No encontrado"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/login": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Iniciar sesión y obtener token",
+                "operationId": "b9b760991d94b179960cd7ddc93eedf2",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "admin@sigea.local"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "secret"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Token emitido",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "token": {
+                                            "type": "string",
+                                            "example": "1|a8f2h9j3k..."
+                                        },
+                                        "user": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Credenciales inválidas o cuenta desactivada"
+                    }
+                }
+            }
+        },
+        "/api/v1/logout": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Cerrar sesión (revoca el token actual)",
+                "operationId": "b66dd8a7864f561822c01bc8339363fb",
+                "responses": {
+                    "200": {
+                        "description": "Sesión cerrada"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/me": {
+            "get": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Usuario autenticado",
+                "operationId": "c24e88aea4324667c5f4e38549a5298f",
+                "responses": {
+                    "200": {
+                        "description": "Datos del usuario"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/kardex": {
+            "get": {
+                "tags": [
+                    "Kardex"
+                ],
+                "summary": "Historial académico del alumno autenticado",
+                "operationId": "4ea465dbfe28f16a5232222be4620f4b",
+                "responses": {
+                    "200": {
+                        "description": "Historial agrupado por ciclo",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "alumno": {
+                                            "type": "object"
+                                        },
+                                        "promedio": {
+                                            "type": "number",
+                                            "format": "float"
+                                        },
+                                        "historial": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "El usuario no es alumno"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/kardex/pdf": {
+            "get": {
+                "tags": [
+                    "Kardex"
+                ],
+                "summary": "Descargar kardex en PDF",
+                "operationId": "3507ab58fc779b893787e8cf219d0160",
+                "responses": {
+                    "200": {
+                        "description": "Archivo PDF",
+                        "content": {
+                            "application/pdf": {}
+                        }
+                    },
+                    "404": {
+                        "description": "El usuario no es alumno"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/noticias": {
+            "get": {
+                "tags": [
+                    "Noticias"
+                ],
+                "summary": "Listar noticias activas",
+                "operationId": "acdc7a144931171441c5b1711867cdf7",
+                "parameters": [
+                    {
+                        "name": "desde",
+                        "in": "query",
+                        "description": "Fecha mínima (YYYY-MM-DD)",
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Resultados por página",
+                        "schema": {
+                            "type": "integer",
+                            "default": 15
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Listado paginado"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Noticias"
+                ],
+                "summary": "Crear una noticia",
+                "operationId": "6edd4c381cc2b94c17b4166d4f8f6688",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "titulo",
+                                    "contenido"
+                                ],
+                                "properties": {
+                                    "titulo": {
+                                        "type": "string",
+                                        "maxLength": 200
+                                    },
+                                    "contenido": {
+                                        "type": "string"
+                                    },
+                                    "imagen_url": {
+                                        "type": "string",
+                                        "format": "uri",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Noticia creada"
+                    },
+                    "422": {
+                        "description": "Validación fallida"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/noticias/{id}": {
+            "get": {
+                "tags": [
+                    "Noticias"
+                ],
+                "summary": "Obtener una noticia",
+                "operationId": "22f7a75e1b6a99723bcd82807aadcbb6",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Noticia encontrada"
+                    },
+                    "404": {
+                        "description": "No encontrada"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Noticias"
+                ],
+                "summary": "Actualizar una noticia",
+                "operationId": "e9a0ab9b0fb9310dd924cd4a0265fcbd",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "titulo": {
+                                        "type": "string",
+                                        "maxLength": 200
+                                    },
+                                    "contenido": {
+                                        "type": "string"
+                                    },
+                                    "imagen_url": {
+                                        "type": "string",
+                                        "format": "uri",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Noticia actualizada"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Noticias"
+                ],
+                "summary": "Eliminar una noticia",
+                "operationId": "86e02d017f55d8af043ca15b5252dec3",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Noticia eliminada"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/notificaciones": {
+            "get": {
+                "tags": [
+                    "Notificaciones"
+                ],
+                "summary": "Listar notificaciones recientes del usuario",
+                "operationId": "ec57e8c677c5db47f42fbae9c251485f",
+                "parameters": [
+                    {
+                        "name": "no_leidas",
+                        "in": "query",
+                        "description": "Filtrar solo no leídas",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "default": 20
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Listado paginado con contador de no leídas"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/notificaciones/{id}/leida": {
+            "post": {
+                "tags": [
+                    "Notificaciones"
+                ],
+                "summary": "Marcar una notificación como leída",
+                "operationId": "3df60ee2568a1108a6736895b7b7812c",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Notificación actualizada"
+                    },
+                    "403": {
+                        "description": "No pertenece al usuario"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/notificaciones/marcar-todas": {
+            "post": {
+                "tags": [
+                    "Notificaciones"
+                ],
+                "summary": "Marcar todas las notificaciones como leídas",
+                "operationId": "c1259470ac3aa9a3e4727f8dd515d354",
+                "responses": {
+                    "200": {
+                        "description": "Operación completada"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/perfil": {
+            "get": {
+                "tags": [
+                    "Perfil"
+                ],
+                "summary": "Perfil del usuario autenticado (con alumno/docente asociado)",
+                "operationId": "d139941c8a07af6bec88f3d01e5139a6",
+                "responses": {
+                    "200": {
+                        "description": "Datos del perfil"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "patch": {
+                "tags": [
+                    "Perfil"
+                ],
+                "summary": "Actualizar nombre o email del usuario",
+                "operationId": "79e3f1bb372b1ab414f06ad797d6404e",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Juan Pérez"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "juan@sigea.local"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Perfil actualizado"
+                    },
+                    "422": {
+                        "description": "Validación fallida"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/perfil/password": {
+            "put": {
+                "tags": [
+                    "Perfil"
+                ],
+                "summary": "Cambiar la contraseña",
+                "operationId": "b29d7df647456c412d658a6353080d66",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "current_password",
+                                    "password",
+                                    "password_confirmation"
+                                ],
+                                "properties": {
+                                    "current_password": {
+                                        "type": "string",
+                                        "format": "password"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "minLength": 8
+                                    },
+                                    "password_confirmation": {
+                                        "type": "string",
+                                        "format": "password"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Contraseña actualizada"
+                    },
+                    "422": {
+                        "description": "Contraseña actual incorrecta o no coincide"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "sanctum": {
+                "type": "http",
+                "bearerFormat": "Sanctum",
+                "scheme": "bearer"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Auth",
+            "description": "Autenticación por tokens"
+        },
+        {
+            "name": "Perfil",
+            "description": "Datos y contraseña del usuario autenticado"
+        },
+        {
+            "name": "Noticias",
+            "description": "CRUD de noticias institucionales"
+        },
+        {
+            "name": "Alumnos",
+            "description": "Consulta de alumnos"
+        },
+        {
+            "name": "Kardex",
+            "description": "Historial académico del alumno autenticado"
+        },
+        {
+            "name": "Notificaciones",
+            "description": "Notificaciones in-app del usuario"
+        }
+    ]
+}
