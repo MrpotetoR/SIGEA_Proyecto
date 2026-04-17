@@ -36,7 +36,7 @@
                 <label class="block text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1.5">Día</label>
                 <select name="dia" class="w-full text-sm border border-gray-200 dark:border-gray-600 rounded-xl px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400">
                     <option value="">Todos</option>
-                    @foreach(['lunes' => 'Lunes', 'martes' => 'Martes', 'miercoles' => 'Miércoles', 'jueves' => 'Jueves', 'viernes' => 'Viernes', 'sabado' => 'Sábado'] as $key => $label)
+                    @foreach(['lunes' => 'Lunes', 'martes' => 'Martes', 'miercoles' => 'Miércoles', 'jueves' => 'Jueves', 'viernes' => 'Viernes'] as $key => $label)
                         <option value="{{ $key }}" {{ request('dia') == $key ? 'selected' : '' }}>{{ $label }}</option>
                     @endforeach
                 </select>

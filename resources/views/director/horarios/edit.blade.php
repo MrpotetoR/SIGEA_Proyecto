@@ -44,7 +44,7 @@
                 <div>
                     <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1.5">Dia *</label>
                     <select name="dia_semana" required class="w-full text-sm border border-gray-200 dark:border-gray-600 rounded-xl px-4 py-2.5 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400">
-                        @foreach(['lunes','martes','miercoles','jueves','viernes','sabado'] as $dia)
+                        @foreach(['lunes','martes','miercoles','jueves','viernes'] as $dia)
                             <option value="{{ $dia }}" {{ old('dia_semana', $horario->dia_semana) == $dia ? 'selected' : '' }}>{{ ucfirst($dia) }}</option>
                         @endforeach
                     </select>

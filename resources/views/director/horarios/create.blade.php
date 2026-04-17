@@ -58,7 +58,7 @@
             <div>
                 <label class="block text-xs text-gray-500 dark:text-gray-400 mb-3">Días y horarios *</label>
                 <div class="space-y-2">
-                    @foreach(['lunes' => 'Lunes', 'martes' => 'Martes', 'miercoles' => 'Miércoles', 'jueves' => 'Jueves', 'viernes' => 'Viernes', 'sabado' => 'Sábado'] as $key => $label)
+                    @foreach(['lunes' => 'Lunes', 'martes' => 'Martes', 'miercoles' => 'Miércoles', 'jueves' => 'Jueves', 'viernes' => 'Viernes'] as $key => $label)
                         <div class="flex items-center gap-4 p-3 rounded-xl border border-gray-100 dark:border-gray-700 hover:border-gray-200 dark:hover:border-gray-600 transition-colors dia-row">
                             <label class="flex items-center gap-2.5 w-28 flex-shrink-0 cursor-pointer">
                                 <input type="checkbox" name="dias[{{ $key }}][activo]" value="1"

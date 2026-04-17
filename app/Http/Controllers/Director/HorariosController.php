@@ -34,7 +34,7 @@ class HorariosController extends Controller
             $query->where('dia_semana', $request->dia);
         }
 
-        $horarios = $query->orderByRaw("FIELD(dia_semana, 'lunes','martes','miercoles','jueves','viernes','sabado')")
+        $horarios = $query->orderByRaw("FIELD(dia_semana, 'lunes','martes','miercoles','jueves','viernes')")
             ->orderBy('hora_inicio')
             ->get();
 
@@ -108,7 +108,7 @@ class HorariosController extends Controller
             'hora_inicio' => 'required|date_format:H:i',
             'hora_fin' => 'required|date_format:H:i|after:hora_inicio|before_or_equal:18:00',
             'id_docente' => 'required|exists:docente,id_docente',
-            'dia_semana' => 'required|in:lunes,martes,miercoles,jueves,viernes,sabado',
+            'dia_semana' => 'required|in:lunes,martes,miercoles,jueves,viernes',
         ]);
         $horario->update($request->only('hora_inicio', 'hora_fin', 'id_docente', 'dia_semana'));
         return redirect()->route('director.horarios.index')->with('success', 'Horario actualizado.');

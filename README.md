@@ -1,59 +1,182 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# SIGEA — Sistema Integral de Gestión Educativa Académica
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Plataforma web para la gestión académica de una institución educativa de nivel superior. Cubre las operaciones de cuatro perfiles —Alumno, Docente, Director de Carrera y Servicios Escolares— sobre una sola base de datos relacional, con panel diferenciado por rol, modo oscuro y API REST versionada.
 
-## About Laravel
+## Stack
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- **Backend:** Laravel 12, PHP 8.2
+- **Auth:** Laravel Breeze (web) + Laravel Sanctum (API por tokens)
+- **Roles/Permisos:** spatie/laravel-permission
+- **Frontend:** Blade + Tailwind CSS 3 (`darkMode: 'class'`) + Alpine.js 3
+- **PDF:** barryvdh/laravel-dompdf
+- **Bundler:** Vite
+- **Testing:** PHPUnit 11
+- **Tooling:** Laravel Pint, Laravel Boost (MCP)
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Módulos por panel
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### Alumno
+- Dashboard, perfil, horario, mis docentes, kardex (con descarga PDF), historial académico
+- Calificaciones por parcial, asistencia
+- Horas culturales (ACUDE), servicio social
+- Pagos por cuatrimestre (subir baucher PDF, ver estatus)
+- Evaluación docente, noticias, chatbot
 
-## Learning Laravel
+### Docente
+- Dashboard, perfil, grupos, horario, tutorados
+- Toma de asistencia y captura de calificaciones por grupo
+- Reportes de asistencia y rendimiento
+- CRUD de horas culturales y servicio social
+- Resultados de evaluación docente, noticias
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+### Director de Carrera
+- Dashboard, perfil, plan de estudios
+- CRUD de grupos (con inscripción/desinscripción de alumnos) y horarios
+- Listado de docentes y alumnos (con historial)
+- Asistencia, índice de aprobación, evaluación docente, noticias
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### Servicios Escolares
+- Dashboard general
+- CRUD de alumnos (con padre/tutor, pagos iniciales y documentos), docentes, directores, personal
+- CRUD de carreras, materias, ciclos escolares
+- Inscripciones, baucher (subir/aprobar/rechazar) con notificación al alumno
+- Constancias on-the-fly (PDF sin almacenamiento en disco)
+- Noticias con imagen (local máx. 512 KB o URL externa) y lightbox
+- Documentos institucionales y reportes
+- Filtro de alumnos con adeudo
 
-## Laravel Sponsors
+## Características transversales
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+- **Modo oscuro** en los cuatro paneles, persistido en localStorage
+- **Búsqueda con debounce** en todos los listados
+- **Notificaciones in-app** con polling y badge de no leídas
+- **Lightbox** para imágenes de noticias en todos los paneles
+- **Códigos de estado** personalizados (404, 403, 500, 419)
+- **Cambio de contraseña** disponible para todos los roles
 
-### Premium Partners
+## Arquitectura SOA
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+SIGEA sigue una arquitectura orientada a servicios (SOA), tanto **consumiendo** servicios externos como **exponiendo** los propios:
 
-## Contributing
+```
+                ┌─────────────┐
+                │  SIGEA Web  │  ← cliente principal (sesión)
+                └──────┬──────┘
+                       │
+        ┌──────────────┴──────────────┐
+        │                             │
+        ▼ (consume)                   ▼ (expone)
+  ┌──────────────┐               ┌────────────┐
+  │  Servicios   │               │ SIGEA REST │
+  │  externos    │               │  /api/v1   │
+  ├──────────────┤               └────────────┘
+  │ Email (SMTP) │ → recuperación
+  │ Chatbot      │ → asistente IA
+  └──────────────┘
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## API REST
 
-## Code of Conduct
+Versionada bajo `/api/v1/`, autenticada con Sanctum (token por header `Authorization: Bearer <token>`). 18 endpoints diseñados para demostrar los conceptos REST esenciales: autenticación por token, recursos, paginación, filtros, status codes y recursos anidados.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### Autenticación
+| Método | Endpoint | Descripción |
+|---|---|---|
+| POST | `/api/v1/login` | Devuelve token y datos del usuario |
+| POST | `/api/v1/logout` | Invalida el token actual |
+| GET  | `/api/v1/me` | Usuario autenticado |
 
-## Security Vulnerabilities
+### Perfil
+| Método | Endpoint | Descripción |
+|---|---|---|
+| GET   | `/api/v1/perfil` | Perfil + alumno/docente asociado |
+| PATCH | `/api/v1/perfil` | Actualizar nombre/email |
+| PUT   | `/api/v1/perfil/password` | Cambiar contraseña |
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### Noticias (CRUD completo)
+| Método | Endpoint | Descripción |
+|---|---|---|
+| GET    | `/api/v1/noticias` | Listar (paginado, filtro `desde`) |
+| POST   | `/api/v1/noticias` | Crear |
+| GET    | `/api/v1/noticias/{id}` | Detalle |
+| PUT    | `/api/v1/noticias/{id}` | Actualizar |
+| DELETE | `/api/v1/noticias/{id}` | Eliminar |
 
-## License
+### Alumnos (solo lectura)
+| Método | Endpoint | Descripción |
+|---|---|---|
+| GET | `/api/v1/alumnos` | Listar (filtros `buscar`, `estatus`, `carrera`) |
+| GET | `/api/v1/alumnos/{id}` | Detalle con carrera y usuario |
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### Kardex
+| Método | Endpoint | Descripción |
+|---|---|---|
+| GET | `/api/v1/kardex` | Historial del alumno autenticado |
+| GET | `/api/v1/kardex/pdf` | Descarga PDF |
+
+### Notificaciones
+| Método | Endpoint | Descripción |
+|---|---|---|
+| GET  | `/api/v1/notificaciones` | Listar (filtro `no_leidas`, meta `no_leidas` count) |
+| POST | `/api/v1/notificaciones/{id}/leida` | Marcar leída |
+| POST | `/api/v1/notificaciones/marcar-todas` | Marcar todas leídas |
+
+Total: **18 rutas**.
+
+## Instalación
+
+```bash
+git clone <repo>
+cd sigea
+composer install
+npm install
+cp .env.example .env
+php artisan key:generate
+```
+
+Configurar la base de datos en `.env` y luego:
+
+```bash
+php artisan migrate --seed
+php artisan storage:link
+npm run dev          # o npm run build para producción
+php artisan serve
+```
+
+La aplicación queda disponible en `http://localhost:8000`.
+
+## Estructura
+
+```
+app/
+  Http/
+    Controllers/
+      Alumno/        Docente/        Director/        Servicios/
+      Api/           Auth/
+    Resources/       (API Resources)
+  Models/            (Alumno, Docente, Carrera, Materia, Grupo, ...)
+  Services/          (KardexService, PDFService, NotificacionService, ...)
+resources/
+  views/
+    alumno/  docente/  director/  servicios/
+    pdf/     partials/
+routes/
+  web.php  api.php  auth.php  console.php
+```
+
+## Convenciones
+
+- Modelos siguen el snake_case de la BD original (`id_alumno`, `clave_carrera`, etc.)
+- Cada controlador de panel está aislado bajo su namespace correspondiente
+- API expone IDs renombrados a `id` en los Resources para uniformidad
+- Pint formatea automáticamente con `vendor/bin/pint --dirty --format agent`
+
+## Testing
+
+```bash
+php artisan test --compact
+```
+
+## Licencia
+
+Proyecto académico. Laravel framework licenciado bajo [MIT](https://opensource.org/licenses/MIT).

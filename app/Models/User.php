@@ -6,12 +6,13 @@ use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable, HasRoles;
+    use HasApiTokens, HasFactory, HasRoles, Notifiable;
 
     protected $fillable = [
         'name',
@@ -68,10 +69,19 @@ class User extends Authenticatable
     // Helper para redirigir según rol
     public function panelUrl(): string
     {
-        if ($this->hasRole('servicios_escolares')) return '/servicios/dashboard';
-        if ($this->hasRole('director_carrera')) return '/director/dashboard';
-        if ($this->hasRole('docente')) return '/docente/dashboard';
-        if ($this->hasRole('alumno')) return '/alumno/dashboard';
+        if ($this->hasRole('servicios_escolares')) {
+            return '/servicios/dashboard';
+        }
+        if ($this->hasRole('director_carrera')) {
+            return '/director/dashboard';
+        }
+        if ($this->hasRole('docente')) {
+            return '/docente/dashboard';
+        }
+        if ($this->hasRole('alumno')) {
+            return '/alumno/dashboard';
+        }
+
         return '/dashboard';
     }
 }
