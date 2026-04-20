@@ -26,23 +26,28 @@ class GruposController extends Controller
         return view('director.grupos.index', compact('director', 'carrera', 'grupos'));
     }
 
-    public function create()
+    public function create(Request $request)
     {
-        $ciclos = CicloEscolar::orderByDesc('fecha_inicio')->get();
+        $director = $request->user()->docente;
+        $carrera  = $director?->carrerasDirigidas()->first();
+        $ciclos   = CicloEscolar::orderByDesc('fecha_inicio')->get();
         $docentes = Docente::orderBy('apellidos')->get();
-        return view('director.grupos.create', compact('ciclos', 'docentes'));
+        return view('director.grupos.create', compact('ciclos', 'docentes', 'carrera'));
     }
 
     public function store(Request $request)
     {
         $director = $request->user()->docente;
         $carrera = $director->carrerasDirigidas()->firstOrFail();
+        $maxPeriodos = $carrera->max_periodos;
 
         $request->validate([
-            'id_ciclo' => 'required|exists:ciclo_escolar,id_ciclo',
-            'cuatrimestre' => 'required|integer|min:1|max:10',
-            'clave_grupo' => 'required|string|max:20|unique:grupo,clave_grupo',
-            'id_tutor' => 'nullable|exists:docente,id_docente',
+            'id_ciclo'     => 'required|exists:ciclo_escolar,id_ciclo',
+            'cuatrimestre' => "required|integer|min:1|max:{$maxPeriodos}",
+            'clave_grupo'  => 'required|string|max:20|unique:grupo,clave_grupo',
+            'id_tutor'     => 'nullable|exists:docente,id_docente',
+        ], [
+            'cuatrimestre.max' => "Tu carrera solo tiene {$maxPeriodos} {$carrera->label_periodo}s.",
         ]);
 
         $grupo = $this->service->crearGrupo(array_merge($request->all(), ['id_carrera' => $carrera->id_carrera]));
@@ -55,14 +60,16 @@ class GruposController extends Controller
     {
         $ciclos = CicloEscolar::orderByDesc('fecha_inicio')->get();
         $docentes = Docente::orderBy('apellidos')->get();
-        return view('director.grupos.edit', compact('grupo', 'ciclos', 'docentes'));
+        $carrera = $grupo->carrera;
+        return view('director.grupos.edit', compact('grupo', 'ciclos', 'docentes', 'carrera'));
     }
 
     public function update(Request $request, Grupo $grupo)
     {
+        $maxPeriodos = $grupo->carrera?->max_periodos ?? 10;
         $request->validate([
-            'cuatrimestre' => 'required|integer|min:1|max:10',
-            'id_tutor' => 'nullable|exists:docente,id_docente',
+            'cuatrimestre' => "required|integer|min:1|max:{$maxPeriodos}",
+            'id_tutor'     => 'nullable|exists:docente,id_docente',
         ]);
         $grupo->update($request->only('cuatrimestre', 'id_tutor'));
         return redirect()->route('director.grupos.index')->with('success', 'Grupo actualizado.');

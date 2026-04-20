@@ -38,27 +38,24 @@
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Tipo de periodo *</label>
                         <select name="tipo_periodo" id="tipo_periodo" required
                                 class="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400 focus:outline-none @error('tipo_periodo') border-red-400 @enderror">
-                            <option value="cuatrimestre" @selected(old('tipo_periodo', 'cuatrimestre') === 'cuatrimestre')>Cuatrimestre</option>
-                            <option value="semestre" @selected(old('tipo_periodo') === 'semestre')>Semestre</option>
+                            <option value="cuatrimestre" @selected(old('tipo_periodo', 'cuatrimestre') === 'cuatrimestre')>Cuatrimestre (10 periodos)</option>
+                            <option value="semestre" @selected(old('tipo_periodo') === 'semestre')>Semestre (7 periodos)</option>
                         </select>
+                        <p class="text-[10px] text-amber-600 dark:text-amber-400 mt-1">⚠ No se podrá modificar después de crear la carrera.</p>
                         @error('tipo_periodo')<p class="text-red-500 dark:text-red-400 text-xs mt-1">{{ $message }}</p>@enderror
                     </div>
 
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Duración (periodos) *</label>
-                        <input type="number" name="duracion_periodos" id="duracion_periodos"
-                               value="{{ old('duracion_periodos', 10) }}" required min="1" max="20"
-                               class="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400 focus:outline-none @error('duracion_periodos') border-red-400 @enderror">
-                        @error('duracion_periodos')<p class="text-red-500 dark:text-red-400 text-xs mt-1">{{ $message }}</p>@enderror
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Periodos totales</label>
+                        <div id="periodos-totales"
+                             class="w-full border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700/50 rounded-lg px-3 py-2 text-sm text-gray-600 dark:text-gray-300">—</div>
+                        <p class="text-[10px] text-gray-400 mt-1">Asignado automáticamente según el tipo.</p>
                     </div>
 
-                    <div>
+                    <div class="col-span-2">
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Duración estimada</label>
                         <div id="duracion-estimada"
-                             class="w-full border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700/50 rounded-lg px-3 py-2 text-sm text-gray-600 dark:text-gray-300">
-                            —
-                        </div>
-                        <p class="text-[10px] text-gray-400 mt-1">Calculado automáticamente.</p>
+                             class="w-full border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700/50 rounded-lg px-3 py-2 text-sm text-gray-600 dark:text-gray-300">—</div>
                     </div>
                 </div>
 
@@ -87,10 +84,8 @@
 <script>
 function calcularDuracion() {
     const tipo = document.getElementById('tipo_periodo').value;
-    const periodos = parseInt(document.getElementById('duracion_periodos').value) || 0;
-    const el = document.getElementById('duracion-estimada');
-    if (periodos < 1) { el.textContent = '—'; return; }
-
+    const periodos = tipo === 'cuatrimestre' ? 10 : 7;
+    document.getElementById('periodos-totales').textContent = periodos + ' periodos';
     const meses = tipo === 'cuatrimestre' ? periodos * 4 : periodos * 6;
     const anios = Math.floor(meses / 12);
     const resto = meses % 12;
@@ -98,9 +93,8 @@ function calcularDuracion() {
     if (anios) txt += anios + (anios > 1 ? ' años' : ' año');
     if (anios && resto) txt += ' y ';
     if (resto) txt += resto + (resto > 1 ? ' meses' : ' mes');
-    el.textContent = txt || '—';
+    document.getElementById('duracion-estimada').textContent = txt || '—';
 }
 document.getElementById('tipo_periodo').addEventListener('change', calcularDuracion);
-document.getElementById('duracion_periodos').addEventListener('input', calcularDuracion);
 document.addEventListener('DOMContentLoaded', calcularDuracion);
 </script>

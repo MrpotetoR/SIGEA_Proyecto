@@ -28,11 +28,12 @@
                 <input type="text" value="{{ $grupo->clave_grupo }}" disabled
                     class="w-full text-sm border border-gray-200 dark:border-gray-600 rounded-xl px-4 py-2.5 bg-gray-50 dark:bg-gray-700/50 text-gray-500 dark:text-gray-400">
             </div>
+            @php $carreraCtx = $carrera ?? $grupo->carrera; $maxPeriodos = $carreraCtx?->max_periodos ?? 10; $lblPeriodo = $carreraCtx?->label_periodo ?? 'Cuatrimestre'; @endphp
             <div>
-                <label class="block text-xs text-gray-500 dark:text-gray-300 mb-1.5">Cuatrimestre *</label>
+                <label class="block text-xs text-gray-500 dark:text-gray-300 mb-1.5">{{ $lblPeriodo }} *</label>
                 <select name="cuatrimestre" required class="w-full text-sm border border-gray-200 dark:border-gray-600 rounded-xl px-4 py-2.5 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400">
-                    @for($i = 1; $i <= 10; $i++)
-                        <option value="{{ $i }}" {{ (old('cuatrimestre', $grupo->cuatrimestre)) == $i ? 'selected' : '' }}>{{ $i }}o Cuatrimestre</option>
+                    @for($i = 1; $i <= $maxPeriodos; $i++)
+                        <option value="{{ $i }}" {{ (old('cuatrimestre', $grupo->cuatrimestre)) == $i ? 'selected' : '' }}>{{ $i }}° {{ $lblPeriodo }}</option>
                     @endfor
                 </select>
             </div>

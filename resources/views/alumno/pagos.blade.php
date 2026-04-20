@@ -34,8 +34,9 @@
                 </span>
             </div>
 
+            @php $maxPeriodos = $alumno->carrera?->max_periodos ?? 10; @endphp
             <div class="space-y-3">
-                @for($i = 1; $i <= 10; $i++)
+                @for($i = 1; $i <= $maxPeriodos; $i++)
                     @php
                         $pago = $pagos[$i] ?? null;
                         $esSiguiente = ($i === $siguiente);

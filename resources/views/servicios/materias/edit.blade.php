@@ -11,10 +11,11 @@
                            class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200">
                 </div>
                 <div class="grid grid-cols-2 gap-4">
+                    @php $maxPeriodos = $materia->carrera?->max_periodos ?? 10; $lblPeriodo = $materia->carrera?->label_periodo ?? 'Cuatrimestre'; @endphp
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Cuatrimestre *</label>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{{ $lblPeriodo }} *</label>
                         <select name="cuatrimestre" required class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200">
-                            @for($i = 1; $i <= 10; $i++)
+                            @for($i = 1; $i <= $maxPeriodos; $i++)
                                 <option value="{{ $i }}" @selected(old('cuatrimestre', $materia->cuatrimestre) == $i)>{{ $i }}°</option>
                             @endfor
                         </select>

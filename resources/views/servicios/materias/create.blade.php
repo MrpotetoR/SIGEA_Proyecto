@@ -13,17 +13,20 @@
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Carrera *</label>
-                    <select name="id_carrera" required class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200">
-                        <option value="">Seleccionar...</option>
+                    <select name="id_carrera" id="sel-carrera-mat" required class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200">
+                        <option value="" data-max="10" data-label="Cuatrimestre">Seleccionar...</option>
                         @foreach($carreras as $c)
-                            <option value="{{ $c->id_carrera }}" @selected(old('id_carrera') == $c->id_carrera)>{{ $c->nombre_carrera }}</option>
+                            <option value="{{ $c->id_carrera }}"
+                                    data-max="{{ $c->max_periodos }}"
+                                    data-label="{{ $c->label_periodo }}"
+                                    @selected(old('id_carrera') == $c->id_carrera)>{{ $c->nombre_carrera }} ({{ $c->label_periodo }})</option>
                         @endforeach
                     </select>
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Cuatrimestre *</label>
-                        <select name="cuatrimestre" required class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200">
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" id="lbl-cuatri-mat">Cuatrimestre *</label>
+                        <select name="cuatrimestre" id="sel-cuatri-mat" required class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200">
                             @for($i = 1; $i <= 10; $i++)
                                 <option value="{{ $i }}" @selected(old('cuatrimestre') == $i)>{{ $i }}°</option>
                             @endfor
@@ -43,3 +46,26 @@
         </div>
     </div>
 </x-panel>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const selC = document.getElementById('sel-carrera-mat');
+    const selP = document.getElementById('sel-cuatri-mat');
+    const lbl  = document.getElementById('lbl-cuatri-mat');
+    function sync() {
+        const opt = selC.options[selC.selectedIndex];
+        const max = parseInt(opt?.dataset.max || 10);
+        const label = opt?.dataset.label || 'Cuatrimestre';
+        const cur = parseInt(selP.value) || 1;
+        selP.innerHTML = '';
+        for (let i = 1; i <= max; i++) {
+            const o = document.createElement('option');
+            o.value = i; o.textContent = i + '°';
+            if (i === Math.min(cur, max)) o.selected = true;
+            selP.appendChild(o);
+        }
+        lbl.textContent = label + ' *';
+    }
+    selC.addEventListener('change', sync);
+    sync();
+});
+</script>

@@ -48,10 +48,63 @@
                     @error('imagen_url')<p class="text-red-500 dark:text-red-400 text-xs mt-1">{{ $message }}</p>@enderror
                 </div>
 
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Fecha de publicación *</label>
-                    <input type="date" name="fecha_publicacion" value="{{ old('fecha_publicacion', today()->toDateString()) }}" required
-                           class="w-full border dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400 focus:outline-none">
+                {{-- Programación de publicación --}}
+                <div x-data="{
+                        tipo: '{{ old('tipo_publicacion', 'inmediata') }}',
+                        fecha: '{{ old('fecha_publicacion', today()->toDateString()) }}',
+                        hora:  '{{ old('hora_publicacion', now()->addMinutes(30)->format('H:i')) }}',
+                        get hoy() { return new Date().toISOString().split('T')[0]; },
+                        get minHora() {
+                            if (this.fecha === this.hoy) {
+                                const n = new Date(); n.setMinutes(n.getMinutes() + 1);
+                                return n.toTimeString().slice(0,5);
+                            }
+                            return '00:00';
+                        },
+                        get advertencia() {
+                            if (this.tipo !== 'programada') return '';
+                            if (!this.fecha) return 'Selecciona una fecha.';
+                            if (this.fecha < this.hoy) return 'La fecha no puede ser anterior a hoy.';
+                            if (this.fecha === this.hoy && this.hora && this.hora <= new Date().toTimeString().slice(0,5))
+                                return 'La hora debe ser posterior a la hora actual.';
+                            if (this.hora > '23:59') return 'La hora no puede exceder 23:59.';
+                            return '';
+                        }
+                     }"
+                     class="border border-gray-200 dark:border-gray-700 rounded-xl p-4 space-y-3">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Publicación *</label>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        <label class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300 cursor-pointer border rounded-lg px-3 py-2"
+                               :class="tipo === 'inmediata' ? 'border-[#0606F0] bg-blue-50 dark:bg-blue-900/20' : 'border-gray-200 dark:border-gray-600'">
+                            <input type="radio" name="tipo_publicacion" value="inmediata" x-model="tipo" class="text-[#0606F0]">
+                            <span>Publicar inmediatamente</span>
+                        </label>
+                        <label class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300 cursor-pointer border rounded-lg px-3 py-2"
+                               :class="tipo === 'programada' ? 'border-[#0606F0] bg-blue-50 dark:bg-blue-900/20' : 'border-gray-200 dark:border-gray-600'">
+                            <input type="radio" name="tipo_publicacion" value="programada" x-model="tipo" class="text-[#0606F0]">
+                            <span>Programar publicación</span>
+                        </label>
+                    </div>
+
+                    <div x-show="tipo === 'programada'" x-transition class="grid grid-cols-2 gap-3 pt-2">
+                        <div>
+                            <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1">Fecha *</label>
+                            <input type="date" name="fecha_publicacion" x-model="fecha" :min="hoy"
+                                   class="w-full border dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400 focus:outline-none">
+                            @error('fecha_publicacion')<p class="text-red-500 dark:text-red-400 text-xs mt-1">{{ $message }}</p>@enderror
+                        </div>
+                        <div>
+                            <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1">Hora *</label>
+                            <input type="time" name="hora_publicacion" x-model="hora" :min="minHora" max="23:59"
+                                   class="w-full border dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400 focus:outline-none">
+                            @error('hora_publicacion')<p class="text-red-500 dark:text-red-400 text-xs mt-1">{{ $message }}</p>@enderror
+                        </div>
+                    </div>
+                    <p x-show="advertencia" x-text="advertencia" class="text-xs text-red-600 dark:text-red-400"></p>
+                    <p x-show="tipo === 'inmediata'" class="text-[11px] text-gray-500 dark:text-gray-400">La noticia se publicará y notificará en el momento.</p>
+                    <p x-show="tipo === 'programada' && !advertencia && fecha && hora" class="text-[11px] text-blue-600 dark:text-blue-400">
+                        Se publicará automáticamente el <span x-text="fecha"></span> a las <span x-text="hora"></span>.
+                    </p>
                 </div>
 
                 {{-- Audiencia --}}

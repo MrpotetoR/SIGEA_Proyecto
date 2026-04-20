@@ -29,13 +29,14 @@
                 <option value="baja_definitiva" @selected(request('estatus') === 'baja_definitiva')>Baja definitiva</option>
             </select>
         </div>
-        <div class="flex items-end">
-            <label class="flex items-center gap-2 cursor-pointer bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-2">
-                <input type="checkbox" name="adeudo" value="1" @checked(request('adeudo'))
-                       class="rounded border-gray-300 dark:border-gray-600 text-red-600 focus:ring-red-500"
-                       onchange="this.form.submit()">
-                <span class="text-sm text-red-600 dark:text-red-400 font-medium">Con adeudo</span>
-            </label>
+        <div>
+            <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1">Estado de pago</label>
+            <select name="pago_estado" class="border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400 focus:outline-none">
+                <option value="">Todos</option>
+                <option value="pagado" @selected(request('pago_estado') === 'pagado')>Pagado</option>
+                <option value="revision" @selected(request('pago_estado') === 'revision')>En revisión</option>
+                <option value="sin_pago" @selected(request('pago_estado') === 'sin_pago')>Sin pago</option>
+            </select>
         </div>
         <button type="submit"
                 class="bg-[#0606F0] hover:bg-[#04276B] dark:bg-[#0606F0] dark:hover:bg-[#0606F0] text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
@@ -60,6 +61,7 @@
                     <th class="px-4 py-3 text-left">Nombre</th>
                     <th class="px-4 py-3 text-left">Carrera</th>
                     <th class="px-4 py-3 text-center">Cuatrimestre</th>
+                    <th class="px-4 py-3 text-center">Estado de pago</th>
                     <th class="px-4 py-3 text-center">Estatus</th>
                     <th class="px-4 py-3 text-center">Acciones</th>
                 </tr>
@@ -71,6 +73,19 @@
                         <td class="px-4 py-3 font-medium text-gray-900 dark:text-gray-100">{{ $alumno->nombre_completo }}</td>
                         <td class="px-4 py-3 text-gray-600 dark:text-gray-400">{{ $alumno->carrera?->clave_carrera }}</td>
                         <td class="px-4 py-3 text-center text-gray-700 dark:text-gray-300">{{ $alumno->cuatrimestre_actual }}°</td>
+                        <td class="px-4 py-3 text-center">
+                            @php
+                                $pagoEstado = $alumno->pago_estado_actual;
+                                [$pagoBadge, $pagoTexto] = match($pagoEstado) {
+                                    'pagado'   => ['bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300', 'Pagado'],
+                                    'revision' => ['bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300', 'En revisión'],
+                                    default    => ['bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300', 'Sin pago'],
+                                };
+                            @endphp
+                            <span class="px-2 py-1 rounded-full text-xs font-medium {{ $pagoBadge }}">
+                                {{ $pagoTexto }}
+                            </span>
+                        </td>
                         <td class="px-4 py-3 text-center">
                             @php
                                 $badge = match($alumno->estatus) {
@@ -94,7 +109,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="6" class="px-4 py-10 text-center text-gray-400">No hay alumnos registrados.</td>
+                        <td colspan="7" class="px-4 py-10 text-center text-gray-400">No hay alumnos registrados.</td>
                     </tr>
                 @endforelse
             </tbody>

@@ -30,11 +30,14 @@ class CarrerasController extends Controller
             'clave_carrera'     => 'required|string|max:20|unique:carrera,clave_carrera',
             'id_director'       => 'nullable|exists:docente,id_docente',
             'area_academica'    => 'required|in:' . implode(',', array_keys(Carrera::AREAS_ACADEMICAS)),
-            'tipo_periodo'      => 'required|in:cuatrimestre,semestre',
-            'duracion_periodos' => 'required|integer|min:1|max:20',
+            'tipo_periodo'      => 'required|in:' . implode(',', array_keys(Carrera::TIPOS_PERIODO)),
+        ], [
+            'tipo_periodo.required' => 'Debes seleccionar si la carrera es por cuatrimestre o semestre.',
+            'tipo_periodo.in'       => 'El tipo de periodo seleccionado no es válido.',
         ]);
 
-        $carrera = Carrera::create($request->only('nombre_carrera', 'clave_carrera', 'id_director', 'area_academica', 'tipo_periodo', 'duracion_periodos'));
+        // duracion_periodos la fija el modelo (10 cuatrimestres / 7 semestres) automáticamente
+        $carrera = Carrera::create($request->only('nombre_carrera', 'clave_carrera', 'id_director', 'area_academica', 'tipo_periodo'));
         $this->syncRolDirector($request->id_director);
         return redirect()->route('servicios.carreras.index')->with('success', 'Carrera creada.');
     }
@@ -54,15 +57,14 @@ class CarrerasController extends Controller
     public function update(Request $request, Carrera $carrera)
     {
         $request->validate([
-            'nombre_carrera'    => 'required|string|max:120',
-            'id_director'       => 'nullable|exists:docente,id_docente',
-            'area_academica'    => 'required|in:' . implode(',', array_keys(Carrera::AREAS_ACADEMICAS)),
-            'tipo_periodo'      => 'required|in:cuatrimestre,semestre',
-            'duracion_periodos' => 'required|integer|min:1|max:20',
+            'nombre_carrera' => 'required|string|max:120',
+            'id_director'    => 'nullable|exists:docente,id_docente',
+            'area_academica' => 'required|in:' . implode(',', array_keys(Carrera::AREAS_ACADEMICAS)),
         ]);
 
+        // tipo_periodo es inmutable una vez creada la carrera — el modelo también lo blinda.
         $directorAnterior = $carrera->id_director;
-        $carrera->update($request->only('nombre_carrera', 'id_director', 'area_academica', 'tipo_periodo', 'duracion_periodos'));
+        $carrera->update($request->only('nombre_carrera', 'id_director', 'area_academica'));
 
         // Quitar rol al director anterior si ya no dirige ninguna carrera
         if ($directorAnterior && $directorAnterior != $request->id_director) {

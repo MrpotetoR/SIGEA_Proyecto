@@ -16,6 +16,7 @@ class PagosController extends Controller
     public function index()
     {
         $alumno = Alumno::where('user_id', auth()->id())->firstOrFail();
+        $alumno->loadMissing('carrera');
         $pagos  = $alumno->pagosCuatrimestre()->orderBy('cuatrimestre')->get()->keyBy('cuatrimestre');
 
         // El siguiente cuatrimestre permitido: mayor cuatrimestre aprobado + 1
@@ -36,12 +37,13 @@ class PagosController extends Controller
 
     public function store(Request $request)
     {
+        $alumno = Alumno::where('user_id', auth()->id())->firstOrFail();
+        $maxPeriodos = $alumno->carrera?->max_periodos ?? 10;
+
         $request->validate([
-            'cuatrimestre' => 'required|integer|min:1|max:10',
+            'cuatrimestre' => "required|integer|min:1|max:{$maxPeriodos}",
             'baucher'      => 'required|file|mimes:pdf|max:5120',
         ]);
-
-        $alumno = Alumno::where('user_id', auth()->id())->firstOrFail();
         $cuatri = (int) $request->cuatrimestre;
 
         // Validación secuencial: solo aprobados cuentan como completados

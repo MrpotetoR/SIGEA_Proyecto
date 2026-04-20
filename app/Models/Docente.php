@@ -12,7 +12,8 @@ class Docente extends Model
 
     protected $fillable = [
         'user_id', 'nombre', 'apellidos',
-        'especialidad', 'horas_contrato', 'es_tutor',
+        'especialidad', 'num_cedula', 'rfc',
+        'horas_contrato', 'es_tutor',
     ];
 
     protected function casts(): array
@@ -28,6 +29,16 @@ class Docente extends Model
     public function carrerasDirigidas()
     {
         return $this->hasMany(Carrera::class, 'id_director');
+    }
+
+    public function carrerasImparte()
+    {
+        return $this->belongsToMany(
+            Carrera::class,
+            'docente_carrera',
+            'id_docente',
+            'id_carrera'
+        );
     }
 
     public function horarios()
@@ -48,6 +59,11 @@ class Docente extends Model
     public function evaluaciones()
     {
         return $this->hasMany(EvaluacionDocente::class, 'id_docente');
+    }
+
+    public function documentos()
+    {
+        return $this->hasMany(DocumentoDocente::class, 'id_docente');
     }
 
     public function scopeConGruposActivos($query, $cicloId)

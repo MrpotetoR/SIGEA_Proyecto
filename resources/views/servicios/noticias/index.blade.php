@@ -18,10 +18,22 @@
                              class="w-20 h-20 rounded-lg object-cover flex-shrink-0 border dark:border-gray-700 cursor-zoom-in hover:opacity-80 transition-opacity">
                     @endif
                     <div class="min-w-0">
-                        <h3 class="font-semibold text-gray-900 dark:text-gray-100 truncate group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">{{ $n->titulo }}</h3>
+                        <div class="flex items-center gap-2">
+                            <h3 class="font-semibold text-gray-900 dark:text-gray-100 truncate group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">{{ $n->titulo }}</h3>
+                            @if($n->fecha_publicacion && $n->fecha_publicacion->isFuture())
+                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-semibold uppercase tracking-wide bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-800/60 flex-shrink-0">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span> Pendiente
+                                </span>
+                            @endif
+                        </div>
                         <p class="text-sm text-gray-500 dark:text-gray-400 line-clamp-2 mt-1">{{ Str::limit($n->contenido, 120) }}</p>
                         <p class="text-xs text-gray-400 dark:text-gray-500 mt-2">
-                            {{ $n->fecha_publicacion->format('d/m/Y') }} &middot; {{ $n->autor?->name }}
+                            @if($n->fecha_publicacion && $n->fecha_publicacion->isFuture())
+                                Programada: {{ $n->fecha_publicacion->format('d/m/Y H:i') }}
+                            @else
+                                {{ $n->fecha_publicacion->format('d/m/Y') }}
+                            @endif
+                            &middot; {{ $n->autor?->name }}
                         </p>
                     </div>
                 </a>

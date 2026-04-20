@@ -3,16 +3,23 @@
 namespace App\Http\Controllers;
 
 use App\Models\Notificacion;
+use App\Models\Noticia;
+use App\Services\NotificacionService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class NotificacionController extends Controller
 {
+    public function __construct(private NotificacionService $notificaciones) {}
+
     /**
      * Obtener notificaciones del usuario autenticado (para polling AJAX).
+     * Además, dispara notificaciones de noticias programadas cuyo momento ya llegó.
      */
     public function index(Request $request): JsonResponse
     {
+        $this->procesarNoticiasProgramadas();
+
         $notificaciones = Notificacion::where('user_id', auth()->id())
             ->recientes()
             ->orderByDesc('created_at')
@@ -59,5 +66,23 @@ class NotificacionController extends Controller
             ->update(['leida_en' => now()]);
 
         return response()->json(['ok' => true]);
+    }
+
+    /**
+     * Recorre las noticias cuya fecha_publicacion ya pasó pero aún no se notifican,
+     * envía la notificación a los destinatarios y las marca como notificadas.
+     * Se invoca "lazy" desde el polling del panel — no requiere cron.
+     */
+    private function procesarNoticiasProgramadas(): void
+    {
+        $pendientes = Noticia::pendientesNotificacion()->get();
+        foreach ($pendientes as $n) {
+            $this->notificaciones->notificarNuevaNoticia(
+                $n->titulo,
+                route('servicios.noticias.show', $n),
+                $n->destinatarios
+            );
+            $n->update(['notificado' => true]);
+        }
     }
 }

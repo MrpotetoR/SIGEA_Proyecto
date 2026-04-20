@@ -32,28 +32,23 @@
                     </div>
 
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Tipo de periodo *</label>
-                        <select name="tipo_periodo" id="tipo_periodo" required
-                                class="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400 focus:outline-none">
-                            <option value="cuatrimestre" @selected(old('tipo_periodo', $carrera->tipo_periodo) === 'cuatrimestre')>Cuatrimestre</option>
-                            <option value="semestre" @selected(old('tipo_periodo', $carrera->tipo_periodo) === 'semestre')>Semestre</option>
-                        </select>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Tipo de periodo</label>
+                        <input type="text" value="{{ $carrera->label_periodo }}" disabled
+                               class="w-full border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700/50 text-gray-500 dark:text-gray-400 rounded-lg px-3 py-2 text-sm">
+                        <p class="text-[10px] text-gray-400 mt-1">No puede modificarse una vez creada la carrera.</p>
                     </div>
 
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Duración (periodos) *</label>
-                        <input type="number" name="duracion_periodos" id="duracion_periodos"
-                               value="{{ old('duracion_periodos', $carrera->duracion_periodos) }}" required min="1" max="20"
-                               class="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400 focus:outline-none">
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Periodos totales</label>
+                        <input type="text" value="{{ $carrera->max_periodos }} periodos" disabled
+                               class="w-full border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700/50 text-gray-500 dark:text-gray-400 rounded-lg px-3 py-2 text-sm">
                     </div>
 
-                    <div>
+                    <div class="col-span-2">
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Duración estimada</label>
-                        <div id="duracion-estimada"
-                             class="w-full border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700/50 rounded-lg px-3 py-2 text-sm text-gray-600 dark:text-gray-300">
+                        <div class="w-full border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700/50 rounded-lg px-3 py-2 text-sm text-gray-600 dark:text-gray-300">
                             {{ $carrera->duracion_estimada }}
                         </div>
-                        <p class="text-[10px] text-gray-400 mt-1">Calculado automáticamente.</p>
                     </div>
                 </div>
 
@@ -79,23 +74,3 @@
     </div>
 </x-panel>
 
-<script>
-function calcularDuracion() {
-    const tipo = document.getElementById('tipo_periodo').value;
-    const periodos = parseInt(document.getElementById('duracion_periodos').value) || 0;
-    const el = document.getElementById('duracion-estimada');
-    if (periodos < 1) { el.textContent = '—'; return; }
-
-    const meses = tipo === 'cuatrimestre' ? periodos * 4 : periodos * 6;
-    const anios = Math.floor(meses / 12);
-    const resto = meses % 12;
-    let txt = '';
-    if (anios) txt += anios + (anios > 1 ? ' años' : ' año');
-    if (anios && resto) txt += ' y ';
-    if (resto) txt += resto + (resto > 1 ? ' meses' : ' mes');
-    el.textContent = txt || '—';
-}
-document.getElementById('tipo_periodo').addEventListener('change', calcularDuracion);
-document.getElementById('duracion_periodos').addEventListener('input', calcularDuracion);
-document.addEventListener('DOMContentLoaded', calcularDuracion);
-</script>

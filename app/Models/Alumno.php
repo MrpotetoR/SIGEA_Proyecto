@@ -117,4 +117,28 @@ class Alumno extends Model
         $semaforo = $this->semaforosAcademicos()->where('id_ciclo', $ciclo->id_ciclo)->first();
         return $semaforo?->nivel ?? 'verde';
     }
+
+    /**
+     * Estado consolidado del pago del alumno:
+     *  - 'pagado'   : tiene aprobados todos los cuatrimestres hasta el actual y no tiene pendientes
+     *  - 'revision' : tiene al menos un baucher pendiente de revisión
+     *  - 'sin_pago' : no tiene pendientes y le faltan aprobados
+     */
+    public function getPagoEstadoActualAttribute(): string
+    {
+        $pagos = $this->relationLoaded('pagosCuatrimestre')
+            ? $this->pagosCuatrimestre
+            : $this->pagosCuatrimestre()->get();
+
+        if ($pagos->contains('estatus', 'pendiente')) {
+            return 'revision';
+        }
+
+        $aprobados = $pagos->where('estatus', 'aprobado')->count();
+        if ($aprobados >= $this->cuatrimestre_actual) {
+            return 'pagado';
+        }
+
+        return 'sin_pago';
+    }
 }

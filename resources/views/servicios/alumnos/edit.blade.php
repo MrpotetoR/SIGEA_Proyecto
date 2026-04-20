@@ -45,13 +45,15 @@
                         </select>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Cuatrimestre *</label>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{{ $alumno->carrera?->label_periodo ?? 'Cuatrimestre' }} actual *</label>
+                        @php $maxPeriodos = $alumno->carrera?->max_periodos ?? 10; @endphp
                         <select name="cuatrimestre_actual" required
                                 class="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400 focus:outline-none">
-                            @for($i = 1; $i <= 10; $i++)
+                            @for($i = 1; $i <= $maxPeriodos; $i++)
                                 <option value="{{ $i }}" @selected(old('cuatrimestre_actual', $alumno->cuatrimestre_actual) == $i)>{{ $i }}°</option>
                             @endfor
                         </select>
+                        <p class="text-[10px] text-gray-400 mt-1">{{ $alumno->carrera?->label_periodo ?? 'Periodo' }} — {{ $maxPeriodos }} en total para esta carrera</p>
                     </div>
                 </div>
 
@@ -116,20 +118,40 @@
                 @php $docsByTipo = $alumno->documentos->keyBy('tipo'); @endphp
                 <div class="pt-5 border-t dark:border-gray-700">
                     <h3 class="text-base font-semibold text-gray-700 dark:text-gray-200 mb-1">Documentación del alumno</h3>
-                    <p class="text-xs text-gray-400 mb-4">Selecciona un archivo para reemplazar el actual.</p>
+                    <p class="text-xs text-gray-400 mb-4">Sube, reemplaza o elimina archivos. Formato permitido: <span class="font-semibold">PDF</span> (máx. 5 MB).</p>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                         @foreach(\App\Models\DocumentoAlumno::TIPOS as $tipo => $label)
                             @php $doc = $docsByTipo[$tipo] ?? null; @endphp
-                            <div class="p-3 rounded-lg border border-gray-100 dark:border-gray-700">
-                                <div class="flex items-center justify-between mb-2">
-                                    <span class="text-sm text-gray-700 dark:text-gray-300">{{ $label }}</span>
+                            <div class="p-3 rounded-lg border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700/50">
+                                <div class="flex items-center justify-between mb-2 gap-2">
+                                    <span class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ $label }}</span>
                                     @if($doc)
-                                        <a href="{{ asset('storage/'.$doc->archivo_path) }}" target="_blank"
-                                           class="text-xs text-[#0606F0] dark:text-blue-400 hover:underline">Ver actual</a>
+                                        <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300 flex-shrink-0">Cargado</span>
+                                    @else
+                                        <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-gray-200 text-gray-600 dark:bg-gray-600 dark:text-gray-300 flex-shrink-0">Pendiente</span>
                                     @endif
                                 </div>
+                                @if($doc)
+                                    <div class="flex items-center gap-2 mb-2 flex-wrap">
+                                        <a href="{{ asset('storage/'.$doc->archivo_path) }}" target="_blank"
+                                           class="text-xs text-[#0606F0] dark:text-blue-400 hover:underline font-medium">Ver actual</a>
+                                        <span class="text-gray-300 dark:text-gray-600">|</span>
+                                        <a href="{{ asset('storage/'.$doc->archivo_path) }}" download
+                                           class="text-xs text-green-700 dark:text-green-400 hover:underline font-medium">Descargar</a>
+                                        <span class="text-gray-300 dark:text-gray-600">|</span>
+                                        <button type="button"
+                                                onclick="if(confirm('¿Eliminar este documento? Podrás volver a cargarlo después.')) document.getElementById('del-al-{{ $tipo }}').submit();"
+                                                class="text-xs text-red-600 dark:text-red-400 hover:underline font-medium">Eliminar</button>
+                                    </div>
+                                @endif
                                 <input type="file" name="documentos[{{ $tipo }}]" accept="application/pdf"
-                                       class="w-full text-xs text-gray-500 dark:text-gray-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-medium file:bg-blue-50 file:text-blue-700 dark:file:bg-gray-700 dark:file:text-blue-300 hover:file:bg-blue-100">
+                                       class="w-full text-xs text-gray-500 dark:text-gray-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-medium file:bg-blue-50 file:text-blue-700 dark:file:bg-gray-700 dark:file:text-blue-300 hover:file:bg-blue-100 @error('documentos.'.$tipo) ring-1 ring-red-400 @enderror">
+                                <p class="text-[10px] text-gray-400 dark:text-gray-400 mt-1">
+                                    {{ $doc ? 'Selecciona un archivo PDF para reemplazar el actual.' : 'Selecciona un PDF para subir.' }}
+                                </p>
+                                @error('documentos.'.$tipo)
+                                    <p class="text-red-500 dark:text-red-400 text-xs mt-1">{{ $message }}</p>
+                                @enderror
                             </div>
                         @endforeach
                     </div>
@@ -157,6 +179,13 @@
                     </a>
                 </div>
             </form>
+
+            {{-- Formularios ocultos para eliminar documentos del alumno --}}
+            @foreach($docsByTipo as $tipo => $doc)
+                <form id="del-al-{{ $tipo }}" method="POST" action="{{ route('servicios.alumnos.documentos.destroy', $doc) }}" class="hidden">
+                    @csrf @method('DELETE')
+                </form>
+            @endforeach
         </div>
     </div>
 </x-panel>

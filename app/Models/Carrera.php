@@ -27,13 +27,31 @@ class Carrera extends Model
         'semestre'     => 'Semestre',
     ];
 
+    /**
+     * Total de periodos por tipo — reglas de negocio fijas del sistema.
+     * Cuatrimestre: 10 periodos | Semestre: 7 periodos
+     */
+    public const DURACION_POR_TIPO = [
+        'cuatrimestre' => 10,
+        'semestre'     => 7,
+    ];
+
+    /** Máximo de periodos que puede tener un alumno en esta carrera. */
+    public function getMaxPeriodosAttribute(): int
+    {
+        return self::DURACION_POR_TIPO[$this->tipo_periodo] ?? 10;
+    }
+
+    /** Etiqueta singular del periodo: "Cuatrimestre" o "Semestre". */
+    public function getLabelPeriodoAttribute(): string
+    {
+        return self::TIPOS_PERIODO[$this->tipo_periodo] ?? 'Cuatrimestre';
+    }
+
     public function getDuracionEstimadaAttribute(): string
     {
-        if ($this->tipo_periodo === 'cuatrimestre') {
-            $meses = $this->duracion_periodos * 4;
-        } else {
-            $meses = $this->duracion_periodos * 6;
-        }
+        $mesesPorPeriodo = $this->tipo_periodo === 'semestre' ? 6 : 4;
+        $meses = $this->max_periodos * $mesesPorPeriodo;
         $anios = intdiv($meses, 12);
         $resto = $meses % 12;
 
@@ -49,6 +67,17 @@ class Carrera extends Model
             if (empty($carrera->clave_carrera) && !empty($carrera->nombre_carrera)) {
                 $carrera->clave_carrera = self::generarClave($carrera->nombre_carrera);
             }
+            // Forzar duracion_periodos según el tipo_periodo (regla fija del sistema)
+            $carrera->duracion_periodos = self::DURACION_POR_TIPO[$carrera->tipo_periodo] ?? 10;
+        });
+
+        static::updating(function (Carrera $carrera) {
+            // tipo_periodo es inmutable: revertir si intentan cambiarlo
+            if ($carrera->isDirty('tipo_periodo')) {
+                $carrera->tipo_periodo = $carrera->getOriginal('tipo_periodo');
+            }
+            // duracion_periodos siempre sincronizada con tipo_periodo
+            $carrera->duracion_periodos = self::DURACION_POR_TIPO[$carrera->tipo_periodo] ?? 10;
         });
     }
 

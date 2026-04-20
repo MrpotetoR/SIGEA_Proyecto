@@ -24,7 +24,7 @@ class AlumnosController extends Controller
     }
     public function index(Request $request)
     {
-        $alumnos = Alumno::with('carrera', 'user')
+        $alumnos = Alumno::with('carrera', 'user', 'pagosCuatrimestre')
             ->when($request->buscar, fn($q) =>
                 $q->where('nombre', 'like', "%{$request->buscar}%")
                   ->orWhere('apellidos', 'like', "%{$request->buscar}%")
@@ -32,10 +32,19 @@ class AlumnosController extends Controller
             )
             ->when($request->carrera_id, fn($q) => $q->where('id_carrera', $request->carrera_id))
             ->when($request->estatus, fn($q) => $q->where('estatus', $request->estatus))
-            ->when($request->adeudo, function ($q) {
-                $q->whereColumn('cuatrimestre_actual', '>', DB::raw(
-                    '(SELECT COALESCE(COUNT(*), 0) FROM pago_cuatrimestre WHERE pago_cuatrimestre.id_alumno = alumno.id_alumno AND pago_cuatrimestre.estatus = \'aprobado\')'
-                ));
+            ->when($request->pago_estado, function ($q) use ($request) {
+                $aprobadosSql = '(SELECT COALESCE(COUNT(*), 0) FROM pago_cuatrimestre WHERE pago_cuatrimestre.id_alumno = alumno.id_alumno AND pago_cuatrimestre.estatus = \'aprobado\')';
+                $pendientesSql = '(SELECT COALESCE(COUNT(*), 0) FROM pago_cuatrimestre WHERE pago_cuatrimestre.id_alumno = alumno.id_alumno AND pago_cuatrimestre.estatus = \'pendiente\')';
+
+                if ($request->pago_estado === 'revision') {
+                    $q->whereRaw("$pendientesSql > 0");
+                } elseif ($request->pago_estado === 'pagado') {
+                    $q->whereRaw("$pendientesSql = 0")
+                      ->whereRaw("$aprobadosSql >= alumno.cuatrimestre_actual");
+                } elseif ($request->pago_estado === 'sin_pago') {
+                    $q->whereRaw("$pendientesSql = 0")
+                      ->whereRaw("$aprobadosSql < alumno.cuatrimestre_actual");
+                }
             })
             ->orderBy('apellidos')
             ->paginate(20)->withQueryString();
@@ -55,12 +64,16 @@ class AlumnosController extends Controller
 
     public function store(Request $request)
     {
+        // Límite dinámico del periodo según la carrera seleccionada
+        $carreraSel = Carrera::find($request->id_carrera);
+        $maxPeriodos = $carreraSel?->max_periodos ?? 10;
+
         $request->validate([
             'nombre'              => ['required', 'string', 'max:80', 'regex:/^[\pL\s]+$/u'],
             'apellidos'           => ['required', 'string', 'max:100', 'regex:/^[\pL\s]+$/u'],
             'email'               => 'required|email|unique:users,email',
             'id_carrera'          => 'required|exists:carrera,id_carrera',
-            'cuatrimestre_actual' => 'required|integer|min:1|max:10',
+            'cuatrimestre_actual' => "required|integer|min:1|max:{$maxPeriodos}",
             'id_tutor'            => 'nullable|exists:docente,id_docente',
 
             // Padre / Tutor
@@ -175,7 +188,7 @@ class AlumnosController extends Controller
 
     public function edit(Alumno $alumno)
     {
-        $alumno->load('padreTutor', 'documentos');
+        $alumno->load('padreTutor', 'documentos', 'carrera');
         $carreras = Carrera::orderBy('nombre_carrera')->get();
         $tutores = \App\Models\Docente::where('es_tutor', true)
             ->orderBy('apellidos')->orderBy('nombre')->get();
@@ -184,11 +197,15 @@ class AlumnosController extends Controller
 
     public function update(Request $request, Alumno $alumno)
     {
+        // Límite dinámico del periodo: si cambian de carrera, usa la nueva; si no, la del alumno.
+        $carreraSel = Carrera::find($request->id_carrera) ?? $alumno->carrera;
+        $maxPeriodos = $carreraSel?->max_periodos ?? 10;
+
         $request->validate([
             'nombre'              => ['required', 'string', 'max:80', 'regex:/^[\pL\s]+$/u'],
             'apellidos'           => ['required', 'string', 'max:100', 'regex:/^[\pL\s]+$/u'],
             'id_carrera'          => 'required|exists:carrera,id_carrera',
-            'cuatrimestre_actual' => 'required|integer|min:1|max:10',
+            'cuatrimestre_actual' => "required|integer|min:1|max:{$maxPeriodos}",
             'id_tutor'            => 'nullable|exists:docente,id_docente',
 
             'padre.nombre'              => 'nullable|string|max:80',
@@ -257,8 +274,9 @@ class AlumnosController extends Controller
 
     public function subirBaucher(Request $request, Alumno $alumno)
     {
+        $maxPeriodos = $alumno->carrera?->max_periodos ?? 10;
         $request->validate([
-            'cuatrimestre' => 'required|integer|min:1|max:10',
+            'cuatrimestre' => "required|integer|min:1|max:{$maxPeriodos}",
             'baucher'      => 'required|file|mimes:pdf|max:5120',
         ]);
 
@@ -379,6 +397,15 @@ class AlumnosController extends Controller
         );
 
         return back()->with('success', "Baucher del {$pago->cuatrimestre}° cuatrimestre rechazado. Se notificó al alumno.");
+    }
+
+    public function eliminarDocumento(DocumentoAlumno $documento)
+    {
+        if ($documento->archivo_path) {
+            Storage::disk('public')->delete($documento->archivo_path);
+        }
+        $documento->delete();
+        return back()->with('success', 'Documento eliminado. Puedes volver a cargarlo desde aquí.');
     }
 
     private function generarMatricula(int $carreraId): string

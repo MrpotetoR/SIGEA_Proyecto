@@ -41,13 +41,13 @@
         {{-- Password --}}
         <div style="margin-bottom: 12px;">
             <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:6px;">
-                <label for="password" class="field-label" style="margin-bottom:0;">Contrasena</label>
+                <label for="password" class="field-label" style="margin-bottom:0;">Contraseña</label>
                 @if(Route::has('password.request'))
                     <a href="{{ route('password.request') }}"
                         style="font-size:12.5px; color:#3B6CF6; text-decoration:none; font-weight:500;"
                         onmouseover="this.style.color='#2952E3'"
                         onmouseout="this.style.color='#3B6CF6'">
-                        Olvidaste tu contrasena?
+                        Olvidaste tu contraseña?
                     </a>
                 @endif
             </div>

@@ -21,12 +21,13 @@
                     <option value="egresado" {{ request('estatus') == 'egresado' ? 'selected' : '' }}>Egresado</option>
                 </select>
             </div>
+            @php $maxPeriodos = $carrera?->max_periodos ?? 10; $lblPeriodo = $carrera?->label_periodo ?? 'Cuatrimestre'; @endphp
             <div class="flex-1">
-                <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1.5">Cuatrimestre</label>
+                <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1.5">{{ $lblPeriodo }}</label>
                 <select name="cuatrimestre" class="w-full text-sm border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-xl px-3 py-2 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400">
                     <option value="">Todos</option>
-                    @for($i = 1; $i <= 10; $i++)
-                        <option value="{{ $i }}" {{ request('cuatrimestre') == $i ? 'selected' : '' }}>{{ $i }}o Cuatrimestre</option>
+                    @for($i = 1; $i <= $maxPeriodos; $i++)
+                        <option value="{{ $i }}" {{ request('cuatrimestre') == $i ? 'selected' : '' }}>{{ $i }}° {{ $lblPeriodo }}</option>
                     @endfor
                 </select>
             </div>

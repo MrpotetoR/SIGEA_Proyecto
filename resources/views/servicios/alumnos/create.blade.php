@@ -65,25 +65,29 @@
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Carrera *</label>
-                        <select name="id_carrera" required
+                        <select name="id_carrera" id="sel-carrera" required
                                 class="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400 focus:outline-none @error('id_carrera') border-red-400 @enderror">
-                            <option value="">Seleccionar...</option>
+                            <option value="" data-max="10" data-label="Cuatrimestre">Seleccionar...</option>
                             @foreach($carreras as $c)
-                                <option value="{{ $c->id_carrera }}" @selected(old('id_carrera') == $c->id_carrera)>
-                                    {{ $c->nombre_carrera }}
+                                <option value="{{ $c->id_carrera }}"
+                                        data-max="{{ $c->max_periodos }}"
+                                        data-label="{{ $c->label_periodo }}"
+                                        @selected(old('id_carrera') == $c->id_carrera)>
+                                    {{ $c->nombre_carrera }} ({{ $c->label_periodo }})
                                 </option>
                             @endforeach
                         </select>
                         @error('id_carrera')<p class="text-red-500 dark:text-red-400 text-xs mt-1">{{ $message }}</p>@enderror
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Cuatrimestre *</label>
-                        <select name="cuatrimestre_actual" required
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" id="lbl-periodo">Cuatrimestre actual *</label>
+                        <select name="cuatrimestre_actual" id="sel-periodo" required
                                 class="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400 focus:outline-none">
                             @for($i = 1; $i <= 10; $i++)
                                 <option value="{{ $i }}" @selected(old('cuatrimestre_actual', 1) == $i)>{{ $i }}°</option>
                             @endfor
                         </select>
+                        <p class="text-[10px] text-gray-400 mt-1" id="hint-periodo">Selecciona primero la carrera.</p>
                     </div>
                 </div>
 
@@ -147,9 +151,9 @@
                 </div>
             </div>
 
-            {{-- Pagos por cuatrimestre --}}
+            {{-- Pagos por periodo --}}
             <div class="bg-white dark:bg-gray-800 rounded-xl shadow dark:shadow-gray-900/20 p-6 border border-transparent dark:border-gray-700">
-                <h2 class="text-lg font-semibold text-gray-700 dark:text-gray-200 mb-1">Pagos por cuatrimestre</h2>
+                <h2 class="text-lg font-semibold text-gray-700 dark:text-gray-200 mb-1" id="lbl-pagos">Pagos por periodo</h2>
                 <p class="text-xs text-gray-400 mb-4">Los bauchers deben cargarse en orden consecutivo. El siguiente solo se habilita al subir el anterior.</p>
                 <div class="space-y-2 max-h-80 overflow-y-auto pr-2" id="pagos-list">
                     @for($i = 1; $i <= 10; $i++)
@@ -246,5 +250,47 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     pagoInputs.forEach(i => i.addEventListener('change', refreshPagos));
+
+    // ==== Sincronizar periodos con la carrera seleccionada ====
+    const selCarrera = document.getElementById('sel-carrera');
+    const selPeriodo = document.getElementById('sel-periodo');
+    const lblPeriodo = document.getElementById('lbl-periodo');
+    const hintPeriodo = document.getElementById('hint-periodo');
+    const lblPagos = document.getElementById('lbl-pagos');
+
+    function syncPeriodos() {
+        const opt = selCarrera.options[selCarrera.selectedIndex];
+        const max = parseInt(opt?.dataset.max || 10);
+        const label = opt?.dataset.label || 'Cuatrimestre';
+        const current = parseInt(selPeriodo.value) || 1;
+
+        // Rebuild periodo select
+        selPeriodo.innerHTML = '';
+        for (let i = 1; i <= max; i++) {
+            const o = document.createElement('option');
+            o.value = i; o.textContent = i + '°';
+            if (i === Math.min(current, max)) o.selected = true;
+            selPeriodo.appendChild(o);
+        }
+
+        lblPeriodo.textContent = label + ' actual *';
+        hintPeriodo.textContent = opt?.value ? `${label} — ${max} en total para esta carrera` : 'Selecciona primero la carrera.';
+        lblPagos.textContent = 'Pagos por ' + label.toLowerCase();
+
+        // Ocultar filas de pago que excedan el max
+        document.querySelectorAll('#pagos-list [data-cuatri]').forEach(row => {
+            const n = parseInt(row.dataset.cuatri);
+            row.classList.toggle('hidden', n > max);
+            if (n > max) {
+                const inp = row.querySelector('input[type=file]');
+                if (inp) { inp.value = ''; inp.disabled = true; }
+            }
+        });
+        refreshPagos();
+    }
+    if (selCarrera) {
+        selCarrera.addEventListener('change', syncPeriodos);
+        syncPeriodos();
+    }
 });
 </script>

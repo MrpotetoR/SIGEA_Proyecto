@@ -154,6 +154,8 @@ Route::prefix('servicios')->name('servicios.')->middleware(['auth', 'verified', 
         ->name('dashboard');
 
     Route::resource('alumnos', \App\Http\Controllers\Servicios\AlumnosController::class);
+    Route::delete('/alumnos/documentos/{documento}', [\App\Http\Controllers\Servicios\AlumnosController::class, 'eliminarDocumento'])
+        ->name('alumnos.documentos.destroy');
     Route::post('/alumnos/{alumno}/baja', [\App\Http\Controllers\Servicios\AlumnosController::class, 'registrarBaja'])
         ->name('alumnos.baja');
     Route::post('/alumnos/{alumno}/reingreso', [\App\Http\Controllers\Servicios\AlumnosController::class, 'registrarReingreso'])
@@ -166,6 +168,8 @@ Route::prefix('servicios')->name('servicios.')->middleware(['auth', 'verified', 
         ->name('pagos.rechazar');
 
     Route::resource('docentes', \App\Http\Controllers\Servicios\DocentesController::class);
+    Route::delete('/docentes/documentos/{documento}', [\App\Http\Controllers\Servicios\DocentesController::class, 'eliminarDocumento'])
+        ->name('docentes.documentos.destroy');
 
     Route::resource('directores', \App\Http\Controllers\Servicios\DirectoresController::class);
 
@@ -179,6 +183,8 @@ Route::prefix('servicios')->name('servicios.')->middleware(['auth', 'verified', 
 
     Route::get('/inscripciones', [\App\Http\Controllers\Servicios\InscripcionesController::class, 'index'])
         ->name('inscripciones');
+    Route::get('/inscripciones/check', [\App\Http\Controllers\Servicios\InscripcionesController::class, 'check'])
+        ->name('inscripciones.check');
     Route::post('/inscripciones', [\App\Http\Controllers\Servicios\InscripcionesController::class, 'store'])
         ->name('inscripciones.store');
     Route::delete('/inscripciones/{inscripcion}', [\App\Http\Controllers\Servicios\InscripcionesController::class, 'destroy'])

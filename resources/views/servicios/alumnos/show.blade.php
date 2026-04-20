@@ -95,10 +95,11 @@
                 $maxAprobado = $alumno->pagosCuatrimestre->where('estatus', 'aprobado')->max('cuatrimestre') ?? 0;
                 $hayPendiente = $alumno->pagosCuatrimestre->where('estatus', 'pendiente')->isNotEmpty();
                 $siguiente = $hayPendiente ? null : ($maxAprobado + 1);
+                $maxPeriodos = $alumno->carrera?->max_periodos ?? 10;
             @endphp
 
             <div class="space-y-3">
-                @for($i = 1; $i <= 10; $i++)
+                @for($i = 1; $i <= $maxPeriodos; $i++)
                     @php
                         $pago = $pagosByCuatri[$i] ?? null;
                         $esSiguiente = ($i === $siguiente);

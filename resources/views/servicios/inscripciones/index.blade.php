@@ -51,8 +51,10 @@
                     </select>
                 </div>
 
-                <button type="submit"
-                        class="w-full bg-[#0606F0] hover:bg-[#04276B] dark:bg-[#0606F0] dark:hover:bg-blue-400 text-white py-2.5 rounded-xl text-sm font-semibold transition-colors">
+                <p id="inscripcion-warn" class="hidden text-xs text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg px-3 py-2"></p>
+
+                <button type="submit" id="btn-inscribir"
+                        class="w-full bg-[#0606F0] hover:bg-[#04276B] dark:bg-[#0606F0] dark:hover:bg-blue-400 text-white py-2.5 rounded-xl text-sm font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
                     Inscribir alumno
                 </button>
             </form>
@@ -207,6 +209,52 @@
         filtroCarrera.addEventListener('change', fetchGrupos);
         filtroCiclo.addEventListener('change', fetchGrupos);
         fetchGrupos();
+
+        // ─── Validación anti-duplicado (frontend) ────────────────────────────
+        const checkUrl  = '{{ route("servicios.inscripciones.check") }}';
+        const formIns   = document.getElementById('form-inscripcion');
+        const btnIns    = document.getElementById('btn-inscribir');
+        const warnIns   = document.getElementById('inscripcion-warn');
+        const alumnoInp = formIns.querySelector('input[name="id_alumno"]');
+
+        async function validarDuplicado() {
+            const idAlumno = alumnoInp?.value;
+            const idGrupo  = selectGrupo.value;
+            if (!idAlumno || !idGrupo) {
+                warnIns.classList.add('hidden');
+                btnIns.disabled = false;
+                return;
+            }
+            try {
+                const r = await fetch(`${checkUrl}?id_alumno=${idAlumno}&id_grupo=${idGrupo}`, {
+                    headers: {'Accept': 'application/json'}
+                });
+                const data = await r.json();
+                if (data.conflict) {
+                    warnIns.textContent = data.message;
+                    warnIns.classList.remove('hidden');
+                    btnIns.disabled = true;
+                } else {
+                    warnIns.classList.add('hidden');
+                    btnIns.disabled = false;
+                }
+            } catch { /* si falla, deja que el backend valide */ }
+        }
+
+        selectGrupo.addEventListener('change', validarDuplicado);
+        // El componente ajax-select no siempre dispara 'change' en el input oculto;
+        // observamos cambios al valor mediante MutationObserver + también al click de submit.
+        if (alumnoInp) {
+            new MutationObserver(validarDuplicado).observe(alumnoInp, { attributes: true, attributeFilter: ['value'] });
+            alumnoInp.addEventListener('change', validarDuplicado);
+        }
+
+        formIns.addEventListener('submit', async (e) => {
+            if (!alumnoInp?.value || !selectGrupo.value) return;
+            e.preventDefault();
+            await validarDuplicado();
+            if (!btnIns.disabled) formIns.submit();
+        });
     </script>
     @endpush
 </x-panel>
