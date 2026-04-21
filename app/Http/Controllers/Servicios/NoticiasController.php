@@ -48,7 +48,7 @@ class NoticiasController extends Controller
         if ($inmediata) {
             $this->notificaciones->notificarNuevaNoticia(
                 $noticia->titulo,
-                route('servicios.noticias.show', $noticia),
+                route('noticias.show', $noticia),
                 $roles
             );
             $noticia->update(['notificado' => true]);
@@ -92,7 +92,7 @@ class NoticiasController extends Controller
         } elseif ($inmediata && !$noticia->notificado) {
             $this->notificaciones->notificarNuevaNoticia(
                 $noticia->titulo,
-                route('servicios.noticias.show', $noticia),
+                route('noticias.show', $noticia),
                 $roles
             );
             $noticia->update(['notificado' => true]);

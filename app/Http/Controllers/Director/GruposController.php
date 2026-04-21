@@ -10,6 +10,7 @@ use App\Models\Grupo;
 use App\Models\Inscripcion;
 use App\Services\GrupoService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class GruposController extends Controller
 {
@@ -77,7 +78,16 @@ class GruposController extends Controller
 
     public function destroy(Grupo $grupo)
     {
-        $grupo->delete();
+        if ($grupo->inscripciones()->exists()) {
+            return redirect()->route('director.grupos.index')
+                ->with('error', 'No se puede eliminar el grupo: tiene alumnos inscritos. Primero remueve a los alumnos del grupo.');
+        }
+
+        DB::transaction(function () use ($grupo) {
+            $grupo->horarios()->delete();
+            $grupo->delete();
+        });
+
         return redirect()->route('director.grupos.index')->with('success', 'Grupo eliminado.');
     }
 

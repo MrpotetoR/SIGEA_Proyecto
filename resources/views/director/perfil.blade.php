@@ -7,8 +7,8 @@
         {{-- Header perfil --}}
         <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm dark:shadow-gray-900/20 border border-gray-100 dark:border-gray-700 p-8 mb-6">
             <div class="flex items-center gap-6">
-                <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-blue-500 to-sky-600 flex items-center justify-center text-white text-2xl font-bold shadow-lg">
-                    {{ strtoupper(substr($docente->nombre ?? 'D', 0, 1)) }}{{ strtoupper(substr($docente->apellidos ?? 'C', 0, 1)) }}
+                <div class="w-20 h-20 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-700 dark:text-blue-300 flex-shrink-0">
+                    <x-icon name="user" class="w-10 h-10" />
                 </div>
                 <div>
                     <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100">{{ $docente->nombre_completo ?? 'Sin nombre' }}</h2>

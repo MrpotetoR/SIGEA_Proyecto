@@ -26,6 +26,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/cambiar-password',  [\App\Http\Controllers\CambiarPasswordController::class, 'index'])->name('cambiar-password');
     Route::put('/cambiar-password',  [\App\Http\Controllers\CambiarPasswordController::class, 'update'])->name('cambiar-password.update');
 
+    // ── Vista universal de noticia (accesible a cualquier rol autenticado,
+    //    la autorización por destinatarios se valida dentro del controller). ──
+    Route::get('/noticias/{noticia}', [\App\Http\Controllers\NoticiaController::class, 'show'])
+        ->name('noticias.show');
+
     // ── Notificaciones API ──
     Route::prefix('notificaciones')->name('notificaciones.')->group(function () {
         Route::get('/',           [\App\Http\Controllers\NotificacionController::class, 'index'])->name('index');

@@ -79,7 +79,7 @@ class NotificacionController extends Controller
         foreach ($pendientes as $n) {
             $this->notificaciones->notificarNuevaNoticia(
                 $n->titulo,
-                route('servicios.noticias.show', $n),
+                route('noticias.show', $n),
                 $n->destinatarios
             );
             $n->update(['notificado' => true]);

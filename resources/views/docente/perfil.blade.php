@@ -7,8 +7,8 @@
 
     <div class="bg-white dark:bg-gray-800 dark:border-gray-700 dark:shadow-gray-900/20 rounded-2xl border border-gray-100 shadow-sm p-6">
         <div class="flex items-center gap-5 mb-6">
-            <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-sky-500 to-blue-600 flex items-center justify-center text-white text-xl font-bold shadow-lg shadow-blue-200">
-                {{ strtoupper(substr($docente?->nombre ?? 'D', 0, 1)) }}{{ strtoupper(substr($docente?->apellidos ?? 'C', 0, 1)) }}
+            <div class="w-20 h-20 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-700 dark:text-blue-300 flex-shrink-0">
+                <x-icon name="user" class="w-10 h-10" />
             </div>
             <div>
                 <h2 class="text-[18px] font-bold text-gray-900 dark:text-gray-100">{{ $docente?->nombre_completo ?? 'Sin datos' }}</h2>
