@@ -33,8 +33,8 @@
                     <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
                         <td class="px-4 py-3 font-medium text-gray-900 dark:text-gray-100">{{ $m->nombre_materia }}</td>
                         <td class="px-4 py-3 text-gray-600 dark:text-gray-400">{{ $m->carrera?->clave_carrera }}</td>
-                        <td class="px-4 py-3 text-center">{{ $m->cuatrimestre }}°</td>
-                        <td class="px-4 py-3 text-center">{{ $m->horas_semana }}</td>
+                        <td class="px-4 py-3 text-center text-gray-600 dark:text-gray-400">{{ $m->cuatrimestre }}°</td>
+                        <td class="px-4 py-3 text-center text-gray-600 dark:text-gray-400">{{ $m->horas_semana }}</td>
                         <td class="px-4 py-3 text-center">
                             <div class="flex justify-center gap-2">
                                 <a href="{{ route('servicios.materias.edit', $m) }}" class="text-yellow-600 dark:text-yellow-400 hover:text-yellow-900 font-medium">Editar</a>
