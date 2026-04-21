@@ -73,7 +73,7 @@
             $totalAsis = $asistencias->count();
             $presentes = $asistencias->where('estatus', 'presente')->count();
             $ausentes = $asistencias->where('estatus', 'ausente')->count();
-            $justificadas = $asistencias->where('estatus', 'justificada')->count();
+            $retardos = $asistencias->where('estatus', 'retardo')->count();
             $porcAsist = $totalAsis > 0 ? round(($presentes / $totalAsis) * 100, 1) : 0;
         @endphp
         <div class="grid grid-cols-4 gap-4">
@@ -90,8 +90,8 @@
                 <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Ausentes</p>
             </div>
             <div class="bg-yellow-50 dark:bg-yellow-900/30 rounded-2xl border border-yellow-100 dark:border-yellow-700/50 p-5 text-center">
-                <p class="text-2xl font-bold text-yellow-600 dark:text-yellow-400">{{ $justificadas }}</p>
-                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Justificadas</p>
+                <p class="text-2xl font-bold text-yellow-600 dark:text-yellow-400">{{ $retardos }}</p>
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Retardos</p>
             </div>
         </div>
         <div class="mt-4 bg-white dark:bg-gray-800 rounded-2xl shadow-sm dark:shadow-gray-900/20 border border-gray-100 dark:border-gray-700 p-5">

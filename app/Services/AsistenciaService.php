@@ -47,7 +47,7 @@ class AsistenciaService
                 'total' => $total,
                 'presentes' => $presentes,
                 'faltas' => $asistenciasGrupo->where('estatus', 'ausente')->count(),
-                'justificadas' => $asistenciasGrupo->where('estatus', 'justificada')->count(),
+                'retardos' => $asistenciasGrupo->where('estatus', 'retardo')->count(),
                 'porcentaje' => $total > 0 ? round(($presentes / $total) * 100, 1) : 100,
             ];
         }

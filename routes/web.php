@@ -81,9 +81,10 @@ Route::prefix('docente')->name('docente.')->middleware(['auth', 'verified', 'rol
     Route::get('/tutorados',          [\App\Http\Controllers\Docente\TutoradosController::class,          'index'])->name('tutorados');
 
     // Asistencia
-    Route::get('/asistencia',           [\App\Http\Controllers\Docente\AsistenciaController::class, 'index'])->name('asistencia');
-    Route::get('/asistencia/{grupo}',   [\App\Http\Controllers\Docente\AsistenciaController::class, 'show'])->name('asistencia.show');
-    Route::post('/asistencia/{grupo}',  [\App\Http\Controllers\Docente\AsistenciaController::class, 'store'])->name('asistencia.store');
+    Route::get('/asistencia',                     [\App\Http\Controllers\Docente\AsistenciaController::class, 'index'])->name('asistencia');
+    Route::get('/asistencia/{grupo}',             [\App\Http\Controllers\Docente\AsistenciaController::class, 'show'])->name('asistencia.show');
+    Route::get('/asistencia/{grupo}/historial',   [\App\Http\Controllers\Docente\AsistenciaController::class, 'historial'])->name('asistencia.historial');
+    Route::post('/asistencia/{grupo}',            [\App\Http\Controllers\Docente\AsistenciaController::class, 'store'])->name('asistencia.store');
 
     // Calificaciones
     Route::get('/calificaciones',           [\App\Http\Controllers\Docente\CalificacionesController::class, 'index'])->name('calificaciones');

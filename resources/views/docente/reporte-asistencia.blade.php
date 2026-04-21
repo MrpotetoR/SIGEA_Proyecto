@@ -35,7 +35,7 @@
                         <th class="px-5 py-3 text-left text-[11px] font-semibold text-gray-500 dark:text-gray-400 uppercase">Alumno</th>
                         <th class="px-5 py-3 text-center text-[11px] font-semibold text-gray-500 dark:text-gray-400 uppercase">Presentes</th>
                         <th class="px-5 py-3 text-center text-[11px] font-semibold text-gray-500 dark:text-gray-400 uppercase">Faltas</th>
-                        <th class="px-5 py-3 text-center text-[11px] font-semibold text-gray-500 dark:text-gray-400 uppercase">Justificadas</th>
+                        <th class="px-5 py-3 text-center text-[11px] font-semibold text-gray-500 dark:text-gray-400 uppercase">Retardos</th>
                         <th class="px-5 py-3 text-center text-[11px] font-semibold text-gray-500 dark:text-gray-400 uppercase">% Asistencia</th>
                     </tr>
                 </thead>
@@ -49,7 +49,7 @@
                             <td class="px-5 py-3 text-[13px] font-medium text-gray-800 dark:text-gray-200">{{ $r['alumno']->nombre_completo }}</td>
                             <td class="px-5 py-3 text-[13px] text-center text-emerald-600 dark:text-emerald-400 font-medium">{{ $r['presentes'] }}</td>
                             <td class="px-5 py-3 text-[13px] text-center text-red-500 dark:text-red-400 font-medium">{{ $r['faltas'] }}</td>
-                            <td class="px-5 py-3 text-[13px] text-center text-amber-500 dark:text-amber-400 font-medium">{{ $r['justificadas'] }}</td>
+                            <td class="px-5 py-3 text-[13px] text-center text-amber-500 dark:text-amber-400 font-medium">{{ $r['retardos'] }}</td>
                             <td class="px-5 py-3 text-center">
                                 <span class="inline-block px-2.5 py-1 rounded-lg text-[12px] font-bold {{ $pctColor }}">{{ $pct }}%</span>
                             </td>

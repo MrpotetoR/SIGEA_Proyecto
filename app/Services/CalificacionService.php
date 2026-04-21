@@ -75,7 +75,7 @@ class CalificacionService
 
     public function generarReporteRendimiento(Grupo $grupo): array
     {
-        $alumnos = $grupo->alumnos()->with('semaforosAcademicos')->get();
+        $alumnos = $grupo->alumnos()->get();
         $ciclo = CicloEscolar::cicloActual();
 
         return $alumnos->map(function ($alumno) use ($ciclo) {
@@ -83,10 +83,21 @@ class CalificacionService
                 ->when($ciclo, fn($q) => $q->where('id_ciclo', $ciclo->id_ciclo))
                 ->avg('calificacion') ?? 0;
 
+            // Semaforo derivado del promedio real para que sea consistente
+            // con las columnas Promedio y Estatus del reporte:
+            //   < 7   -> rojo     (reprobado)
+            //   7-7.9 -> amarillo (en riesgo / marginal)
+            //   >= 8  -> verde    (en orden)
+            $semaforo = match (true) {
+                $promedio < 7 => 'rojo',
+                $promedio < 8 => 'amarillo',
+                default       => 'verde',
+            };
+
             return [
                 'alumno' => $alumno,
                 'promedio' => round($promedio, 2),
-                'nivel_semaforo' => $alumno->nivel_semaforo,
+                'nivel_semaforo' => $semaforo,
                 'aprobado' => $promedio >= 7,
             ];
         })->toArray();

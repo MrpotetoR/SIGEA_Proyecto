@@ -35,7 +35,7 @@
                         <th class="text-left px-5 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Alumno</th>
                         <th class="text-center px-5 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Presentes</th>
                         <th class="text-center px-5 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Ausentes</th>
-                        <th class="text-center px-5 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Justificadas</th>
+                        <th class="text-center px-5 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Retardos</th>
                         <th class="text-center px-5 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">% Asistencia</th>
                     </tr>
                 </thead>
@@ -45,7 +45,7 @@
                             $total = $alumno->asistencias->count();
                             $p = $alumno->asistencias->where('estatus', 'presente')->count();
                             $a = $alumno->asistencias->where('estatus', 'ausente')->count();
-                            $j = $alumno->asistencias->where('estatus', 'justificada')->count();
+                            $j = $alumno->asistencias->where('estatus', 'retardo')->count();
                             $porc = $total > 0 ? round(($p / $total) * 100, 1) : 0;
                         @endphp
                         <tr class="hover:bg-gray-50/50 dark:hover:bg-gray-700/50 transition-colors">

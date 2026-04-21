@@ -281,7 +281,7 @@ class DatosPruebaSeeder extends Seeder
                 foreach ($fechas as $f) {
                     if ($f->dayOfWeekIso !== $diaN) continue;
 
-                    $estatus = rand(1, 100) <= $tasaAsistencia ? 'presente' : (rand(0, 1) ? 'ausente' : 'justificada');
+                    $estatus = rand(1, 100) <= $tasaAsistencia ? 'presente' : (rand(0, 1) ? 'ausente' : 'retardo');
                     Asistencia::firstOrCreate(
                         ['id_alumno' => $a['model']->id_alumno, 'id_horario' => $horario->id_horario, 'fecha' => $f->toDateString()],
                         ['estatus' => $estatus]
