@@ -159,13 +159,13 @@
 
                 {{-- Pagos: solo informativo, no editable --}}
                 <div class="pt-5 border-t dark:border-gray-700">
-                    <h3 class="text-base font-semibold text-gray-700 dark:text-gray-200 mb-1">Bauchers de pago</h3>
+                    <h3 class="text-base font-semibold text-gray-700 dark:text-gray-200 mb-1">Váuchers de pago</h3>
                     <p class="text-xs text-gray-400 mb-3 inline-flex items-start gap-1">
                         <x-icon name="warning" class="w-4 h-4 flex-shrink-0 mt-0.5" />
-                        <span>Los bauchers de pago no se pueden editar ni reemplazar desde aquí. Solo se pueden visualizar desde el detalle del alumno.</span>
+                        <span>Los váuchers de pago no se pueden editar ni reemplazar desde aquí. Solo se pueden visualizar desde el detalle del alumno.</span>
                     </p>
                     <a href="{{ route('servicios.alumnos.show', $alumno) }}"
-                       class="text-xs text-[#0606F0] dark:text-blue-400 hover:underline">Ver bauchers →</a>
+                       class="text-xs text-[#0606F0] dark:text-blue-400 hover:underline">Ver váuchers →</a>
                 </div>
 
                 <div class="flex gap-3 pt-4 border-t dark:border-gray-700">

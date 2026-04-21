@@ -83,8 +83,8 @@
 
         {{-- Pagos por cuatrimestre --}}
         <div class="bg-white dark:bg-gray-800 rounded-xl shadow dark:shadow-gray-900/20 p-6 border border-transparent dark:border-gray-700">
-            <h3 class="text-base font-semibold text-gray-700 dark:text-gray-200 mb-1">Bauchers de pago por cuatrimestre</h3>
-            <p class="text-xs text-gray-400 mb-4">Revisa, aprueba o rechaza los bauchers cargados por el alumno.</p>
+            <h3 class="text-base font-semibold text-gray-700 dark:text-gray-200 mb-1">Váuchers de pago por cuatrimestre</h3>
+            <p class="text-xs text-gray-400 mb-4">Revisa, aprueba o rechaza los váuchers cargados por el alumno.</p>
 
             @if(session('error'))
                 <div class="mb-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 px-4 py-2 rounded-lg text-xs">{{ session('error') }}</div>
@@ -143,7 +143,7 @@
                                     <p class="text-xs text-red-600 dark:text-red-400 mt-1">{{ $pago->comentario_rechazo }}</p>
                                 @endif
                             @elseif($esSiguiente)
-                                <span class="text-sm text-gray-500">Sin baucher cargado</span>
+                                <span class="text-sm text-gray-500">Sin váucher cargado</span>
                             @else
                                 <span class="inline-flex items-center gap-1 text-sm text-gray-400">
                                     <x-icon name="lock" class="w-3.5 h-3.5" /> Bloqueado
@@ -164,7 +164,7 @@
                                 <div class="flex gap-2">
                                     <form method="POST" action="{{ route('servicios.pagos.aprobar', $pago) }}">
                                         @csrf
-                                        <button type="submit" onclick="return confirm('¿Aprobar este baucher?')"
+                                        <button type="submit" onclick="return confirm('¿Aprobar este váucher?')"
                                                 class="bg-green-600 hover:bg-green-700 text-white text-[10px] font-semibold px-3 py-1.5 rounded inline-flex items-center gap-1">
                                             <x-icon name="check" class="w-3 h-3" /> Aprobar
                                         </button>
@@ -180,7 +180,7 @@
                                     <textarea name="comentario_rechazo" required maxlength="500" rows="2"
                                               placeholder="Escribe las observaciones del rechazo..."
                                               class="w-full text-xs border border-red-200 dark:border-red-700 dark:bg-gray-700 dark:text-gray-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-red-400 focus:outline-none mb-1"></textarea>
-                                    <button type="submit" onclick="return confirm('¿Rechazar este baucher?')"
+                                    <button type="submit" onclick="return confirm('¿Rechazar este váucher?')"
                                             class="bg-red-600 hover:bg-red-700 text-white text-[10px] font-semibold px-4 py-1.5 rounded">
                                         Confirmar rechazo
                                     </button>

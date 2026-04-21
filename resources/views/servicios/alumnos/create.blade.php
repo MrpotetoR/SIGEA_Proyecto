@@ -154,12 +154,12 @@
             {{-- Pagos por periodo --}}
             <div class="bg-white dark:bg-gray-800 rounded-xl shadow dark:shadow-gray-900/20 p-6 border border-transparent dark:border-gray-700">
                 <h2 class="text-lg font-semibold text-gray-700 dark:text-gray-200 mb-1" id="lbl-pagos">Pagos por periodo</h2>
-                <p class="text-xs text-gray-400 mb-4">Los bauchers deben cargarse en orden consecutivo. El siguiente solo se habilita al subir el anterior.</p>
+                <p class="text-xs text-gray-400 mb-4">Los váuchers deben cargarse en orden consecutivo. El siguiente solo se habilita al subir el anterior.</p>
                 <div class="space-y-2 max-h-80 overflow-y-auto pr-2" id="pagos-list">
                     @for($i = 1; $i <= 10; $i++)
                         <div class="flex items-center gap-3 p-3 rounded-lg border border-gray-100 dark:border-gray-700 transition-colors relative group {{ $i > 1 ? 'opacity-60' : '' }}"
                              data-cuatri="{{ $i }}"
-                             @if($i > 1) title="Debes cargar el baucher del cuatrimestre anterior" @endif>
+                             @if($i > 1) title="Debes cargar el váucher del cuatrimestre anterior" @endif>
                             <span class="w-12 text-sm font-semibold text-gray-700 dark:text-gray-300 flex-shrink-0">{{ $i }}°</span>
                             <input type="file" name="pagos[{{ $i }}]" accept="application/pdf" data-pago-input="{{ $i }}"
                                    {{ $i > 1 ? 'disabled' : '' }}
@@ -169,7 +169,7 @@
                             </span>
                             @if($i > 1)
                                 <div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap bg-gray-900 text-white text-[10px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity z-10 shadow-lg inline-flex items-center gap-1 tooltip-lock">
-                                    <x-icon name="lock" class="w-3 h-3" /> Debes cargar el baucher del cuatrimestre anterior
+                                    <x-icon name="lock" class="w-3 h-3" /> Debes cargar el váucher del cuatrimestre anterior
                                 </div>
                             @endif
                         </div>
@@ -220,7 +220,7 @@ function updateCount(input, counterId) {
 document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('input[maxlength][oninput]').forEach(el => el.dispatchEvent(new Event('input')));
 
-    // Carga secuencial de bauchers
+    // Carga secuencial de váuchers
     const pagoInputs = Array.from(document.querySelectorAll('[data-pago-input]'))
         .sort((a, b) => +a.dataset.pagoInput - +b.dataset.pagoInput);
 
@@ -237,7 +237,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (input.disabled) {
                 input.value = '';
                 row.classList.add('opacity-60');
-                row.setAttribute('title', 'Debes cargar el baucher del cuatrimestre anterior');
+                row.setAttribute('title', 'Debes cargar el váucher del cuatrimestre anterior');
                 const tip = row.querySelector('.tooltip-lock');
                 if (tip) tip.classList.remove('hidden');
             } else {

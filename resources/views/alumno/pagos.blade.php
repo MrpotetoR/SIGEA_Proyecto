@@ -15,8 +15,8 @@
         @endif
 
         <div class="bg-white dark:bg-gray-800 rounded-xl shadow dark:shadow-gray-900/20 p-6 border border-transparent dark:border-gray-700">
-            <h2 class="text-lg font-semibold text-gray-700 dark:text-gray-200 mb-1">Bauchers de pago por cuatrimestre</h2>
-            <p class="text-xs text-gray-400 mb-5">Sube tu baucher en PDF. Será revisado por Servicios Escolares antes de ser aprobado.</p>
+            <h2 class="text-lg font-semibold text-gray-700 dark:text-gray-200 mb-1">Váuchers de pago por cuatrimestre</h2>
+            <p class="text-xs text-gray-400 mb-5">Sube tu váucher en PDF. Será revisado por Servicios Escolares antes de ser aprobado.</p>
 
             {{-- Leyenda de estados --}}
             <div class="flex flex-wrap gap-4 mb-5 text-xs text-gray-500 dark:text-gray-400">

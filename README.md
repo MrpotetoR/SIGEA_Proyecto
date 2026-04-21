@@ -19,7 +19,7 @@ Plataforma web para la gestión académica de una institución educativa de nive
 - Dashboard, perfil, horario, mis docentes, kardex (con descarga PDF), historial académico
 - Calificaciones por parcial, asistencia
 - Horas culturales (ACUDE), servicio social
-- Pagos por cuatrimestre (subir baucher PDF, ver estatus)
+- Pagos por cuatrimestre (subir váucher PDF, ver estatus)
 - Evaluación docente, noticias, chatbot
 
 ### Docente
@@ -39,7 +39,7 @@ Plataforma web para la gestión académica de una institución educativa de nive
 - Dashboard general
 - CRUD de alumnos (con padre/tutor, pagos iniciales y documentos), docentes, directores, personal
 - CRUD de carreras, materias, ciclos escolares
-- Inscripciones, baucher (subir/aprobar/rechazar) con notificación al alumno
+- Inscripciones, váucher (subir/aprobar/rechazar) con notificación al alumno
 - Constancias on-the-fly (PDF sin almacenamiento en disco)
 - Noticias con imagen (local máx. 512 KB o URL externa) y lightbox
 - Documentos institucionales y reportes

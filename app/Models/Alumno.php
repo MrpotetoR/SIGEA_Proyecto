@@ -121,7 +121,7 @@ class Alumno extends Model
     /**
      * Estado consolidado del pago del alumno:
      *  - 'pagado'   : tiene aprobados todos los cuatrimestres hasta el actual y no tiene pendientes
-     *  - 'revision' : tiene al menos un baucher pendiente de revisión
+     *  - 'revision' : tiene al menos un váucher pendiente de revisión
      *  - 'sin_pago' : no tiene pendientes y le faltan aprobados
      */
     public function getPagoEstadoActualAttribute(): string

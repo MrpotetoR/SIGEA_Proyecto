@@ -145,7 +145,7 @@ class AlumnosController extends Controller
                     if (!$file) continue;
                     if ((int) $cuatri !== $esperado) {
                         throw \Illuminate\Validation\ValidationException::withMessages([
-                            "pagos.$cuatri" => "Los bauchers deben cargarse en orden consecutivo. Falta el {$esperado}° cuatrimestre.",
+                            "pagos.$cuatri" => "Los váuchers deben cargarse en orden consecutivo. Falta el {$esperado}° cuatrimestre.",
                         ]);
                     }
                     $path = $file->store("alumnos/{$alumno->id_alumno}/pagos", 'public');
@@ -288,12 +288,12 @@ class AlumnosController extends Controller
             ->max('cuatrimestre') ?? 0;
 
         if ($cuatri !== $maxAprobado + 1) {
-            return back()->with('error', "Solo puedes cargar el baucher del " . ($maxAprobado + 1) . "° cuatrimestre.");
+            return back()->with('error', "Solo puedes cargar el váucher del " . ($maxAprobado + 1) . "° cuatrimestre.");
         }
 
         // No se permite reemplazar uno aprobado
         if ($alumno->pagosCuatrimestre()->where('cuatrimestre', $cuatri)->where('estatus', 'aprobado')->exists()) {
-            return back()->with('error', 'Este baucher ya fue cargado y aprobado.');
+            return back()->with('error', 'Este váucher ya fue cargado y aprobado.');
         }
 
         $path = $request->file('baucher')->store("alumnos/{$alumno->id_alumno}/pagos", 'public');
@@ -308,7 +308,7 @@ class AlumnosController extends Controller
             ]
         );
 
-        return back()->with('success', "Baucher del {$cuatri}° cuatrimestre cargado correctamente.");
+        return back()->with('success', "Váucher del {$cuatri}° cuatrimestre cargado correctamente.");
     }
 
     public function registrarBaja(Request $request, Alumno $alumno)
@@ -348,7 +348,7 @@ class AlumnosController extends Controller
     public function aprobarBaucher(PagoCuatrimestre $pago)
     {
         if (!$pago->estaPendiente()) {
-            return back()->with('error', 'Este baucher ya fue revisado.');
+            return back()->with('error', 'Este váucher ya fue revisado.');
         }
 
         $pago->update([
@@ -362,12 +362,12 @@ class AlumnosController extends Controller
         $this->notificaciones->enviar(
             $alumno->user,
             'pago',
-            'Baucher aprobado',
-            "Tu baucher del {$pago->cuatrimestre}° cuatrimestre ha sido validado exitosamente.",
+            'Váucher aprobado',
+            "Tu váucher del {$pago->cuatrimestre}° cuatrimestre ha sido validado exitosamente.",
             ['icono' => 'clipboard-check', 'color' => 'green', 'url' => route('alumno.pagos')]
         );
 
-        return back()->with('success', "Baucher del {$pago->cuatrimestre}° cuatrimestre aprobado.");
+        return back()->with('success', "Váucher del {$pago->cuatrimestre}° cuatrimestre aprobado.");
     }
 
     public function rechazarBaucher(Request $request, PagoCuatrimestre $pago)
@@ -377,7 +377,7 @@ class AlumnosController extends Controller
         ]);
 
         if (!$pago->estaPendiente()) {
-            return back()->with('error', 'Este baucher ya fue revisado.');
+            return back()->with('error', 'Este váucher ya fue revisado.');
         }
 
         $pago->update([
@@ -391,12 +391,12 @@ class AlumnosController extends Controller
         $this->notificaciones->enviar(
             $alumno->user,
             'pago',
-            'Baucher rechazado — correcciones necesarias',
-            "Tu baucher del {$pago->cuatrimestre}° cuatrimestre fue rechazado. Observaciones: {$request->comentario_rechazo}",
+            'Váucher rechazado — correcciones necesarias',
+            "Tu váucher del {$pago->cuatrimestre}° cuatrimestre fue rechazado. Observaciones: {$request->comentario_rechazo}",
             ['icono' => 'clipboard-check', 'color' => 'red', 'url' => route('alumno.pagos')]
         );
 
-        return back()->with('success', "Baucher del {$pago->cuatrimestre}° cuatrimestre rechazado. Se notificó al alumno.");
+        return back()->with('success', "Váucher del {$pago->cuatrimestre}° cuatrimestre rechazado. Se notificó al alumno.");
     }
 
     public function eliminarDocumento(DocumentoAlumno $documento)

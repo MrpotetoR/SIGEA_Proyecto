@@ -52,17 +52,17 @@ class PagosController extends Controller
             ->max('cuatrimestre') ?? 0;
 
         if ($cuatri !== $maxAprobado + 1) {
-            return back()->with('error', 'Solo puedes subir el baucher del ' . ($maxAprobado + 1) . '° cuatrimestre.');
+            return back()->with('error', 'Solo puedes subir el váucher del ' . ($maxAprobado + 1) . '° cuatrimestre.');
         }
 
         // No permitir si hay uno pendiente
         if ($alumno->pagosCuatrimestre()->where('estatus', 'pendiente')->exists()) {
-            return back()->with('error', 'Ya tienes un baucher pendiente de revisión. Espera la respuesta antes de subir otro.');
+            return back()->with('error', 'Ya tienes un váucher pendiente de revisión. Espera la respuesta antes de subir otro.');
         }
 
         // No permitir duplicados aprobados
         if ($alumno->pagosCuatrimestre()->where('cuatrimestre', $cuatri)->where('estatus', 'aprobado')->exists()) {
-            return back()->with('error', 'Este cuatrimestre ya tiene un baucher aprobado.');
+            return back()->with('error', 'Este cuatrimestre ya tiene un váucher aprobado.');
         }
 
         // Si existe uno rechazado para este cuatrimestre, eliminarlo
@@ -87,11 +87,11 @@ class PagosController extends Controller
         $this->notificaciones->enviarMasivo(
             $staffUsers,
             'pago',
-            'Baucher pendiente de revisión',
-            "El alumno {$alumno->nombre_completo} (matrícula {$alumno->matricula}) ha cargado su baucher del {$cuatri}° cuatrimestre para revisión.",
+            'Váucher pendiente de revisión',
+            "El alumno {$alumno->nombre_completo} (matrícula {$alumno->matricula}) ha cargado su váucher del {$cuatri}° cuatrimestre para revisión.",
             ['icono' => 'clipboard-check', 'color' => 'amber', 'url' => route('servicios.alumnos.show', $alumno)]
         );
 
-        return back()->with('success', 'Baucher del ' . $cuatri . '° cuatrimestre subido. Queda pendiente de revisión por Servicios Escolares.');
+        return back()->with('success', 'Váucher del ' . $cuatri . '° cuatrimestre subido. Queda pendiente de revisión por Servicios Escolares.');
     }
 }
