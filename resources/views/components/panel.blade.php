@@ -222,6 +222,92 @@
             to   { opacity: 1; transform: translateY(0); }
         }
 
+        /* ─── Responsive helpers ─── */
+        /* Evita que una tabla larga rompa el layout en pantallas chicas:
+           - Si la tabla esta dentro de un wrapper con overflow-x, mantiene max-content
+             para permitir scroll horizontal.
+           - Si NO tiene wrapper con overflow, se limita al ancho disponible
+             (caso borde: tablas pequenas se ven bien; tablas largas se adaptan).
+           Ademas, un helper JS auto-envuelve tablas sueltas (ver script al final). */
+        main .overflow-x-auto > table,
+        main .overflow-auto > table,
+        main .overflow-y-auto > table,
+        main .custom-scrollbar > table {
+            min-width: max-content;
+            width: 100%;
+        }
+        main .overflow-y-auto > table,
+        main .custom-scrollbar > table { min-width: 100%; }
+        /* Wrapper auto-inyectado */
+        main .auto-table-wrap {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            max-width: 100%;
+        }
+        main .auto-table-wrap > table { min-width: max-content; }
+
+        /* Forms: inputs que son type=number/text no deben ser mas anchos que su contenedor */
+        main input, main select, main textarea { max-width: 100%; }
+
+        /* Contenedores con max-w-* en movil: relajar a 100% para que no se salgan del viewport */
+        @media (max-width: 639px) {
+            main .max-w-xl,
+            main .max-w-2xl,
+            main .max-w-3xl,
+            main .max-w-4xl,
+            main .max-w-5xl,
+            main .max-w-6xl,
+            main .max-w-7xl {
+                max-width: 100% !important;
+            }
+        }
+
+        /* Botones de accion en tablas: permitir que se envuelvan sin overflow */
+        main td > .flex.gap-1,
+        main td > .flex.gap-2,
+        main td > .flex.items-center.gap-2 {
+            flex-wrap: wrap;
+        }
+
+        /* Formularios: rejillas de dos columnas se colapsan a una en móviles
+           si la vista no define explícitamente sm:/md:/lg: */
+        @media (max-width: 639px) {
+            main .grid.grid-cols-2:not([class*="sm:grid-cols-"]):not([class*="md:grid-cols-"]):not([class*="lg:grid-cols-"]) {
+                grid-template-columns: minmax(0, 1fr);
+            }
+            main .grid.grid-cols-3:not([class*="sm:grid-cols-"]):not([class*="md:grid-cols-"]):not([class*="lg:grid-cols-"]) {
+                grid-template-columns: minmax(0, 1fr);
+            }
+            main .grid.grid-cols-4:not([class*="sm:grid-cols-"]):not([class*="md:grid-cols-"]):not([class*="lg:grid-cols-"]) {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        /* Chatbot flotante responsivo (ver JS abajo, además) */
+        @media (max-width: 639px) {
+            #chatbot-panel {
+                right: 8px !important;
+                left: 8px !important;
+                width: auto !important;
+                top: 56px !important;
+                max-height: calc(100vh - 72px) !important;
+            }
+        }
+
+        /* Notif dropdown: en móvil usamos position:fixed anclado al viewport
+           para que no quede cortado por el header ni se desborde por la izquierda. */
+        @media (max-width: 639px) {
+            [x-data*="notificaciones"] > div.absolute {
+                position: fixed !important;
+                top: 60px !important;
+                left: 8px !important;
+                right: 8px !important;
+                width: auto !important;
+                max-width: none !important;
+                margin-top: 0 !important;
+            }
+        }
+
         /* ─── Smooth scrollbar ─── */
         .custom-scrollbar {
             scroll-behavior: smooth;
@@ -248,12 +334,23 @@
     </style>
 </head>
 
-<body class="antialiased bg-[#EEEEEE] dark:bg-[#121D30]">
+<body class="antialiased bg-[#EEEEEE] dark:bg-[#121D30]" x-data="{ sidebarOpen: false }">
 
     <div class="flex h-screen overflow-hidden">
 
+        {{-- Backdrop (solo móvil, cuando el sidebar está abierto) --}}
+        <div x-show="sidebarOpen" x-transition.opacity
+             @click="sidebarOpen = false"
+             class="fixed inset-0 bg-black/50 z-30 lg:hidden"
+             style="display: none;"></div>
+
         {{-- ======== SIDEBAR ======== --}}
-        <aside class="w-[220px] bg-white dark:bg-[#1C1E46] border-r border-gray-200 dark:border-white/10 flex flex-col flex-shrink-0">
+        <aside
+            class="bg-white dark:bg-[#1C1E46] border-r border-gray-200 dark:border-white/10 flex flex-col flex-shrink-0
+                   fixed lg:static inset-y-0 left-0 z-40 w-[260px] lg:w-[220px]
+                   transform transition-transform duration-200 ease-out
+                   lg:translate-x-0"
+            :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'">
 
             {{-- Logo --}}
             <div class="flex items-center gap-3 px-5 h-16 border-b border-gray-100 dark:border-white/10">
@@ -333,24 +430,33 @@
         <div class="flex-1 flex flex-col overflow-hidden">
 
             {{-- Header --}}
-            <header class="bg-[#EEEEEE] dark:bg-[#121D30] flex items-center justify-between px-7 h-14 flex-shrink-0">
+            <header class="bg-[#EEEEEE] dark:bg-[#121D30] flex items-center justify-between gap-2 px-4 sm:px-7 h-14 flex-shrink-0">
+                {{-- Hamburger (solo móvil/tablet) --}}
+                <button type="button" @click="sidebarOpen = true"
+                        class="lg:hidden p-2 -ml-1 rounded-xl text-[#121D30]/60 dark:text-[#F7F7F7]/60 hover:text-[#0606F0] dark:hover:text-[#F7F7F7] hover:bg-[#04276B]/5 dark:hover:bg-white/10 transition-colors flex-shrink-0"
+                        aria-label="Abrir menú">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                </button>
+
                 {{-- Breadcrumb --}}
-                <div class="flex items-center gap-2 text-[13px] breadcrumb-enter">
-                    <span class="text-[#121D30]/40 dark:text-[#F7F7F7]/40">SIGEA</span>
-                    <svg class="w-3.5 h-3.5 text-[#121D30]/25 dark:text-[#F7F7F7]/25" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                <div class="flex items-center gap-2 text-[12px] sm:text-[13px] breadcrumb-enter min-w-0 flex-1">
+                    <span class="hidden sm:inline text-[#121D30]/40 dark:text-[#F7F7F7]/40">SIGEA</span>
+                    <svg class="hidden sm:inline w-3.5 h-3.5 text-[#121D30]/25 dark:text-[#F7F7F7]/25" fill="none" viewBox="0 0 24 24" stroke="currentColor"
                         stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
                     </svg>
-                    <span class="text-[#121D30]/40 dark:text-[#F7F7F7]/40">{{ $panelNombre ?? 'Panel' }}</span>
-                    <svg class="w-3.5 h-3.5 text-[#121D30]/25 dark:text-[#F7F7F7]/25" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                    <span class="hidden md:inline text-[#121D30]/40 dark:text-[#F7F7F7]/40 truncate">{{ $panelNombre ?? 'Panel' }}</span>
+                    <svg class="hidden md:inline w-3.5 h-3.5 text-[#121D30]/25 dark:text-[#F7F7F7]/25 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"
                         stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
                     </svg>
-                    <span class="font-medium text-[#121D30] dark:text-[#F7F7F7]">{{ $title ?? 'Dashboard' }}</span>
+                    <span class="font-medium text-[#121D30] dark:text-[#F7F7F7] truncate">{{ $title ?? 'Dashboard' }}</span>
                 </div>
 
                 {{-- Acciones header --}}
-                <div class="flex items-center gap-1">
+                <div class="flex items-center gap-0.5 sm:gap-1 flex-shrink-0">
                     {{-- Theme toggle --}}
                     <x-theme-toggle />
                     {{-- Notificaciones --}}
@@ -430,7 +536,7 @@
                         </svg>
                     </button>
                     {{-- Buscar --}}
-                    <button class="p-2.5 rounded-xl text-[#121D30]/40 dark:text-[#F7F7F7]/40 hover:text-[#0606F0] dark:hover:text-[#F7F7F7] hover:bg-[#04276B]/5 dark:hover:bg-white/10 transition-colors">
+                    <button class="hidden sm:flex p-2.5 rounded-xl text-[#121D30]/40 dark:text-[#F7F7F7]/40 hover:text-[#0606F0] dark:hover:text-[#F7F7F7] hover:bg-[#04276B]/5 dark:hover:bg-white/10 transition-colors">
                         <svg class="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor"
                             stroke-width="1.8">
                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -443,7 +549,7 @@
             {{-- Alertas de sesión --}}
             @if (session('success'))
                 <div
-                    class="mx-7 mb-3 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300 px-4 py-3 rounded-2xl text-[13px] flex items-center gap-2 fade-in">
+                    class="mx-4 sm:mx-7 mb-3 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300 px-4 py-3 rounded-2xl text-[13px] flex items-center gap-2 fade-in">
                     <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"
                         stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
@@ -453,7 +559,7 @@
             @endif
             @if (session('error'))
                 <div
-                    class="mx-7 mb-3 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-700 text-red-700 dark:text-red-300 px-4 py-3 rounded-2xl text-[13px] flex items-center gap-2 fade-in">
+                    class="mx-4 sm:mx-7 mb-3 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-700 text-red-700 dark:text-red-300 px-4 py-3 rounded-2xl text-[13px] flex items-center gap-2 fade-in">
                     <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"
                         stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -464,7 +570,7 @@
             @endif
 
             {{-- Contenido --}}
-            <main class="flex-1 overflow-y-auto custom-scrollbar px-7 pb-7 pt-1">
+            <main class="flex-1 overflow-y-auto custom-scrollbar px-4 sm:px-7 pb-7 pt-1">
                 <div class="fade-in">
                     {{ $slot }}
                 </div>
@@ -705,6 +811,31 @@
             </script>
         @endif
     @endauth
+
+    {{-- ════════ AUTO-WRAP TABLAS EN OVERFLOW-X (responsive global) ════════ --}}
+    <script>
+        (function () {
+            function wrapTables() {
+                document.querySelectorAll('main table').forEach(function (tbl) {
+                    // Si ya esta dentro de un contenedor con overflow-x, no hacer nada.
+                    if (tbl.closest('.overflow-x-auto, .overflow-auto, .auto-table-wrap')) return;
+                    var parent = tbl.parentElement;
+                    if (!parent) return;
+                    // Evita envolver templates Alpine o nodos ya procesados.
+                    if (parent.classList.contains('auto-table-wrap')) return;
+                    var wrap = document.createElement('div');
+                    wrap.className = 'auto-table-wrap';
+                    parent.insertBefore(wrap, tbl);
+                    wrap.appendChild(tbl);
+                });
+            }
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', wrapTables);
+            } else {
+                wrapTables();
+            }
+        })();
+    </script>
 
     {{-- Script de Notificaciones --}}
     @auth

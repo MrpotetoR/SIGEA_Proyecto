@@ -229,13 +229,28 @@
             40%, 60% { transform: translateX(3px); }
         }
 
+        /* ─── Animaciones auxiliares (slide-up, shake) reutilizadas por las vistas auth ─── */
+        .slide-up {
+            animation: slideUpAuth 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+            opacity: 0;
+            transform: translateY(12px);
+        }
+        @keyframes slideUpAuth {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         /* ─── Responsive ─── */
         @media (max-width: 768px) {
             .left-panel { display: none; }
             .right-panel { padding: 40px 28px; }
+            body { overflow: auto; }
+            .page-layout { min-height: 100svh; }
         }
         @media (max-width: 440px) {
-            .right-panel { padding: 32px 20px; }
+            .right-panel { padding: 32px 18px; }
+        }
+        @media (max-width: 360px) {
+            .right-panel { padding: 28px 14px; }
         }
     </style>
 </head>

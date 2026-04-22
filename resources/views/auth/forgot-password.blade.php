@@ -2,8 +2,8 @@
 
     {{-- Greeting --}}
     <div class="text-center mb-7">
-        <h2 class="text-[24px] font-extrabold text-gray-900 slide-up">Recuperar contrasena</h2>
-        <p class="text-[13px] text-gray-400 mt-1.5 slide-up" style="animation-delay: 0.12s;">Ingresa tu correo y te enviaremos un enlace para restablecer tu contrasena.</p>
+        <h2 class="text-[24px] font-extrabold text-gray-900 slide-up">Recuperar contraseña</h2>
+        <p class="text-[13px] text-gray-400 mt-1.5 slide-up" style="animation-delay: 0.12s;">Ingresa tu correo registrado y te enviaremos un codigo de 6 digitos para crear una nueva contraseña.</p>
     </div>
 
     @if(session('status'))
@@ -43,7 +43,7 @@
 
         <div class="slide-up" style="animation-delay: 0.2s;">
             <button type="submit" class="btn-primary w-full bg-[#0606F0] hover:bg-[#04276B] text-white font-semibold py-3.5 rounded-xl text-[14px] shadow-lg shadow-gray-900/10">
-                Enviar enlace de recuperacion
+                Enviar codigo
             </button>
         </div>
 

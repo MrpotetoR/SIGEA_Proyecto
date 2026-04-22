@@ -181,10 +181,10 @@
             <div class="bg-white dark:bg-gray-800 rounded-xl shadow dark:shadow-gray-900/20 p-6 border border-transparent dark:border-gray-700 lg:col-span-2">
                 <h2 class="text-lg font-semibold text-gray-700 dark:text-gray-200 mb-1">Documentación del alumno</h2>
                 <p class="text-xs text-gray-400 mb-4">Sube cada documento en formato PDF. Podrás reemplazarlos posteriormente.</p>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div class="space-y-3">
                     @foreach(\App\Models\DocumentoAlumno::TIPOS as $tipo => $label)
-                        <div class="flex items-center gap-3 p-3 rounded-lg border border-gray-100 dark:border-gray-700 hover:border-gray-200 dark:hover:border-gray-600 transition-colors">
-                            <span class="text-sm text-gray-700 dark:text-gray-300 w-56 flex-shrink-0">{{ $label }}</span>
+                        <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 p-3 rounded-lg border border-gray-100 dark:border-gray-700 hover:border-gray-200 dark:hover:border-gray-600 transition-colors">
+                            <span class="text-sm text-gray-700 dark:text-gray-300 min-w-fit">{{ $label }}</span>
                             <input type="file" name="documentos[{{ $tipo }}]" accept="application/pdf"
                                    class="flex-1 text-xs text-gray-500 dark:text-gray-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-medium file:bg-blue-50 file:text-blue-700 dark:file:bg-gray-700 dark:file:text-blue-300 hover:file:bg-blue-100">
                         </div>

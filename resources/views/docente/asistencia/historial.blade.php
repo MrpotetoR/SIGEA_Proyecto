@@ -62,7 +62,7 @@
                     <thead>
                         {{-- Fila 1: agrupación por semana --}}
                         <tr class="bg-gray-50 dark:bg-gray-700/50">
-                            <th rowspan="2" class="sticky left-0 z-30 bg-gray-50 dark:bg-gray-700/50 px-3 py-2 text-left text-[11px] font-semibold text-gray-500 dark:text-gray-400 uppercase border-b border-r dark:border-gray-600" style="min-width:220px">Alumno</th>
+                            <th rowspan="2" class="sticky left-0 z-30 bg-gray-50 dark:bg-gray-700/50 px-3 py-2 text-left text-[11px] font-semibold text-gray-500 dark:text-gray-400 uppercase border-b border-r dark:border-gray-600 sm:min-w-[220px]" style="min-width:140px">Alumno</th>
                             @foreach($fechasPorSemana as $semana => $dias)
                                 <th colspan="{{ count($dias) }}" class="px-2 py-1.5 text-center text-[10px] font-semibold text-gray-500 dark:text-gray-400 uppercase border-b border-l dark:border-gray-600 bg-sky-50/50 dark:bg-sky-900/20">
                                     Semana {{ $semana }}

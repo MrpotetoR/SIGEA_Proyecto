@@ -76,7 +76,7 @@
             $retardos = $asistencias->where('estatus', 'retardo')->count();
             $porcAsist = $totalAsis > 0 ? round(($presentes / $totalAsis) * 100, 1) : 0;
         @endphp
-        <div class="grid grid-cols-4 gap-4">
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
             <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm dark:shadow-gray-900/20 border border-gray-100 dark:border-gray-700 p-5 text-center">
                 <p class="text-2xl font-bold text-gray-800 dark:text-gray-200">{{ $totalAsis }}</p>
                 <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Total registros</p>

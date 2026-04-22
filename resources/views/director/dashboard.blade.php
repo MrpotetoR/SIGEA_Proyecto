@@ -7,7 +7,7 @@
 
     {{-- Saludo + Carrera --}}
     <div>
-        <h1 class="text-[26px] font-bold text-gray-900 dark:text-gray-100 leading-tight">
+        <h1 class="text-[20px] sm:text-[22px] lg:text-[26px] font-bold text-gray-900 dark:text-gray-100 leading-tight">
             @php
                 $hora = now()->hour;
                 $saludo = $hora < 12 ? 'Buenos días' : ($hora < 18 ? 'Buenas tardes' : 'Buenas noches');
@@ -64,7 +64,7 @@
                     </span>
                     <span class="text-[13px] font-semibold text-gray-700 dark:text-gray-300">Alumnos Activos</span>
                 </div>
-                <p class="text-[28px] font-bold text-gray-900 dark:text-gray-100 leading-none">{{ $kpis['total_alumnos'] }}</p>
+                <p class="text-[22px] sm:text-[28px] font-bold text-gray-900 dark:text-gray-100 leading-none">{{ $kpis['total_alumnos'] }}</p>
                 <a href="{{ route('director.alumnos') }}" class="text-[11px] text-[#0606F0] dark:text-blue-400 hover:underline mt-1.5 block">Ver listado →</a>
             </div>
 
@@ -78,7 +78,7 @@
                     </span>
                     <span class="text-[13px] font-semibold text-gray-700 dark:text-gray-300">Docentes</span>
                 </div>
-                <p class="text-[28px] font-bold text-gray-900 dark:text-gray-100 leading-none">{{ $kpis['total_docentes'] }}</p>
+                <p class="text-[22px] sm:text-[28px] font-bold text-gray-900 dark:text-gray-100 leading-none">{{ $kpis['total_docentes'] }}</p>
                 <a href="{{ route('director.docentes') }}" class="text-[11px] text-sky-500 dark:text-sky-400 hover:underline mt-1.5 block">Ver listado →</a>
             </div>
 
@@ -92,7 +92,7 @@
                     </span>
                     <span class="text-[13px] font-semibold text-gray-700 dark:text-gray-300">Semáforo Verde</span>
                 </div>
-                <p class="text-[28px] font-bold text-green-600 dark:text-green-400 leading-none">{{ $distribucion_semaforo['verde'] }}</p>
+                <p class="text-[22px] sm:text-[28px] font-bold text-green-600 dark:text-green-400 leading-none">{{ $distribucion_semaforo['verde'] }}</p>
                 <span class="text-[11px] text-gray-400 mt-1.5 block">Buen rendimiento</span>
             </div>
 
@@ -106,7 +106,7 @@
                     </span>
                     <span class="text-[13px] font-semibold text-gray-700 dark:text-gray-300">Semáforo Rojo</span>
                 </div>
-                <p class="text-[28px] font-bold text-red-500 dark:text-red-400 leading-none">{{ $distribucion_semaforo['rojo'] }}</p>
+                <p class="text-[22px] sm:text-[28px] font-bold text-red-500 dark:text-red-400 leading-none">{{ $distribucion_semaforo['rojo'] }}</p>
                 <span class="text-[11px] text-gray-400 mt-1.5 block">Requieren atención</span>
             </div>
 
@@ -207,7 +207,7 @@
     {{-- Distribución semáforo --}}
     <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm dark:shadow-gray-900/20 border border-gray-100 dark:border-gray-700 p-6">
         <h2 class="text-[15px] font-bold text-gray-800 dark:text-gray-200 mb-5">Distribución Semáforo Académico</h2>
-        <div class="grid grid-cols-3 gap-5">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-5">
             @foreach(['verde' => ['bg-green-500', 'text-green-700', 'bg-green-50', 'dark:bg-green-900/30', 'dark:text-green-400'], 'amarillo' => ['bg-yellow-400', 'text-yellow-700', 'bg-yellow-50', 'dark:bg-yellow-900/30', 'dark:text-yellow-400'], 'rojo' => ['bg-red-500', 'text-red-700', 'bg-red-50', 'dark:bg-red-900/30', 'dark:text-red-400']] as $nivel => $colors)
                 @php $total = array_sum($distribucion_semaforo) ?: 1; $porcentaje = round(($distribucion_semaforo[$nivel] / $total) * 100); @endphp
                 <div class="{{ $colors[2] }} {{ $colors[3] }} rounded-xl p-4">
@@ -234,17 +234,17 @@
                     Ver detalle →
                 </a>
             </div>
-            <div class="grid grid-cols-3 gap-5">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-5">
                 <div class="text-center p-4 bg-gray-50 dark:bg-gray-700 rounded-xl">
-                    <p class="text-3xl font-bold text-gray-800 dark:text-gray-200">{{ $indice['total'] ?? 0 }}</p>
+                    <p class="text-2xl sm:text-3xl font-bold text-gray-800 dark:text-gray-200">{{ $indice['total'] ?? 0 }}</p>
                     <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Total calificaciones</p>
                 </div>
                 <div class="text-center p-4 bg-green-50 dark:bg-green-900/30 rounded-xl">
-                    <p class="text-3xl font-bold text-green-600 dark:text-green-400">{{ $indice['porcentaje_aprobacion'] ?? 0 }}%</p>
+                    <p class="text-2xl sm:text-3xl font-bold text-green-600 dark:text-green-400">{{ $indice['porcentaje_aprobacion'] ?? 0 }}%</p>
                     <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Aprobación</p>
                 </div>
                 <div class="text-center p-4 bg-red-50 dark:bg-red-900/30 rounded-xl">
-                    <p class="text-3xl font-bold text-red-500 dark:text-red-400">{{ isset($indice['porcentaje_aprobacion']) ? 100 - $indice['porcentaje_aprobacion'] : 0 }}%</p>
+                    <p class="text-2xl sm:text-3xl font-bold text-red-500 dark:text-red-400">{{ isset($indice['porcentaje_aprobacion']) ? 100 - $indice['porcentaje_aprobacion'] : 0 }}%</p>
                     <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Reprobación</p>
                 </div>
             </div>
