@@ -10,7 +10,7 @@ class ServicioSocial extends Model
     protected $primaryKey = 'id_servicio';
     public $timestamps = false;
 
-    protected $fillable = ['id_alumno', 'horas_acumuladas', 'horas_requeridas', 'estatus'];
+    protected $fillable = ['id_alumno', 'institucion', 'horas_acumuladas', 'horas_requeridas', 'estatus'];
 
     public function alumno()
     {

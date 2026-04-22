@@ -46,25 +46,36 @@ class EstadisticasCarreraService
         ];
     }
 
-    public function distribucionSemaforo(Carrera $carrera): array
+    public function distribucionSemaforo(Carrera $carrera, ?CicloEscolar $ciclo = null): array
     {
-        $ciclo = CicloEscolar::cicloActual();
+        $ciclo = $ciclo ?? CicloEscolar::cicloActual();
         if (!$ciclo) return ['verde' => 0, 'amarillo' => 0, 'rojo' => 0];
 
         $alumnosIds = Alumno::deCarrera($carrera->id_carrera)->activos()->pluck('id_alumno');
+        if ($alumnosIds->isEmpty()) return ['verde' => 0, 'amarillo' => 0, 'rojo' => 0];
 
-        $distribucion = SemaforoAcademico::whereIn('id_alumno', $alumnosIds)
+        // Derivamos el semaforo del promedio real de calificaciones del ciclo,
+        // igual que en Rendimiento Docente, para que sea consistente con
+        // las columnas de Aprobacion/Reprobacion del mismo reporte.
+        //   < 7   -> rojo
+        //   7-7.9 -> amarillo
+        //   >= 8  -> verde
+        // Los alumnos sin calificaciones en el ciclo no se cuentan en ningun nivel.
+        $promedios = Calificacion::selectRaw('id_alumno, AVG(calificacion) as promedio')
+            ->whereIn('id_alumno', $alumnosIds)
             ->where('id_ciclo', $ciclo->id_ciclo)
-            ->selectRaw('nivel, count(*) as total')
-            ->groupBy('nivel')
-            ->pluck('total', 'nivel')
-            ->toArray();
+            ->groupBy('id_alumno')
+            ->pluck('promedio', 'id_alumno');
 
-        return [
-            'verde' => $distribucion['verde'] ?? 0,
-            'amarillo' => $distribucion['amarillo'] ?? 0,
-            'rojo' => $distribucion['rojo'] ?? 0,
-        ];
+        $dist = ['verde' => 0, 'amarillo' => 0, 'rojo' => 0];
+        foreach ($promedios as $prom) {
+            $prom = (float) $prom;
+            if ($prom < 7)      $dist['rojo']++;
+            elseif ($prom < 8)  $dist['amarillo']++;
+            else                $dist['verde']++;
+        }
+
+        return $dist;
     }
 
     public function promedioEvaluacionDocente(Carrera $carrera, CicloEscolar $ciclo): Collection

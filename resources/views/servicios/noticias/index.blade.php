@@ -27,6 +27,7 @@
                             @endif
                         </div>
                         <p class="text-sm text-gray-500 dark:text-gray-400 line-clamp-2 mt-1">{{ Str::limit($n->contenido, 120) }}</p>
+                        @include('partials.noticia-audiencia', ['noticia' => $n])
                         <p class="text-xs text-gray-400 dark:text-gray-500 mt-2">
                             @if($n->fecha_publicacion && $n->fecha_publicacion->isFuture())
                                 Programada: {{ $n->fecha_publicacion->format('d/m/Y H:i') }}

@@ -97,10 +97,12 @@ Route::prefix('docente')->name('docente.')->middleware(['auth', 'verified', 'rol
     Route::get('/reporte-rendimiento',  [\App\Http\Controllers\Docente\ReporteRendimientoController::class, 'index'])->name('reporte-rendimiento');
 
     // Horas ACUDE
-    Route::resource('horas-culturales', \App\Http\Controllers\Docente\HrsCulturalesController::class);
+    Route::resource('horas-culturales', \App\Http\Controllers\Docente\HrsCulturalesController::class)
+        ->parameters(['horas-culturales' => 'horasCultural']);
 
     // Servicio Social
-    Route::resource('servicio-social', \App\Http\Controllers\Docente\ServicioSocialController::class);
+    Route::resource('servicio-social', \App\Http\Controllers\Docente\ServicioSocialController::class)
+        ->parameters(['servicio-social' => 'servicioSocial']);
 
     // Evaluación y Noticias
     Route::get('/evaluacion-resultados', [\App\Http\Controllers\Docente\EvaluacionResultadosController::class, 'index'])->name('evaluacion-resultados');

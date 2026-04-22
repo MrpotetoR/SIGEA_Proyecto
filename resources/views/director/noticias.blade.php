@@ -26,6 +26,7 @@
                                 <span class="text-xs text-gray-400 whitespace-nowrap ml-4">{{ $noticia->fecha_publicacion?->format('d/m/Y') }}</span>
                             </div>
                             <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">{{ Str::limit($noticia->contenido, 300) }}</p>
+                            @include('partials.noticia-audiencia', ['noticia' => $noticia])
                             @if($noticia->autor)
                                 <p class="text-xs text-gray-400 mt-3">Publicado por: {{ $noticia->autor->name }}</p>
                             @endif

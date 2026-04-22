@@ -182,10 +182,8 @@ class ChatbotController extends Controller
             $datos[] = "Promedio general: {$alumno->promedio_general}";
         }
 
-        $horasCulturales = $alumno->hrsCulturales()->where('tipo', 'cultural')->sum('horas_acumuladas');
-        $horasDeportivas = $alumno->hrsCulturales()->where('tipo', 'deportiva')->sum('horas_acumuladas');
-        $datos[] = "Horas culturales: {$horasCulturales}/30 requeridas";
-        $datos[] = "Horas deportivas: {$horasDeportivas}/30 requeridas";
+        $horasAcude = $alumno->hrsCulturales()->sum('horas_acumuladas');
+        $datos[] = "Horas ACUDE: {$horasAcude}/90 requeridas";
 
         $ciclo = CicloEscolar::cicloActual();
         if ($ciclo) {

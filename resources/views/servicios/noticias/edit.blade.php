@@ -104,13 +104,13 @@
                     <div x-show="tipo === 'programada'" x-transition class="grid grid-cols-2 gap-3 pt-2">
                         <div>
                             <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1">Fecha *</label>
-                            <input type="date" name="fecha_publicacion" x-model="fecha" :min="hoy"
+                            <input type="date" name="fecha_publicacion" x-model="fecha" :min="hoy" :disabled="tipo !== 'programada'"
                                    class="w-full border dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400 focus:outline-none">
                             @error('fecha_publicacion')<p class="text-red-500 dark:text-red-400 text-xs mt-1">{{ $message }}</p>@enderror
                         </div>
                         <div>
                             <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1">Hora *</label>
-                            <input type="time" name="hora_publicacion" x-model="hora" :min="minHora" max="23:59"
+                            <input type="time" name="hora_publicacion" x-model="hora" :min="minHora" max="23:59" :disabled="tipo !== 'programada'"
                                    class="w-full border dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400 focus:outline-none">
                             @error('hora_publicacion')<p class="text-red-500 dark:text-red-400 text-xs mt-1">{{ $message }}</p>@enderror
                         </div>

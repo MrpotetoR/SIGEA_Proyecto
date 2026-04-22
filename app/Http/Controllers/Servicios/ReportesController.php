@@ -28,7 +28,7 @@ class ReportesController extends Controller
                     'carrera' => $carrera,
                     'ciclo' => $ciclo,
                     'aprobacion' => $this->estadisticas->indiceAprobacion($carrera, $ciclo),
-                    'semaforo' => $this->estadisticas->distribucionSemaforo($carrera),
+                    'semaforo' => $this->estadisticas->distribucionSemaforo($carrera, $ciclo),
                     'evaluacion_docentes' => $this->estadisticas->promedioEvaluacionDocente($carrera, $ciclo),
                 ];
             }

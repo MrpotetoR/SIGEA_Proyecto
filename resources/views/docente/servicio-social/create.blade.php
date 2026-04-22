@@ -12,29 +12,38 @@
             <label class="text-[11px] font-semibold text-gray-500 uppercase mb-1 block dark:text-gray-400">Alumno</label>
             <select name="id_alumno" required class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-[13px] focus:ring-2 focus:ring-sky-300 outline-none dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200">
                 <option value="">Selecciona alumno</option>
-                @foreach(\App\Models\Alumno::activos()->orderBy('apellidos')->get() as $a)
-                    <option value="{{ $a->id_alumno }}">{{ $a->nombre_completo }} ({{ $a->matricula }})</option>
-                @endforeach
+                @forelse($alumnos as $a)
+                    <option value="{{ $a->id_alumno }}" {{ old('id_alumno') == $a->id_alumno ? 'selected' : '' }}>{{ $a->nombre_completo }} ({{ $a->matricula }})</option>
+                @empty
+                    <option value="" disabled>No tienes alumnos asignados en tus grupos</option>
+                @endforelse
             </select>
+            <p class="text-[10px] text-gray-400 dark:text-gray-500 mt-1">Solo alumnos de los grupos que impartes.</p>
+            @error('id_alumno') <p class="text-red-500 text-[11px] mt-1 dark:text-red-400">{{ $message }}</p> @enderror
+        </div>
+
+        <div>
+            <label class="text-[11px] font-semibold text-gray-500 uppercase mb-1 block dark:text-gray-400">Institución</label>
+            <input type="text" name="institucion" value="{{ old('institucion') }}" maxlength="150" pattern="[\p{L}\p{N}\s]+" placeholder="Nombre de la institución donde realiza el servicio" class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-[13px] focus:ring-2 focus:ring-sky-300 outline-none dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200">
+            <p class="text-[10px] text-gray-400 dark:text-gray-500 mt-1">Solo letras y números.</p>
+            @error('institucion') <p class="text-red-500 text-[11px] mt-1 dark:text-red-400">{{ $message }}</p> @enderror
         </div>
 
         <div class="grid grid-cols-2 gap-4">
             <div>
                 <label class="text-[11px] font-semibold text-gray-500 uppercase mb-1 block dark:text-gray-400">Horas Acumuladas</label>
-                <input type="number" name="horas_acumuladas" min="0" step="1" required class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-[13px] focus:ring-2 focus:ring-sky-300 outline-none dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200">
+                <input type="number" name="horas_acumuladas" value="{{ old('horas_acumuladas', 0) }}" min="0" max="160" step="1" maxlength="3" oninput="if(this.value.length>3)this.value=this.value.slice(0,3)" required class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-[13px] focus:ring-2 focus:ring-sky-300 outline-none dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200">
+                <p class="text-[10px] text-gray-400 dark:text-gray-500 mt-1">Máximo 3 dígitos — tope institucional 160 h.</p>
+                @error('horas_acumuladas') <p class="text-red-500 text-[11px] mt-1 dark:text-red-400">{{ $message }}</p> @enderror
             </div>
             <div>
                 <label class="text-[11px] font-semibold text-gray-500 uppercase mb-1 block dark:text-gray-400">Estatus</label>
                 <select name="estatus" required class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-[13px] focus:ring-2 focus:ring-sky-300 outline-none dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200">
-                    <option value="en_curso">En curso</option>
-                    <option value="completado">Completado</option>
+                    <option value="en_curso" {{ old('estatus') === 'en_curso' ? 'selected' : '' }}>En curso</option>
+                    <option value="completado" {{ old('estatus') === 'completado' ? 'selected' : '' }}>Completado</option>
                 </select>
+                @error('estatus') <p class="text-red-500 text-[11px] mt-1 dark:text-red-400">{{ $message }}</p> @enderror
             </div>
-        </div>
-
-        <div>
-            <label class="text-[11px] font-semibold text-gray-500 uppercase mb-1 block dark:text-gray-400">Institucion</label>
-            <input type="text" name="institucion" class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-[13px] focus:ring-2 focus:ring-sky-300 outline-none dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200" placeholder="Nombre de la institucion...">
         </div>
 
         <div class="flex justify-between items-center pt-2">

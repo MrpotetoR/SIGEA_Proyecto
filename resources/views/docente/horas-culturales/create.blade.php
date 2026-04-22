@@ -12,31 +12,27 @@
             <label class="text-[11px] font-semibold text-gray-500 uppercase mb-1 block dark:text-gray-400">Alumno</label>
             <select name="id_alumno" required class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-[13px] focus:ring-2 focus:ring-sky-300 outline-none dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200">
                 <option value="">Selecciona alumno</option>
-                @foreach(\App\Models\Alumno::activos()->orderBy('apellidos')->get() as $a)
-                    <option value="{{ $a->id_alumno }}">{{ $a->nombre_completo }} ({{ $a->matricula }})</option>
-                @endforeach
+                @forelse($alumnos as $a)
+                    <option value="{{ $a->id_alumno }}" {{ old('id_alumno') == $a->id_alumno ? 'selected' : '' }}>{{ $a->nombre_completo }} ({{ $a->matricula }})</option>
+                @empty
+                    <option value="" disabled>No tienes alumnos asignados en tus grupos</option>
+                @endforelse
             </select>
+            <p class="text-[10px] text-gray-400 dark:text-gray-500 mt-1">Solo puedes registrar horas a alumnos de los grupos que impartes.</p>
             @error('id_alumno') <p class="text-red-500 text-[11px] mt-1 dark:text-red-400">{{ $message }}</p> @enderror
         </div>
 
-        <div class="grid grid-cols-2 gap-4">
-            <div>
-                <label class="text-[11px] font-semibold text-gray-500 uppercase mb-1 block dark:text-gray-400">Tipo</label>
-                <select name="tipo" required class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-[13px] focus:ring-2 focus:ring-sky-300 outline-none dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200">
-                    <option value="cultural">Cultural</option>
-                    <option value="deportiva">Deportiva</option>
-                </select>
-            </div>
-            <div>
-                <label class="text-[11px] font-semibold text-gray-500 uppercase mb-1 block dark:text-gray-400">Horas</label>
-                <input type="number" name="horas_acumuladas" min="0.5" max="100" step="0.5" required class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-[13px] focus:ring-2 focus:ring-sky-300 outline-none dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200">
-                @error('horas_acumuladas') <p class="text-red-500 text-[11px] mt-1 dark:text-red-400">{{ $message }}</p> @enderror
-            </div>
+        <div>
+            <label class="text-[11px] font-semibold text-gray-500 uppercase mb-1 block dark:text-gray-400">Horas</label>
+            <input type="number" name="horas_acumuladas" value="{{ old('horas_acumuladas') }}" min="1" max="90" step="1" maxlength="2" oninput="if(this.value.length>2)this.value=this.value.slice(0,2)" required class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-[13px] focus:ring-2 focus:ring-sky-300 outline-none dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200">
+            <p class="text-[10px] text-gray-400 dark:text-gray-500 mt-1">Máximo 2 dígitos — tope acumulado 90 h por alumno.</p>
+            @error('horas_acumuladas') <p class="text-red-500 text-[11px] mt-1 dark:text-red-400">{{ $message }}</p> @enderror
         </div>
 
         <div>
-            <label class="text-[11px] font-semibold text-gray-500 uppercase mb-1 block dark:text-gray-400">Descripcion</label>
-            <textarea name="descripcion" rows="3" class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-[13px] focus:ring-2 focus:ring-sky-300 outline-none resize-none dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200" placeholder="Actividad realizada..."></textarea>
+            <label class="text-[11px] font-semibold text-gray-500 uppercase mb-1 block dark:text-gray-400">Descripción</label>
+            <textarea name="descripcion" rows="3" class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-[13px] focus:ring-2 focus:ring-sky-300 outline-none resize-none dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200" placeholder="¿Dónde está realizando sus horas ACUDE?">{{ old('descripcion') }}</textarea>
+            @error('descripcion') <p class="text-red-500 text-[11px] mt-1 dark:text-red-400">{{ $message }}</p> @enderror
         </div>
 
         <div class="flex justify-between items-center pt-2">

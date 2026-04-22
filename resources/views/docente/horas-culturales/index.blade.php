@@ -19,9 +19,8 @@
                 <thead class="bg-gray-50 dark:bg-gray-700/50 sticky top-0 z-10">
                     <tr>
                         <th class="px-5 py-3 text-left text-[11px] font-semibold text-gray-500 uppercase dark:text-gray-400">Alumno</th>
-                        <th class="px-5 py-3 text-center text-[11px] font-semibold text-gray-500 uppercase dark:text-gray-400">Tipo</th>
                         <th class="px-5 py-3 text-center text-[11px] font-semibold text-gray-500 uppercase dark:text-gray-400">Horas</th>
-                        <th class="px-5 py-3 text-left text-[11px] font-semibold text-gray-500 uppercase dark:text-gray-400">Descripcion</th>
+                        <th class="px-5 py-3 text-left text-[11px] font-semibold text-gray-500 uppercase dark:text-gray-400">Descripción</th>
                         <th class="px-5 py-3 text-center text-[11px] font-semibold text-gray-500 uppercase dark:text-gray-400">Acciones</th>
                     </tr>
                 </thead>
@@ -29,12 +28,7 @@
                     @foreach($registros as $reg)
                         <tr class="hover:bg-gray-50/50 dark:hover:bg-gray-700/50">
                             <td class="px-5 py-3 text-[13px] font-medium text-gray-800 dark:text-gray-200">{{ $reg->alumno?->nombre_completo ?? '---' }}</td>
-                            <td class="px-5 py-3 text-center">
-                                <span class="inline-block px-2.5 py-1 rounded-lg text-[11px] font-bold {{ $reg->tipo === 'cultural' ? 'bg-blue-50 text-[#0606F0] dark:bg-blue-900/30 dark:text-blue-300' : 'bg-emerald-50 text-emerald-600 dark:bg-green-900/30 dark:text-green-300' }}">
-                                    {{ ucfirst($reg->tipo) }}
-                                </span>
-                            </td>
-                            <td class="px-5 py-3 text-[13px] text-center font-bold text-gray-700 dark:text-gray-200">{{ $reg->horas_acumuladas }}</td>
+                            <td class="px-5 py-3 text-[13px] text-center font-bold text-gray-700 dark:text-gray-200">{{ (int) $reg->horas_acumuladas }}</td>
                             <td class="px-5 py-3 text-[12px] text-gray-500 max-w-xs truncate dark:text-gray-400">{{ $reg->descripcion ?? '---' }}</td>
                             <td class="px-5 py-3 text-center">
                                 <div class="flex justify-center gap-1">

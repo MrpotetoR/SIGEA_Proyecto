@@ -24,6 +24,7 @@
                         <div class="flex-1 min-w-0">
                             <h3 class="text-[15px] font-bold text-gray-800 dark:text-gray-200">{{ $noticia->titulo }}</h3>
                             <p class="text-[12px] text-gray-500 dark:text-gray-400 mt-1 line-clamp-2">{{ $noticia->contenido }}</p>
+                            @include('partials.noticia-audiencia', ['noticia' => $noticia])
                             <p class="text-[11px] text-gray-400 dark:text-gray-500 mt-2">{{ $noticia->fecha_publicacion->format('d/m/Y') }} &mdash; {{ $noticia->fecha_publicacion->diffForHumans() }}</p>
                         </div>
                     </div>

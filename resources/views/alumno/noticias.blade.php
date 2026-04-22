@@ -34,6 +34,7 @@
                             <p class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
                                 {{ Str::limit($noticia->contenido, 250) }}
                             </p>
+                            @include('partials.noticia-audiencia', ['noticia' => $noticia])
                         </div>
                     </div>
                 </div>
