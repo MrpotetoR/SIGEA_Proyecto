@@ -243,8 +243,15 @@
             min-width: max-content;
             width: 100%;
         }
+        /* Para scroll vertical (no horizontal), la tabla SIEMPRE debe ocupar 100%
+           del ancho del contenedor — evita que columnas con poco contenido dejen
+           espacio blanco a la derecha. */
         main .overflow-y-auto > table,
-        main .custom-scrollbar > table { min-width: 100%; }
+        main .custom-scrollbar > table {
+            min-width: 100%;
+            width: 100% !important;
+            table-layout: auto;
+        }
         /* Wrapper auto-inyectado */
         main .auto-table-wrap {
             overflow-x: auto;
