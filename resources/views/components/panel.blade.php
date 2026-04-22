@@ -222,6 +222,13 @@
             to   { opacity: 1; transform: translateY(0); }
         }
 
+        /* ─── Guard global anti-overflow horizontal en movil ─── */
+        @media (max-width: 767px) {
+            html, body { overflow-x: hidden; max-width: 100vw; }
+            main { max-width: 100vw; overflow-x: hidden; }
+            main > * { max-width: 100%; }
+        }
+
         /* ─── Responsive helpers ─── */
         /* Evita que una tabla larga rompa el layout en pantallas chicas:
            - Si la tabla esta dentro de un wrapper con overflow-x, mantiene max-content

@@ -7,8 +7,8 @@
 
     {{-- Filtros --}}
     <form method="GET" action="{{ route('director.asistencia') }}" class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm dark:shadow-gray-900/20 border border-gray-100 dark:border-gray-700 p-5 mb-6">
-        <div class="flex items-end gap-4">
-            <div class="flex-1">
+        <div class="flex flex-wrap items-end gap-4">
+            <div class="flex-1 min-w-[180px] basis-full sm:basis-auto">
                 <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1.5">Grupo</label>
                 <select name="grupo_id" class="w-full text-sm border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-xl px-3 py-2 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400">
                     <option value="">Seleccionar grupo...</option>
@@ -17,11 +17,11 @@
                     @endforeach
                 </select>
             </div>
-            <div class="w-48">
+            <div class="flex-1 min-w-[140px] sm:w-48 sm:flex-none">
                 <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1.5">Fecha (opcional)</label>
                 <input type="date" name="fecha" value="{{ request('fecha') }}" class="w-full text-sm border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-xl px-3 py-2 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400">
             </div>
-            <button type="submit" class="px-5 py-2 bg-[#0606F0] dark:bg-[#0606F0] text-white text-sm font-medium rounded-xl hover:bg-[#04276B] dark:hover:bg-blue-400 transition-colors">Consultar</button>
+            <button type="submit" class="px-5 py-2 bg-[#0606F0] dark:bg-[#0606F0] text-white text-sm font-medium rounded-xl hover:bg-[#04276B] dark:hover:bg-blue-400 transition-colors whitespace-nowrap">Consultar</button>
         </div>
     </form>
 

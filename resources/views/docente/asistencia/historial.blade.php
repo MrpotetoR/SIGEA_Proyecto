@@ -1,6 +1,19 @@
 <x-panel title="Historial Asistencia - {{ $grupo->clave_grupo }}" panelNombre="Panel Docente">
 <x-slot name="nav">@include('partials.docente-nav')</x-slot>
 
+<style>
+    /* En movil, desactivamos sticky porque los offsets fijos en px (right-[120px]/[80px]/[40px])
+       no coinciden con el ancho real de las columnas en pantallas angostas, causando solapamiento. */
+    @media (max-width: 767px) {
+        .historial-asistencia-tabla .sticky {
+            position: static !important;
+        }
+        .historial-asistencia-tabla table {
+            min-width: 720px; /* Fuerza scroll horizontal limpio */
+        }
+    }
+</style>
+
 @php
     // Agrupar fechas por semana ISO para header tipo Excel.
     $fechasPorSemana = $fechas->groupBy(fn($f) => \Carbon\Carbon::parse($f)->isoWeek());
@@ -55,7 +68,7 @@
         </div>
     @else
         {{-- Cuadrícula --}}
-        <div class="bg-white dark:bg-gray-800 dark:border-gray-700 dark:shadow-gray-900/20 rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+        <div class="bg-white dark:bg-gray-800 dark:border-gray-700 dark:shadow-gray-900/20 rounded-2xl border border-gray-100 shadow-sm overflow-hidden historial-asistencia-tabla">
             <div class="overflow-auto custom-scrollbar" style="max-height: calc(100vh - 360px);">
                 <table class="border-collapse text-[12px] min-w-full">
                     {{-- Header: semana + día --}}

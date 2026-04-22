@@ -43,7 +43,7 @@
                         $bloqueado = (!$pago && !$esSiguiente);
                     @endphp
 
-                    <div class="flex items-center gap-4 p-4 rounded-xl border transition-colors
+                    <div class="flex flex-wrap sm:flex-nowrap items-center gap-3 sm:gap-4 p-4 rounded-xl border transition-colors
                         {{ $pago && $pago->estaAprobado() ? 'border-green-200 dark:border-green-800 bg-green-50/40 dark:bg-green-900/10'
                           : ($pago && $pago->estaPendiente() ? 'border-amber-200 dark:border-amber-800 bg-amber-50/40 dark:bg-amber-900/10'
                           : ($pago && $pago->estaRechazado() ? 'border-red-200 dark:border-red-800 bg-red-50/40 dark:bg-red-900/10'
@@ -60,7 +60,7 @@
                         </div>
 
                         {{-- Contenido --}}
-                        <div class="flex-1 min-w-0">
+                        <div class="flex-1 min-w-0 basis-0 min-w-[140px]">
                             @if($pago && $pago->estaAprobado())
                                 <div class="flex items-center gap-2">
                                     <span class="inline-flex items-center gap-1 text-sm font-medium text-green-700 dark:text-green-300">
@@ -94,7 +94,7 @@
                         </div>
 
                         {{-- Acciones --}}
-                        <div class="flex-shrink-0 flex items-center gap-2">
+                        <div class="flex-shrink-0 flex items-center gap-2 w-full sm:w-auto basis-full sm:basis-auto justify-end sm:justify-start">
                             @if($pago && ($pago->estaAprobado() || $pago->estaPendiente()))
                                 <a href="{{ asset('storage/'.$pago->baucher_path) }}" target="_blank"
                                    class="inline-flex items-center gap-1 text-[#0606F0] dark:text-blue-400 hover:underline text-xs">

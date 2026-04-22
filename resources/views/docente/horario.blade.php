@@ -46,7 +46,7 @@
 
     <div class="bg-white dark:bg-gray-800 dark:border-gray-700 dark:shadow-gray-900/20 rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
         <div class="overflow-x-auto custom-scrollbar">
-        <table class="min-w-full table-fixed">
+        <table class="min-w-full table-fixed" style="min-width:640px">
             <thead>
                 <tr class="bg-gray-50 dark:bg-gray-700/50 border-b border-gray-100 dark:border-gray-700">
                     <th class="w-20 px-3 py-3 text-center text-[11px] font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Hora</th>
