@@ -61,7 +61,7 @@
         </div>
 
         {{-- Lista de inscripciones --}}
-        <div class="lg:col-span-2 flex flex-col gap-4" style="max-height: calc(100vh - 120px);">
+        <div class="lg:col-span-2 flex flex-col gap-4">
 
             {{-- Filtros --}}
             <form method="GET" action="{{ route('servicios.inscripciones') }}" class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm dark:shadow-gray-900/20 border border-gray-100 dark:border-gray-700 p-4">
@@ -108,12 +108,12 @@
             </form>
 
             {{-- Tabla --}}
-            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm dark:shadow-gray-900/20 border border-gray-100 dark:border-gray-700 flex flex-col min-h-0 flex-1 overflow-hidden">
-                <div class="px-5 py-3 border-b border-gray-100 dark:border-gray-700 flex-shrink-0">
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm dark:shadow-gray-900/20 border border-gray-100 dark:border-gray-700 overflow-hidden">
+                <div class="px-5 py-3 border-b border-gray-100 dark:border-gray-700">
                     <span class="text-[12px] text-gray-400 dark:text-gray-400">{{ $inscripciones->total() }} inscripción(es)</span>
                 </div>
-                <div class="overflow-y-auto flex-1 custom-scrollbar">
-                <table class="min-w-full text-sm">
+                <div class="overflow-y-auto custom-scrollbar" style="max-height: calc(100vh - 280px);">
+                <table class="min-w-full w-full text-sm">
                     <thead class="bg-gray-50 dark:bg-gray-700/50 border-b border-gray-100 dark:border-gray-700 sticky top-0 z-10">
                         <tr>
                             <th class="text-left px-5 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Alumno</th>
@@ -160,7 +160,7 @@
                 </table>
                 </div>
                 @if($inscripciones->hasPages())
-                    <div class="px-5 py-3 border-t border-gray-100 dark:border-gray-700 flex-shrink-0">{{ $inscripciones->links() }}</div>
+                    <div class="px-5 py-3 border-t border-gray-100 dark:border-gray-700">{{ $inscripciones->links() }}</div>
                 @endif
             </div>
         </div>

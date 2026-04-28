@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\FiltraPorCarrerasAsignadas;
 use Illuminate\Database\Eloquent\Model;
 
 class Alumno extends Model
 {
+    use FiltraPorCarrerasAsignadas;
+
     protected $table = 'alumno';
     protected $primaryKey = 'id_alumno';
     public $timestamps = false;

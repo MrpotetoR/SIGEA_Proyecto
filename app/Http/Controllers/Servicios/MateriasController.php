@@ -16,13 +16,13 @@ class MateriasController extends Controller
             ->orderBy('cuatrimestre')->orderBy('nombre_materia')
             ->paginate(25)->withQueryString();
 
-        $carreras = Carrera::orderBy('nombre_carrera')->get();
+        $carreras = Carrera::misCarreras()->orderBy('nombre_carrera')->get();
         return view('servicios.materias.index', compact('materias', 'carreras'));
     }
 
     public function create()
     {
-        $carreras = Carrera::orderBy('nombre_carrera')->get();
+        $carreras = Carrera::misCarreras()->orderBy('nombre_carrera')->get();
         return view('servicios.materias.create', compact('carreras'));
     }
 
@@ -47,7 +47,7 @@ class MateriasController extends Controller
 
     public function edit(Materia $materia)
     {
-        $carreras = Carrera::orderBy('nombre_carrera')->get();
+        $carreras = Carrera::misCarreras()->orderBy('nombre_carrera')->get();
         return view('servicios.materias.edit', compact('materia', 'carreras'));
     }
 

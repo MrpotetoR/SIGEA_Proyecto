@@ -33,7 +33,7 @@ class InscripcionesController extends Controller
             ->paginate(25)->withQueryString();
 
         $grupos = Grupo::with('cicloEscolar', 'carrera')->orderBy('clave_grupo')->get();
-        $carreras = Carrera::orderBy('nombre_carrera')->get();
+        $carreras = Carrera::misCarreras()->orderBy('nombre_carrera')->get();
         $ciclos = CicloEscolar::orderByDesc('fecha_inicio')->get();
 
         return view('servicios.inscripciones.index', compact('inscripciones', 'grupos', 'carreras', 'ciclos'));

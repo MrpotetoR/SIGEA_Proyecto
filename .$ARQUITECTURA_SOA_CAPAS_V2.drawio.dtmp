@@ -1,0 +1,73 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/28.2.8 Chrome/140.0.7339.240 Electron/38.4.0 Safari/537.36" version="28.2.8">
+  <diagram id="0557b5ea-bd2c-4c29-b436-cf56d6a17f6e" name="Arquitectura SOA Capas v2">
+    <mxGraphModel dx="4631" dy="1789" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="2" value="Capa de Acceso" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;strokeWidth=2;fontSize=14;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="60" y="40" width="940" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="3" value="Portal Web Alumno\nPortal Web Docente\nPortal Servicios Escolares\nPortal Director de Carrera\nAPI Gateway / routes/api.php" style="text;whiteSpace=wrap;html=1;align=left;verticalAlign=top;fontSize=12;" parent="2" vertex="1">
+          <mxGeometry x="20" y="20" width="900" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="4" value="Capa de Procesos\nOrquestador de Servicios" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F5F5F5;strokeColor=#1A4F90;strokeWidth=2;fontSize=14;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="60" y="220" width="940" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="5" value="- Autenticación / SSO\n- Validación de roles y permisos\n- Consultas académicas\n- Gestión de matrícula\n- Registro de calificaciones\n- Registro de asistencia\n- Validación de ACUDE\n- Generación de PDF\n- Trámites digitales\n- Envío de notificaciones\n- Reportes" style="text;whiteSpace=wrap;html=1;align=left;verticalAlign=top;fontSize=12;" parent="4" vertex="1">
+          <mxGeometry x="20" y="20" width="900" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="6" value="Capa de Servicios" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;strokeWidth=2;fontSize=14;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="-1420" y="440" width="940" height="340" as="geometry" />
+        </mxCell>
+        <mxCell id="7" value="Servicio de Autenticación\nPOST /login\nPOST /logout\nGET /me" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D79B00;strokeWidth=1;" parent="6" vertex="1">
+          <mxGeometry x="80" y="490" width="260" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="8" value="Servicio de Alumnos\nGET /alumnos\nGET /alumnos/{id}\nPOST /alumnos\nPUT /alumnos/{matricula}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E1D5E7;strokeColor=#9673A6;strokeWidth=1;" parent="6" vertex="1">
+          <mxGeometry x="380" y="490" width="260" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="9" value="Servicio de Docentes\nGET /docentes/{id}\nGET /docentes/{id}/grupos\nPOST /docentes" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#D5E8D4;strokeColor=#82B366;strokeWidth=1;" parent="6" vertex="1">
+          <mxGeometry x="680" y="490" width="260" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="10" value="Servicio de Calificaciones\nGET /kardex\nPOST /calificaciones\nPUT /calificaciones/{id}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8CECC;strokeColor=#B85450;strokeWidth=1;" parent="6" vertex="1">
+          <mxGeometry x="80" y="610" width="260" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="11" value="Servicio de Asistencia\nGET /asistencia/{grupo}\nPOST /asistencia\nGET /faltas/{matricula}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;strokeWidth=1;" parent="6" vertex="1">
+          <mxGeometry x="380" y="610" width="260" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="12" value="Servicio de Horarios\nGET /horarios/{matricula}\nGET /horarios/grupo/{id}\nPOST /horarios" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E1E0F8;strokeColor=#6A5AAC;strokeWidth=1;" parent="6" vertex="1">
+          <mxGeometry x="680" y="610" width="260" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="13" value="Servicio de Horas ACUDE\nGET /acude/{matricula}\nPOST /acude/validar\nGET /acude/progreso" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D79B00;strokeWidth=1;" parent="6" vertex="1">
+          <mxGeometry x="80" y="730" width="360" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="14" value="Servicio de Trámites\nGET /tramites/{matricula}\nPOST /tramites\nPUT /tramites/{id}/estado" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E1D5E7;strokeColor=#9673A6;strokeWidth=1;" parent="6" vertex="1">
+          <mxGeometry x="470" y="730" width="360" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="15" value="Servicio de Notificaciones\nGET /notificaciones\nPOST /notificaciones\nPOST /notificaciones/{id}/leida" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#D5E8D4;strokeColor=#82B366;strokeWidth=1;" parent="6" vertex="1">
+          <mxGeometry x="860" y="730" width="260" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="16" value="Capa de Recursos" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F5F5F5;strokeColor=#1A4F90;strokeWidth=2;fontSize=14;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="60" y="840" width="940" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="17" value="Base de Datos\n- TB_ALUMNOS\n- TB_DOCENTES\n- TB_GRUPOS\n- TB_MATERIAS\n- TB_KARDEX\n- TB_TRAMITES\n- TB_ACUDE_HORAS" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=top;fontSize=12;fillColor=#FFFFFF;strokeColor=#000000;strokeWidth=1;" parent="16" vertex="1">
+          <mxGeometry x="80" y="870" width="320" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="18" value="Almacenamiento\n- Expedientes PDF\n- Fotografías\n- Documentos oficiales\n- Reportes generados" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=top;fontSize=12;fillColor=#FFFFFF;strokeColor=#000000;strokeWidth=1;" parent="16" vertex="1">
+          <mxGeometry x="420" y="870" width="320" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="19" value="Servicios Externos\n- API de correo\n- Generador de PDF\n- Sistema de respaldo" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=top;fontSize=12;fillColor=#FFFFFF;strokeColor=#000000;strokeWidth=1;" parent="16" vertex="1">
+          <mxGeometry x="760" y="870" width="240" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="20" style="edgeStyle=orthogonalEdgeStyle;rounded=0;jettySize=auto;orthogonalLoop=1;html=1;endArrow=block;strokeColor=#000000;strokeWidth=2;" parent="1" source="2" target="4" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="21" style="edgeStyle=orthogonalEdgeStyle;rounded=0;jettySize=auto;orthogonalLoop=1;html=1;endArrow=block;strokeColor=#000000;strokeWidth=2;" parent="1" source="4" target="6" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="22" style="edgeStyle=orthogonalEdgeStyle;rounded=0;jettySize=auto;orthogonalLoop=1;html=1;endArrow=block;strokeColor=#000000;strokeWidth=2;" parent="1" source="6" target="16" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

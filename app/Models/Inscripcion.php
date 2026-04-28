@@ -12,6 +12,37 @@ class Inscripcion extends Model
 
     protected $fillable = ['id_alumno', 'id_grupo', 'fecha_inscripcion'];
 
+    /**
+     * Scope global: filtra inscripciones cuya carrera (vía grupo) esté asignada
+     * al usuario autenticado de Servicios Escolares.
+     */
+    protected static function booted(): void
+    {
+        static::addGlobalScope('carreras_asignadas', function ($query) {
+            if (!auth()->check()) return;
+            $user = auth()->user();
+            if ($user->hasRole('admin')) return;
+            if (!$user->hasRole('servicios_escolares')) return;
+
+            $ids = $user->carrerasAsignadasIds();
+            if (empty($ids)) {
+                $query->whereRaw('1 = 0');
+                return;
+            }
+            $query->whereExists(function ($sub) use ($ids) {
+                $sub->select(\DB::raw(1))
+                    ->from('grupo')
+                    ->whereColumn('grupo.id_grupo', 'inscripcion.id_grupo')
+                    ->whereIn('grupo.id_carrera', $ids);
+            });
+        });
+    }
+
+    public function scopeSinFiltroDeCarreras($query)
+    {
+        return $query->withoutGlobalScope('carreras_asignadas');
+    }
+
     protected function casts(): array
     {
         return ['fecha_inscripcion' => 'date'];

@@ -87,7 +87,7 @@
                 </div>
                 <div class="overflow-y-auto flex-1 custom-scrollbar">
                 @if($reporte['evaluacion_docentes']->isNotEmpty())
-                    <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700 text-sm">
+                    <table class="w-full divide-y divide-gray-200 dark:divide-gray-700 text-sm bg-white dark:bg-gray-800">
                         <thead class="bg-gray-50 dark:bg-gray-700/50 text-xs uppercase text-gray-500 dark:text-gray-400 sticky top-0 z-10">
                             <tr>
                                 <th class="px-4 py-3 text-left">Docente</th>

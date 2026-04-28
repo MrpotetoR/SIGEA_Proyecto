@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\FiltraPorCarrerasAsignadas;
 use Illuminate\Database\Eloquent\Model;
 
 class Materia extends Model
 {
+    use FiltraPorCarrerasAsignadas;
+
     protected $table = 'materia';
     protected $primaryKey = 'id_materia';
     public $timestamps = false;

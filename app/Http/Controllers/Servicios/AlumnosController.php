@@ -49,14 +49,14 @@ class AlumnosController extends Controller
             ->orderBy('apellidos')
             ->paginate(20)->withQueryString();
 
-        $carreras = Carrera::orderBy('nombre_carrera')->get();
+        $carreras = Carrera::misCarreras()->orderBy('nombre_carrera')->get();
 
         return view('servicios.alumnos.index', compact('alumnos', 'carreras'));
     }
 
     public function create()
     {
-        $carreras = Carrera::orderBy('nombre_carrera')->get();
+        $carreras = Carrera::misCarreras()->orderBy('nombre_carrera')->get();
         $tutores = \App\Models\Docente::where('es_tutor', true)
             ->orderBy('apellidos')->orderBy('nombre')->get();
         return view('servicios.alumnos.create', compact('carreras', 'tutores'));
@@ -189,7 +189,7 @@ class AlumnosController extends Controller
     public function edit(Alumno $alumno)
     {
         $alumno->load('padreTutor', 'documentos', 'carrera');
-        $carreras = Carrera::orderBy('nombre_carrera')->get();
+        $carreras = Carrera::misCarreras()->orderBy('nombre_carrera')->get();
         $tutores = \App\Models\Docente::where('es_tutor', true)
             ->orderBy('apellidos')->orderBy('nombre')->get();
         return view('servicios.alumnos.edit', compact('alumno', 'carreras', 'tutores'));

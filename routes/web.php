@@ -154,6 +154,29 @@ Route::prefix('director')->name('director.')->middleware(['auth', 'verified', 'r
 });
 
 // ============================================================
+// PANEL ADMIN
+// ============================================================
+Route::prefix('admin')->name('admin.')->middleware(['auth', 'verified', 'role:admin'])->group(function () {
+    Route::get('/dashboard', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
+
+    // Personal de Servicios Escolares (CRUD).
+    Route::resource('personal', \App\Http\Controllers\Admin\PersonalController::class);
+
+    // Asignación de carreras a personal.
+    Route::get('/asignaciones',           [\App\Http\Controllers\Admin\AsignacionCarreraController::class, 'index'])->name('asignaciones.index');
+    Route::post('/asignaciones',          [\App\Http\Controllers\Admin\AsignacionCarreraController::class, 'store'])->name('asignaciones.store');
+    Route::delete('/asignaciones',        [\App\Http\Controllers\Admin\AsignacionCarreraController::class, 'destroy'])->name('asignaciones.destroy');
+    Route::post('/asignaciones/transfer', [\App\Http\Controllers\Admin\AsignacionCarreraController::class, 'transfer'])->name('asignaciones.transfer');
+
+    // Administradores (otros admins).
+    Route::resource('administradores', \App\Http\Controllers\Admin\AdministradoresController::class)
+        ->except(['show']);
+
+    // Chatbot (compartido).
+    Route::post('/chatbot', [\App\Http\Controllers\ChatbotController::class, 'responder'])->name('chatbot');
+});
+
+// ============================================================
 // PANEL SERVICIOS ESCOLARES
 // ============================================================
 Route::prefix('servicios')->name('servicios.')->middleware(['auth', 'verified', 'role:servicios_escolares'])->group(function () {
@@ -181,8 +204,7 @@ Route::prefix('servicios')->name('servicios.')->middleware(['auth', 'verified', 
 
     Route::resource('directores', \App\Http\Controllers\Servicios\DirectoresController::class);
 
-    Route::resource('personal', \App\Http\Controllers\Servicios\PersonalController::class);
-
+    // NOTA: el CRUD de Personal de Servicios Escolares se movió al panel Admin (/admin/personal).
     Route::resource('carreras', \App\Http\Controllers\Servicios\CarrerasController::class);
 
     Route::resource('materias', \App\Http\Controllers\Servicios\MateriasController::class);

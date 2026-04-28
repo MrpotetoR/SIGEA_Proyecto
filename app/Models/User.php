@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -12,7 +13,7 @@ use Spatie\Permission\Traits\HasRoles;
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
-    use HasApiTokens, HasFactory, HasRoles, Notifiable;
+    use HasApiTokens, HasFactory, HasRoles, Notifiable, SoftDeletes;
 
     protected $fillable = [
         'name',
@@ -46,6 +47,36 @@ class User extends Authenticatable
         return $this->hasOne(Docente::class, 'user_id');
     }
 
+    public function personalServiciosEscolares()
+    {
+        return $this->hasOne(PersonalServiciosEscolares::class, 'user_id');
+    }
+
+    /**
+     * Devuelve los IDs de carreras asignadas al usuario actual de Servicios Escolares.
+     * - Admin: todas las carreras (acceso pleno).
+     * - Servicios Escolares: solo las carreras vinculadas a su perfil personal.
+     * - Otros roles: array vacío.
+     */
+    public function carrerasAsignadasIds(): array
+    {
+        if ($this->hasRole('admin')) {
+            return Carrera::pluck('id_carrera')->all();
+        }
+
+        if ($this->hasRole('servicios_escolares')) {
+            return $this->personalServiciosEscolares?->carreras()
+                ->pluck('carrera.id_carrera')->all() ?? [];
+        }
+
+        return [];
+    }
+
+    public function tieneTodasLasCarreras(): bool
+    {
+        return $this->hasRole('admin');
+    }
+
     public function noticias()
     {
         return $this->hasMany(Noticia::class, 'user_id');
@@ -69,6 +100,9 @@ class User extends Authenticatable
     // Helper para redirigir según rol
     public function panelUrl(): string
     {
+        if ($this->hasRole('admin')) {
+            return '/admin/dashboard';
+        }
         if ($this->hasRole('servicios_escolares')) {
             return '/servicios/dashboard';
         }

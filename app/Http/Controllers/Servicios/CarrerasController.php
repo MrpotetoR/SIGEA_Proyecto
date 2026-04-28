@@ -11,7 +11,8 @@ class CarrerasController extends Controller
 {
     public function index(Request $request)
     {
-        $carreras = Carrera::with('director')->withCount('alumnos', 'materias')
+        $carreras = Carrera::misCarreras()
+            ->with('director')->withCount('alumnos', 'materias')
             ->when($request->tipo_periodo, fn($q, $v) => $q->where('tipo_periodo', $v))
             ->get();
         return view('servicios.carreras.index', compact('carreras'));

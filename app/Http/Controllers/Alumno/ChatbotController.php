@@ -19,7 +19,7 @@ class ChatbotController extends Controller
         ]);
 
         $mensaje = $request->input('mensaje');
-        $alumno  = $request->user()->alumno;
+        $alumno = $request->user()->alumno;
 
         // Construir contexto del alumno para el modelo
         $contexto = $this->construirContexto($alumno);
@@ -30,7 +30,7 @@ class ChatbotController extends Controller
         // Construir mensajes para la API
         $messages = [
             [
-                'role'    => 'system',
+                'role' => 'system',
                 'content' => $this->getSystemPrompt($contexto),
             ],
         ];
@@ -75,8 +75,8 @@ class ChatbotController extends Controller
     private function llamarGroq(array $messages): string
     {
         $apiKey = config('services.groq.api_key');
-        $model  = config('services.groq.model');
-        $url    = config('services.groq.url');
+        $model = config('services.groq.model');
+        $url = config('services.groq.url');
 
         if (empty($apiKey)) {
             throw new \Exception('GROQ_API_KEY no configurada en .env');
@@ -84,13 +84,13 @@ class ChatbotController extends Controller
 
         $response = Http::withHeaders([
             'Authorization' => 'Bearer ' . $apiKey,
-            'Content-Type'  => 'application/json',
+            'Content-Type' => 'application/json',
         ])->timeout(30)->post($url, [
-            'model'       => $model,
-            'messages'    => $messages,
-            'temperature' => 0.7,
-            'max_tokens'  => 1024,
-        ]);
+                    'model' => $model,
+                    'messages' => $messages,
+                    'temperature' => 0.7,
+                    'max_tokens' => 1024,
+                ]);
 
         if ($response->failed()) {
             Log::error('Groq API response: ' . $response->body());
@@ -143,13 +143,13 @@ class ChatbotController extends Controller
 
         // Materias inscritas en el ciclo
         $inscripciones = $alumno->inscripciones()
-            ->with(['grupo.materia', 'grupo.horarios.docente'])
+            ->with(['grupo.horarios.docente', 'grupo.horarios.materia'])
             ->when($ciclo, fn($q) => $q->whereHas('grupo', fn($g) => $g->where('id_ciclo', $ciclo?->id_ciclo)))
             ->get();
 
         if ($inscripciones->isNotEmpty()) {
             $materias = $inscripciones->map(function ($i) {
-                $materia = $i->grupo?->materia?->nombre_materia ?? 'Desconocida';
+                $materia = $i->grupo?->horarios?->first()?->materia?->nombre_materia ?? 'Desconocida';
                 $docente = $i->grupo?->horarios?->first()?->docente?->nombre_completo ?? 'Sin docente';
                 return "{$materia} (docente: {$docente})";
             })->join(', ');

@@ -15,7 +15,7 @@ class ReportesController extends Controller
 
     public function index(Request $request)
     {
-        $carreras = Carrera::orderBy('nombre_carrera')->get();
+        $carreras = Carrera::misCarreras()->orderBy('nombre_carrera')->get();
         $ciclos = CicloEscolar::orderByDesc('fecha_inicio')->get();
 
         $reporte = null;

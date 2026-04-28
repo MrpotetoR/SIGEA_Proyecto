@@ -28,7 +28,7 @@ class DocentesController extends Controller
 
     public function create()
     {
-        $carreras = Carrera::orderBy('nombre_carrera')->get();
+        $carreras = Carrera::misCarreras()->orderBy('nombre_carrera')->get();
         return view('servicios.docentes.create', compact('carreras'));
     }
 
@@ -109,7 +109,7 @@ class DocentesController extends Controller
     public function edit(Docente $docente)
     {
         $docente->load('documentos', 'carrerasImparte');
-        $carreras = Carrera::orderBy('nombre_carrera')->get();
+        $carreras = Carrera::misCarreras()->orderBy('nombre_carrera')->get();
         return view('servicios.docentes.edit', compact('docente', 'carreras'));
     }
 

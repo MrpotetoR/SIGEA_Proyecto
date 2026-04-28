@@ -30,7 +30,7 @@ class DirectoresController extends Controller
 
     public function create()
     {
-        $carreras = Carrera::orderBy('nombre_carrera')->get();
+        $carreras = Carrera::misCarreras()->orderBy('nombre_carrera')->get();
         return view('servicios.directores.create', compact('carreras'));
     }
 
@@ -110,7 +110,7 @@ class DirectoresController extends Controller
     {
         $director = $directore;
         $director->load('carrerasDirigidas', 'documentos');
-        $carreras = Carrera::orderBy('nombre_carrera')->get();
+        $carreras = Carrera::misCarreras()->orderBy('nombre_carrera')->get();
         return view('servicios.directores.edit', compact('director', 'carreras'));
     }
 

@@ -17,7 +17,7 @@ class DashboardController extends Controller
             'total_alumnos' => Alumno::activos()->count(),
             'bajas_temporales' => Alumno::where('estatus', 'baja_temporal')->count(),
             'total_docentes' => Docente::count(),
-            'total_carreras' => Carrera::count(),
+            'total_carreras' => Carrera::misCarreras()->count(),
             'ciclo_activo' => CicloEscolar::cicloActual(),
         ];
 

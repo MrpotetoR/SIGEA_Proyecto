@@ -20,8 +20,8 @@ class ChatbotController extends Controller
         ]);
 
         $mensaje = $request->input('mensaje');
-        $user    = $request->user();
-        $rol     = $this->detectarRol($user);
+        $user = $request->user();
+        $rol = $this->detectarRol($user);
 
         // Construir contexto según el rol del usuario
         $contexto = $this->construirContexto($user, $rol);
@@ -68,10 +68,14 @@ class ChatbotController extends Controller
      */
     private function detectarRol($user): string
     {
-        if ($user->hasRole('servicios_escolares')) return 'servicios';
-        if ($user->hasRole('director_carrera'))    return 'director';
-        if ($user->hasRole('docente'))             return 'docente';
-        if ($user->hasRole('alumno'))              return 'alumno';
+        if ($user->hasRole('servicios_escolares'))
+            return 'servicios';
+        if ($user->hasRole('director_carrera'))
+            return 'director';
+        if ($user->hasRole('docente'))
+            return 'docente';
+        if ($user->hasRole('alumno'))
+            return 'alumno';
         return 'general';
     }
 
@@ -83,9 +87,9 @@ class ChatbotController extends Controller
         $driver = config('services.chatbot.driver', 'local');
 
         return match ($driver) {
-            'local'  => $this->llamarOllama($messages),
-            'groq'   => $this->llamarGroq($messages),
-            default  => $this->llamarOllama($messages),
+            'local' => $this->llamarOllama($messages),
+            'groq' => $this->llamarGroq($messages),
+            default => $this->llamarOllama($messages),
         };
     }
 
@@ -94,15 +98,15 @@ class ChatbotController extends Controller
      */
     private function llamarOllama(array $messages): string
     {
-        $url   = config('services.ollama.url');
+        $url = config('services.ollama.url');
         $model = config('services.ollama.model');
 
         $response = Http::timeout(120)->post($url, [
-            'model'       => $model,
-            'messages'    => $messages,
+            'model' => $model,
+            'messages' => $messages,
             'temperature' => 0.7,
-            'max_tokens'  => 1024,
-            'stream'      => false,
+            'max_tokens' => 1024,
+            'stream' => false,
         ]);
 
         if ($response->failed()) {
@@ -121,8 +125,8 @@ class ChatbotController extends Controller
     private function llamarGroq(array $messages): string
     {
         $apiKey = config('services.groq.api_key');
-        $model  = config('services.groq.model');
-        $url    = config('services.groq.url');
+        $model = config('services.groq.model');
+        $url = config('services.groq.url');
 
         if (empty($apiKey)) {
             throw new \Exception('GROQ_API_KEY no configurada en .env');
@@ -130,13 +134,13 @@ class ChatbotController extends Controller
 
         $response = Http::withHeaders([
             'Authorization' => 'Bearer ' . $apiKey,
-            'Content-Type'  => 'application/json',
+            'Content-Type' => 'application/json',
         ])->timeout(30)->post($url, [
-            'model'       => $model,
-            'messages'    => $messages,
-            'temperature' => 0.7,
-            'max_tokens'  => 1024,
-        ]);
+                    'model' => $model,
+                    'messages' => $messages,
+                    'temperature' => 0.7,
+                    'max_tokens' => 1024,
+                ]);
 
         if ($response->failed()) {
             Log::error('Groq API response: ' . $response->body());
@@ -155,11 +159,11 @@ class ChatbotController extends Controller
     private function construirContexto($user, string $rol): string
     {
         return match ($rol) {
-            'alumno'    => $this->contextoAlumno($user),
-            'docente'   => $this->contextoDocente($user),
-            'director'  => $this->contextoDirector($user),
+            'alumno' => $this->contextoAlumno($user),
+            'docente' => $this->contextoDocente($user),
+            'director' => $this->contextoDirector($user),
             'servicios' => $this->contextoServicios($user),
-            default     => 'Usuario del sistema SIGEA.',
+            default => 'Usuario del sistema SIGEA.',
         };
     }
 
@@ -169,7 +173,8 @@ class ChatbotController extends Controller
     private function contextoAlumno($user): string
     {
         $alumno = $user->alumno;
-        if (!$alumno) return 'No se encontraron datos del alumno.';
+        if (!$alumno)
+            return 'No se encontraron datos del alumno.';
 
         $datos = [];
         $datos[] = "Nombre: {$alumno->nombre_completo}";
@@ -196,13 +201,13 @@ class ChatbotController extends Controller
         }
 
         $inscripciones = $alumno->inscripciones()
-            ->with(['grupo.materia', 'grupo.horarios.docente'])
+            ->with(['grupo.horarios.docente', 'grupo.horarios.materia'])
             ->when($ciclo, fn($q) => $q->whereHas('grupo', fn($g) => $g->where('id_ciclo', $ciclo?->id_ciclo)))
             ->get();
 
         if ($inscripciones->isNotEmpty()) {
             $materias = $inscripciones->map(function ($i) {
-                $materia = $i->grupo?->materia?->nombre_materia ?? 'Desconocida';
+                $materia = $i->grupo?->horarios?->first()?->materia?->nombre_materia ?? 'Desconocida';
                 $docente = $i->grupo?->horarios?->first()?->docente?->nombre_completo ?? 'Sin docente';
                 return "{$materia} (docente: {$docente})";
             })->join(', ');
@@ -219,7 +224,8 @@ class ChatbotController extends Controller
     private function contextoDocente($user): string
     {
         $docente = $user->docente;
-        if (!$docente) return 'No se encontraron datos del docente.';
+        if (!$docente)
+            return 'No se encontraron datos del docente.';
 
         $datos = [];
         $datos[] = "Nombre: {$docente->nombre_completo}";
@@ -233,15 +239,15 @@ class ChatbotController extends Controller
 
             // Horarios/materias que imparte
             $horarios = $docente->horarios()
-                ->with(['grupo.materia', 'grupo'])
+                ->with(['grupo', 'materia'])
                 ->whereHas('grupo', fn($q) => $q->where('id_ciclo', $ciclo->id_ciclo))
                 ->get();
 
             if ($horarios->isNotEmpty()) {
                 $materias = $horarios->map(function ($h) {
-                    $materia = $h->grupo?->materia?->nombre_materia ?? 'Sin materia';
-                    $grupo   = $h->grupo?->clave_grupo ?? 'Sin grupo';
-                    $dia     = $h->dia_semana;
+                    $materia = $h->materia?->nombre_materia ?? 'Sin materia';
+                    $grupo = $h->grupo?->clave_grupo ?? 'Sin grupo';
+                    $dia = $h->dia_semana;
                     return "{$materia} ({$grupo}) - {$dia} {$h->hora_inicio}-{$h->hora_fin}";
                 })->join(', ');
                 $datos[] = "Materias/horarios: {$materias}";
@@ -275,7 +281,8 @@ class ChatbotController extends Controller
     private function contextoDirector($user): string
     {
         $docente = $user->docente;
-        if (!$docente) return 'No se encontraron datos del director.';
+        if (!$docente)
+            return 'No se encontraron datos del director.';
 
         $carrera = $docente->carrerasDirigidas()->first();
 
@@ -390,9 +397,9 @@ class ChatbotController extends Controller
         $seccionesRol = $secciones[$rol] ?? 'SECCIONES DEL SISTEMA: Navegue por el menu lateral.';
 
         $rolLabels = [
-            'alumno'    => 'un alumno',
-            'docente'   => 'un docente',
-            'director'  => 'un director de carrera',
+            'alumno' => 'un alumno',
+            'docente' => 'un docente',
+            'director' => 'un director de carrera',
             'servicios' => 'personal de servicios escolares',
         ];
         $rolLabel = $rolLabels[$rol] ?? 'un usuario';

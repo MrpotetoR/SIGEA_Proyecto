@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\FiltraPorCarrerasAsignadas;
 use Illuminate\Database\Eloquent\Model;
 
 class Grupo extends Model
 {
+    use FiltraPorCarrerasAsignadas;
+
     protected $table = 'grupo';
     protected $primaryKey = 'id_grupo';
     public $timestamps = false;

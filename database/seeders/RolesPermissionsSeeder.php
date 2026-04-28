@@ -98,5 +98,10 @@ class RolesPermissionsSeeder extends Seeder
 
         $rolServicios = Role::firstOrCreate(['name' => 'servicios_escolares']);
         $rolServicios->syncPermissions(Permission::all());
+
+        // Admin — superusuario que gestiona Personal de Servicios Escolares,
+        // asignación de carreras y otros admins.
+        $rolAdmin = Role::firstOrCreate(['name' => 'admin']);
+        $rolAdmin->syncPermissions(Permission::all());
     }
 }

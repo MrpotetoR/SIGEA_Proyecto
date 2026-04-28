@@ -71,6 +71,24 @@ class Carrera extends Model
             $carrera->duracion_periodos = self::DURACION_POR_TIPO[$carrera->tipo_periodo] ?? 10;
         });
 
+        static::created(function (Carrera $carrera) {
+            // Notificar a todos los admins que hay una carrera nueva sin asignar.
+            $admins = User::role('admin')->where('activo', true)->get();
+            if ($admins->isEmpty()) return;
+
+            app(\App\Services\NotificacionService::class)->enviarMasivo(
+                $admins,
+                'carrera_sin_asignar',
+                'Nueva carrera sin personal asignado',
+                "Se creó la carrera \"{$carrera->nombre_carrera}\" y aún no tiene personal de Servicios Escolares asignado.",
+                [
+                    'icono' => 'academic-cap',
+                    'color' => 'amber',
+                    'url'   => '/admin/asignaciones',
+                ]
+            );
+        });
+
         static::updating(function (Carrera $carrera) {
             // tipo_periodo es inmutable: revertir si intentan cambiarlo
             if ($carrera->isDirty('tipo_periodo')) {
@@ -118,5 +136,54 @@ class Carrera extends Model
     public function grupos()
     {
         return $this->hasMany(Grupo::class, 'id_carrera');
+    }
+
+    /**
+     * Personal de Servicios Escolares que administra esta carrera.
+     * Relación 1:1 (una carrera tiene a lo más un personal asignado).
+     */
+    public function personalAsignado()
+    {
+        return $this->belongsToMany(
+            PersonalServiciosEscolares::class,
+            'personal_carrera',
+            'id_carrera',
+            'id_personal'
+        )->withTimestamps();
+    }
+
+    public function personal()
+    {
+        return $this->personalAsignado()->first();
+    }
+
+    public function tieneAsignacion(): bool
+    {
+        return $this->personalAsignado()->exists();
+    }
+
+    /**
+     * Scope que limita carreras a las asignadas al usuario autenticado.
+     * - Admin: todas.
+     * - Servicios Escolares: solo sus carreras asignadas.
+     * - Otros: todas (otros paneles tienen sus propias autorizaciones).
+     */
+    public function scopeMisCarreras($query)
+    {
+        if (!auth()->check()) {
+            return $query;
+        }
+        $user = auth()->user();
+        if ($user->hasRole('admin')) {
+            return $query;
+        }
+        if (!$user->hasRole('servicios_escolares')) {
+            return $query;
+        }
+        $ids = $user->carrerasAsignadasIds();
+        if (empty($ids)) {
+            return $query->whereRaw('1 = 0');
+        }
+        return $query->whereIn('id_carrera', $ids);
     }
 }

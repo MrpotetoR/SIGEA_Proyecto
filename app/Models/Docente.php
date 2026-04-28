@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Scopes\DocenteCarrerasAsignadasScope;
 use Illuminate\Database\Eloquent\Model;
 
 class Docente extends Model
@@ -9,6 +10,17 @@ class Docente extends Model
     protected $table = 'docente';
     protected $primaryKey = 'id_docente';
     public $timestamps = false;
+
+    protected static function booted(): void
+    {
+        static::addGlobalScope(new DocenteCarrerasAsignadasScope());
+    }
+
+    /** Bypass del scope para uso interno (admin, panel del propio docente, etc.). */
+    public function scopeSinFiltroDeCarreras($query)
+    {
+        return $query->withoutGlobalScope(DocenteCarrerasAsignadasScope::class);
+    }
 
     protected $fillable = [
         'user_id', 'nombre', 'apellidos',

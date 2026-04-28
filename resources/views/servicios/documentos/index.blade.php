@@ -11,7 +11,7 @@
     <div class="bg-white dark:bg-gray-800 rounded-xl shadow dark:shadow-gray-900/20 border border-transparent dark:border-gray-700 flex flex-col min-h-0"
         style="max-height: calc(100vh - 220px);">
         <div class="overflow-y-auto flex-1 custom-scrollbar">
-            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700 text-sm">
+            <table class="w-full divide-y divide-gray-200 dark:divide-gray-700 text-sm bg-white dark:bg-gray-800">
                 <thead
                     class="bg-gray-50 dark:bg-gray-700/50 text-xs uppercase text-gray-500 dark:text-gray-400 sticky top-0 z-10">
                     <tr>
@@ -27,7 +27,8 @@
                             <td class="px-4 py-3 font-medium text-gray-900 dark:text-gray-100">{{ $d->titulo }}</td>
                             <td class="px-4 py-3 text-gray-600 dark:text-gray-400">{{ $d->tipo }}</td>
                             <td class="px-4 py-3 text-center text-gray-500 dark:text-gray-400">
-                                {{ $d->fecha_publicacion?->format('d/m/Y') }}</td>
+                                {{ $d->fecha_publicacion?->format('d/m/Y') }}
+                            </td>
                             <td class="px-4 py-3 text-center">
                                 <div class="flex justify-center gap-2">
                                     <a href="{{ route('servicios.documentos.edit', $d) }}"
