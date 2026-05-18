@@ -36,10 +36,12 @@ $sections = [
     [
         'label' => 'Gestion',
         'links' => [
-            ['route' => 'docente.horas-culturales.index', 'label' => 'Horas ACUDE',       'match' => 'docente.horas-culturales.*',
-             'icon' => 'M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z'],
-            ['route' => 'docente.servicio-social.index',  'label' => 'Servicio Social',   'match' => 'docente.servicio-social.*',
-             'icon' => 'M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z'],
+            // Horas ACUDE eliminado a peticion institucional UDEA.
+            // Servicio Social movido al Gestor Escolar.
+            ['route' => 'tienda.catalogo', 'label' => 'Tienda',      'match' => 'tienda.catalogo|tienda.detalle|tienda.carrito|tienda.checkout',
+             'icon' => 'M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z'],
+            ['route' => 'tienda.pedidos',  'label' => 'Mis Compras', 'match' => 'tienda.pedidos|tienda.pedido.*',
+             'icon' => 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4'],
         ]
     ],
     [

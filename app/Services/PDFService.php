@@ -17,7 +17,7 @@ class PDFService
         $promedio = $kardexService->calcularPromedioGeneral($alumno);
 
         $pdf = Pdf::loadView('pdf.kardex', compact('alumno', 'historial', 'promedio'));
-        $path = storage_path("app/public/kardex_{$alumno->matricula}.pdf");
+        $path = storage_path("app/public/kardex_{$alumno->id_alumno_publico}.pdf");
         $pdf->save($path);
         return $path;
     }
@@ -28,7 +28,7 @@ class PDFService
         $boleta = $calService->obtenerBoletaPorAlumno($alumno, $ciclo);
 
         $pdf = Pdf::loadView('pdf.boleta', compact('alumno', 'ciclo', 'boleta'));
-        $path = storage_path("app/public/boleta_{$alumno->matricula}_{$ciclo->nombre}.pdf");
+        $path = storage_path("app/public/boleta_{$alumno->id_alumno_publico}_{$ciclo->nombre}.pdf");
         $pdf->save($path);
         return $path;
     }
@@ -38,7 +38,7 @@ class PDFService
         $alumno->load('carrera');
         $pdf = Pdf::loadView('pdf.constancia', compact('alumno', 'tipo'));
         $pdf->setPaper('letter', 'portrait');
-        $path = storage_path("app/public/constancia_{$alumno->matricula}_{$tipo}_" . now()->format('Ymd') . ".pdf");
+        $path = storage_path("app/public/constancia_{$alumno->id_alumno_publico}_{$tipo}_" . now()->format('Ymd') . ".pdf");
         $pdf->save($path);
         return $path;
     }

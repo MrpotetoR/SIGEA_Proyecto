@@ -37,8 +37,15 @@ class CarrerasAsignadasScope implements Scope
             return;
         }
 
-        // Solo aplica a Servicios Escolares.
-        if (!$user->hasRole('servicios_escolares')) {
+        // Solo aplica a Gestor Escolar.
+        if (!$user->hasRole('gestor_escolar')) {
+            return;
+        }
+
+        // En contexto Bachillerato, las carreras NO aplican
+        // (la estructura curricular se maneja via bachillerato_plan).
+        // Saltamos el filtro para no ocultar registros validos.
+        if (\App\Support\ContextoEducativo::actual() === \App\Support\ContextoEducativo::BACHILLERATO) {
             return;
         }
 

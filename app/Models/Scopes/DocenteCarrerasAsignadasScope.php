@@ -7,9 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Scope;
 
 /**
- * Filtra docentes para que solo se vean aquellos que:
- *  - Imparten al menos una materia en una carrera asignada al usuario, O
- *  - Son directores de una carrera asignada al usuario.
+ * Filtra docentes para que solo se vean aquellos que imparten al menos
+ * una materia en una carrera asignada al usuario de Gestor Escolar.
  */
 class DocenteCarrerasAsignadasScope implements Scope
 {
@@ -25,7 +24,7 @@ class DocenteCarrerasAsignadasScope implements Scope
             return;
         }
 
-        if (!$user->hasRole('servicios_escolares')) {
+        if (!$user->hasRole('gestor_escolar')) {
             return;
         }
 
@@ -36,18 +35,11 @@ class DocenteCarrerasAsignadasScope implements Scope
             return;
         }
 
-        $builder->where(function ($q) use ($ids) {
-            $q->whereExists(function ($sub) use ($ids) {
-                $sub->select(\DB::raw(1))
-                    ->from('docente_carrera as dc')
-                    ->whereColumn('dc.id_docente', 'docente.id_docente')
-                    ->whereIn('dc.id_carrera', $ids);
-            })->orWhereExists(function ($sub) use ($ids) {
-                $sub->select(\DB::raw(1))
-                    ->from('carrera as c')
-                    ->whereColumn('c.id_director', 'docente.id_docente')
-                    ->whereIn('c.id_carrera', $ids);
-            });
+        $builder->whereExists(function ($sub) use ($ids) {
+            $sub->select(\DB::raw(1))
+                ->from('docente_carrera as dc')
+                ->whereColumn('dc.id_docente', 'docente.id_docente')
+                ->whereIn('dc.id_carrera', $ids);
         });
     }
 }

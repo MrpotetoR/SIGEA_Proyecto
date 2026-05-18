@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Concerns\FiltraPorCarrerasAsignadas;
+use App\Models\Scopes\NivelEducativoScope;
 use Illuminate\Database\Eloquent\Model;
 
 class Alumno extends Model
@@ -14,9 +15,27 @@ class Alumno extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'user_id', 'id_carrera', 'id_tutor', 'matricula',
+        'user_id', 'id_carrera', 'id_plan_bachillerato',
+        'id_tutor', 'id_alumno_publico',
         'nombre', 'apellidos', 'cuatrimestre_actual', 'estatus',
+        'nivel_educativo',
     ];
+
+    public function planBachillerato()
+    {
+        return $this->belongsTo(BachilleratoPlan::class, 'id_plan_bachillerato');
+    }
+
+    protected static function booted(): void
+    {
+        static::addGlobalScope(new NivelEducativoScope());
+    }
+
+    /** Bypass deliberado del scope por nivel (uso admin / reportes consolidados). */
+    public function scopeSinFiltroNivel($query)
+    {
+        return $query->withoutGlobalScope(NivelEducativoScope::class);
+    }
 
     public function user()
     {
@@ -51,11 +70,6 @@ class Alumno extends Model
     public function semaforosAcademicos()
     {
         return $this->hasMany(SemaforoAcademico::class, 'id_alumno');
-    }
-
-    public function hrsCulturales()
-    {
-        return $this->hasMany(HrsCulturalesDeportivas::class, 'id_alumno');
     }
 
     public function servicioSocial()

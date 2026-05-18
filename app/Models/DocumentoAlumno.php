@@ -18,7 +18,6 @@ class DocumentoAlumno extends Model
         'comprobante_domicilio'      => 'Comprobante de domicilio',
         'constancia_media_superior'  => 'Constancia media superior',
         'constancia_basica'          => 'Constancia básica',
-        'numero_seguridad_social'    => 'Número de seguridad social',
     ];
 
     public function alumno()

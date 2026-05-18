@@ -1,0 +1,112 @@
+<x-panel title="Alumnos" panelNombre="Panel Gestor Escolar">
+    <x-slot name="nav">
+        @include('partials.gestor-nav')
+    </x-slot>
+
+    @if($carrera)
+        <div class="mb-5">
+            <p class="text-sm text-gray-500 dark:text-gray-400">Alumnos de <span class="font-semibold text-gray-700 dark:text-gray-300">{{ $carrera->nombre_carrera }}</span></p>
+        </div>
+    @endif
+
+    {{-- Filtros --}}
+    <form method="GET" action="{{ route('gestor.alumnos') }}" class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm dark:shadow-gray-900/20 border border-gray-100 dark:border-gray-700 p-5 mb-6">
+        <div class="flex items-end gap-4">
+            <div class="flex-1">
+                <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1.5">Estatus</label>
+                <select name="estatus" class="w-full text-sm border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-xl px-3 py-2 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400">
+                    <option value="">Todos</option>
+                    <option value="activo" {{ request('estatus') == 'activo' ? 'selected' : '' }}>Activo</option>
+                    <option value="baja" {{ request('estatus') == 'baja' ? 'selected' : '' }}>Baja</option>
+                    <option value="egresado" {{ request('estatus') == 'egresado' ? 'selected' : '' }}>Egresado</option>
+                </select>
+            </div>
+            @php $maxPeriodos = $carrera?->max_periodos ?? 10; $lblPeriodo = $carrera?->label_periodo ?? 'Cuatrimestre'; @endphp
+            <div class="flex-1">
+                <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1.5">{{ $lblPeriodo }}</label>
+                <select name="cuatrimestre" class="w-full text-sm border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-xl px-3 py-2 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400">
+                    <option value="">Todos</option>
+                    @for($i = 1; $i <= $maxPeriodos; $i++)
+                        <option value="{{ $i }}" {{ request('cuatrimestre') == $i ? 'selected' : '' }}>{{ $i }}° {{ $lblPeriodo }}</option>
+                    @endfor
+                </select>
+            </div>
+            <button type="submit" class="px-5 py-2 bg-[#0606F0] dark:bg-[#0606F0] text-white text-sm font-medium rounded-xl hover:bg-[#04276B] dark:hover:bg-blue-400 transition-colors">
+                Filtrar
+            </button>
+        </div>
+    </form>
+
+    {{-- Tabla --}}
+    @if($alumnos instanceof \Illuminate\Pagination\LengthAwarePaginator && $alumnos->isEmpty() || $alumnos instanceof \Illuminate\Support\Collection && $alumnos->isEmpty())
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm dark:shadow-gray-900/20 border border-gray-100 dark:border-gray-700 p-12 text-center">
+            <p class="text-gray-500 dark:text-gray-400 text-sm">No se encontraron alumnos con los filtros seleccionados.</p>
+        </div>
+    @else
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm dark:shadow-gray-900/20 border border-gray-100 dark:border-gray-700 flex flex-col min-h-0" style="max-height: calc(100vh - 280px);">
+            <div class="overflow-y-auto flex-1 custom-scrollbar">
+            <table class="w-full text-sm">
+                <thead class="bg-gray-50 dark:bg-gray-700/50 border-b border-gray-100 dark:border-gray-700 sticky top-0 z-10">
+                    <tr>
+                        <th class="text-left px-5 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">ID</th>
+                        <th class="text-left px-5 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Alumno</th>
+                        <th class="text-center px-5 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Cuatrimestre</th>
+                        <th class="text-center px-5 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Estatus</th>
+                        <th class="text-center px-5 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Semaforo</th>
+                        <th class="text-center px-5 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-50 dark:divide-gray-700">
+                    @foreach($alumnos as $alumno)
+                        @php
+                            $semaforo = $alumno->semaforosAcademicos->last();
+                            $nivel = $semaforo->nivel ?? 'sin datos';
+                            $colorSemaforo = match($nivel) {
+                                'verde' => 'bg-green-100 text-green-700',
+                                'amarillo' => 'bg-yellow-100 text-yellow-700',
+                                'rojo' => 'bg-red-100 text-red-700',
+                                default => 'bg-gray-100 text-gray-500',
+                            };
+                            $colorEstatus = match($alumno->estatus) {
+                                'activo' => 'bg-emerald-100 text-emerald-700',
+                                'baja' => 'bg-red-100 text-red-700',
+                                'egresado' => 'bg-blue-100 text-blue-700',
+                                default => 'bg-gray-100 text-gray-500',
+                            };
+                        @endphp
+                        <tr class="hover:bg-gray-50/50 dark:hover:bg-gray-700/50 transition-colors">
+                            <td class="px-5 py-3 font-mono text-xs text-gray-600 dark:text-gray-400">{{ $alumno->id_alumno_publico }}</td>
+                            <td class="px-5 py-3">
+                                <p class="font-medium text-gray-800 dark:text-gray-200">{{ $alumno->nombre_completo }}</p>
+                            </td>
+                            <td class="px-5 py-3 text-center text-gray-600 dark:text-gray-400">{{ $alumno->cuatrimestre_actual ?? '-' }}</td>
+                            <td class="px-5 py-3 text-center">
+                                <span class="inline-block px-2.5 py-0.5 text-xs font-medium rounded-lg capitalize {{ $colorEstatus }}">{{ $alumno->estatus }}</span>
+                            </td>
+                            <td class="px-5 py-3 text-center">
+                                <span class="inline-block px-2.5 py-0.5 text-xs font-medium rounded-lg capitalize {{ $colorSemaforo }}">{{ $nivel }}</span>
+                            </td>
+                            <td class="px-5 py-3 text-center">
+                                <a href="{{ route('gestor.alumnos.historial', $alumno->id_alumno) }}"
+                                   class="inline-flex items-center gap-1 px-3 py-1.5 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 text-xs font-medium rounded-lg hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors">
+                                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                    </svg>
+                                    Historial
+                                </a>
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+            </div>
+        </div>
+
+        @if($alumnos instanceof \Illuminate\Pagination\LengthAwarePaginator)
+            <div class="mt-5">
+                {{ $alumnos->withQueryString()->links() }}
+            </div>
+        @endif
+    @endif
+</x-panel>

@@ -29,7 +29,7 @@ class AlumnoController extends Controller
         $query = Alumno::with('carrera')
             ->when($request->buscar, function ($q, $buscar) {
                 $q->where(function ($q) use ($buscar) {
-                    $q->where('matricula', 'like', "%{$buscar}%")
+                    $q->where('id_alumno_publico', 'like', "%{$buscar}%")
                         ->orWhere('nombre', 'like', "%{$buscar}%")
                         ->orWhere('apellidos', 'like', "%{$buscar}%");
                 });

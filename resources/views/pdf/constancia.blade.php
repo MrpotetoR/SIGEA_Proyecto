@@ -63,7 +63,7 @@
         <br>
         <p>
             <span class="dato">{{ strtoupper($alumno->nombre . ' ' . $alumno->apellidos) }}</span>,
-            con matrícula <span class="dato">{{ $alumno->matricula }}</span>,
+            con ID <span class="dato">{{ $alumno->id_alumno_publico }}</span>,
             se encuentra inscrito/a en la carrera de
             <span class="dato">{{ $alumno->carrera->nombre_carrera ?? 'No especificada' }}</span>,
             cursando actualmente el <span class="dato">{{ $alumno->cuatrimestre_actual }}° cuatrimestre</span>.

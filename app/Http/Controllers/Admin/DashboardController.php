@@ -4,14 +4,14 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Carrera;
-use App\Models\PersonalServiciosEscolares;
+use App\Models\GestorEscolar;
 use App\Models\User;
 
 class DashboardController extends Controller
 {
     public function index()
     {
-        $totalPersonal       = PersonalServiciosEscolares::count();
+        $totalPersonal       = GestorEscolar::count();
         $totalAdmins         = User::role('admin')->count();
         $totalCarreras       = Carrera::count();
         $carrerasAsignadas   = Carrera::has('personalAsignado')->count();
@@ -22,7 +22,7 @@ class DashboardController extends Controller
             ->take(10)
             ->get();
 
-        $personalReciente = PersonalServiciosEscolares::with('user', 'carreras')
+        $personalReciente = GestorEscolar::with('user', 'carreras')
             ->latest('id_personal')
             ->take(5)
             ->get();

@@ -81,10 +81,6 @@
 
 <p class="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wider mt-6 mb-3">Actividades</p>
 
-<a href="{{ route('alumno.hrs-culturales') }}"
-   class="flex items-center px-3 py-2 text-sm rounded-md {{ request()->routeIs('alumno.hrs-culturales') ? 'bg-blue-50 text-blue-900 font-medium' : 'text-gray-700 hover:bg-gray-50' }}">
-    Horas Culturales/Deportivas
-</a>
 <a href="{{ route('alumno.servicio-social') }}"
    class="flex items-center px-3 py-2 text-sm rounded-md {{ request()->routeIs('alumno.servicio-social') ? 'bg-blue-50 text-blue-900 font-medium' : 'text-gray-700 hover:bg-gray-50' }}">
     Servicio Social

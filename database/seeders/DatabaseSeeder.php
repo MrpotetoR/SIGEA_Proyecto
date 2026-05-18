@@ -59,28 +59,18 @@ class DatabaseSeeder extends Seeder
         );
         $admin->assignRole('admin');
 
-        // Servicios Escolares (sin perfil de personal — para que el manual
-        // demuestre el flujo "admin crea personal de SE y asigna carreras").
-        $servicios = User::firstOrCreate(
-            ['email' => 'servicios@sigea.edu.mx'],
+        // Gestor Escolar (fusion del antiguo Servicios Escolares + Director de Carrera).
+        // Se crea sin perfil de personal para que el manual demuestre el flujo
+        // "admin crea Gestor Escolar y le asigna carreras".
+        $gestor = User::firstOrCreate(
+            ['email' => 'gestor@sigea.edu.mx'],
             [
-                'name'     => 'Servicios Escolares',
+                'name'     => 'Gestor Escolar',
                 'password' => bcrypt('password'),
                 'activo'   => true,
             ]
         );
-        $servicios->assignRole('servicios_escolares');
-
-        // Director de carrera.
-        $directorUser = User::firstOrCreate(
-            ['email' => 'director@sigea.edu.mx'],
-            [
-                'name'     => 'Director de Carrera',
-                'password' => bcrypt('password'),
-                'activo'   => true,
-            ]
-        );
-        $directorUser->assignRole('director_carrera');
+        $gestor->assignRole('gestor_escolar');
 
         // Docente.
         $docenteUser = User::firstOrCreate(
@@ -118,22 +108,7 @@ class DatabaseSeeder extends Seeder
             return;
         }
 
-        // 3.1 Director — Docente record que respalda al usuario director.
-        $director = Docente::firstOrCreate(
-            ['user_id' => $directorUser->id],
-            [
-                'nombre'         => 'Director',
-                'apellidos'      => 'De Carrera',
-                'especialidad'   => 'Administración Educativa',
-                'horas_contrato' => null,
-                'es_tutor'       => false,
-            ]
-        );
-
-        // Asignar director a la carrera DSM-2026.
-        $carrera->update(['id_director' => $director->id_docente]);
-
-        // 3.2 Docente — record + vínculo a la carrera DSM-2026.
+        // 3.1 Docente — record + vínculo a la carrera DSM-2026.
         $docente = Docente::firstOrCreate(
             ['user_id' => $docenteUser->id],
             [
@@ -189,7 +164,7 @@ class DatabaseSeeder extends Seeder
             [
                 'id_carrera'          => $carrera->id_carrera,
                 'id_tutor'            => $docente->id_docente,
-                'matricula'           => 'DSM20260001',
+                'id_alumno_publico'           => 'DSM-2026-001',
                 'nombre'              => 'Alumno',
                 'apellidos'           => 'Demo',
                 'cuatrimestre_actual' => 1,
@@ -209,8 +184,8 @@ class DatabaseSeeder extends Seeder
             [
                 'baucher_path' => 'demo/pago_dsm20260001_c1.pdf',
                 'estatus'      => 'aprobado',
-                'subido_por'   => $servicios->id,
-                'revisado_por' => $servicios->id,
+                'subido_por'   => $gestor->id,
+                'revisado_por' => $gestor->id,
                 'revisado_en'  => now(),
             ]
         );
@@ -233,14 +208,13 @@ class DatabaseSeeder extends Seeder
         $this->command->info('═══════════════════════════════════════════════════════════');
         $this->command->info('  Usuarios base (todos con contraseña "password"');
         $this->command->info('  excepto admin):');
-        $this->command->line('    • admin@sigea.edu.mx       admin2026');
-        $this->command->line('    • servicios@sigea.edu.mx   password');
-        $this->command->line('    • director@sigea.edu.mx    password');
-        $this->command->line('    • docente@sigea.edu.mx     password');
-        $this->command->line('    • alumno@sigea.edu.mx      password');
+        $this->command->line('    • admin@sigea.edu.mx     admin2026');
+        $this->command->line('    • gestor@sigea.edu.mx    password');
+        $this->command->line('    • docente@sigea.edu.mx   password');
+        $this->command->line('    • alumno@sigea.edu.mx    password');
         $this->command->info('───────────────────────────────────────────────────────────');
         $this->command->info('  Estado académico inicial:');
-        $this->command->line('    • Carrera DSM-2026 dirigida por director@');
+        $this->command->line('    • Carrera DSM-2026 (sin director asignado aún)');
         $this->command->line('    • Grupo DSM-1A con docente@ (tutor)');
         $this->command->line('    • Alumno DSM20260001 inscrito en DSM-1A');
         $this->command->line('    • Pago 1° cuatrimestre aprobado');

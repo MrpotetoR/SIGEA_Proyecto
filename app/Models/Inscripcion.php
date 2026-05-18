@@ -22,7 +22,7 @@ class Inscripcion extends Model
             if (!auth()->check()) return;
             $user = auth()->user();
             if ($user->hasRole('admin')) return;
-            if (!$user->hasRole('servicios_escolares')) return;
+            if (!$user->hasRole('gestor_escolar')) return;
 
             $ids = $user->carrerasAsignadasIds();
             if (empty($ids)) {

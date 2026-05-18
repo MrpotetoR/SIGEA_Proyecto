@@ -66,8 +66,8 @@
             <tr>
                 <td class="lbl">Nombre:</td>
                 <td>{{ strtoupper($alumno->nombre . ' ' . $alumno->apellidos) }}</td>
-                <td class="lbl">Matrícula:</td>
-                <td>{{ $alumno->matricula }}</td>
+                <td class="lbl">ID:</td>
+                <td>{{ $alumno->id_alumno_publico }}</td>
             </tr>
             <tr>
                 <td class="lbl">Carrera:</td>

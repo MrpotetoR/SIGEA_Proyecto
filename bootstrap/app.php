@@ -17,6 +17,8 @@ return Application::configure(basePath: dirname(__DIR__))
             'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
             'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
             'check.role' => \App\Http\Middleware\CheckRole::class,
+            'contexto.educativo' => \App\Http\Middleware\EstableceContextoEducativo::class,
+            'contexto.solo'      => \App\Http\Middleware\RestringeContextoEducativo::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

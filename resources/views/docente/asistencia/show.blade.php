@@ -66,7 +66,7 @@
                     <tr>
                         <th class="px-5 py-3 text-left text-[11px] font-semibold text-gray-500 dark:text-gray-400 uppercase">#</th>
                         <th class="px-5 py-3 text-left text-[11px] font-semibold text-gray-500 dark:text-gray-400 uppercase">Alumno</th>
-                        <th class="px-5 py-3 text-left text-[11px] font-semibold text-gray-500 dark:text-gray-400 uppercase">Matricula</th>
+                        <th class="px-5 py-3 text-left text-[11px] font-semibold text-gray-500 dark:text-gray-400 uppercase">ID</th>
                         <th class="px-5 py-3 text-center text-[11px] font-semibold text-gray-500 dark:text-gray-400 uppercase">Estatus</th>
                     </tr>
                 </thead>
@@ -76,7 +76,7 @@
                         <tr class="hover:bg-gray-50/50 dark:hover:bg-gray-700/50">
                             <td class="px-5 py-3 text-[12px] text-gray-400 dark:text-gray-500">{{ $i + 1 }}</td>
                             <td class="px-5 py-3 text-[13px] font-medium text-gray-800 dark:text-gray-200">{{ $alumno->nombre_completo }}</td>
-                            <td class="px-5 py-3 text-[12px] text-gray-500 dark:text-gray-400 font-mono">{{ $alumno->matricula }}</td>
+                            <td class="px-5 py-3 text-[12px] text-gray-500 dark:text-gray-400 font-mono">{{ $alumno->id_alumno_publico }}</td>
                             <td class="px-5 py-3">
                                 <div class="flex justify-center gap-2">
                                     @foreach(['presente' => 'P', 'ausente' => 'A', 'retardo' => 'R'] as $status => $label)

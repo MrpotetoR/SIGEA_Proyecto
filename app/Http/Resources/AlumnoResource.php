@@ -11,7 +11,7 @@ class AlumnoResource extends JsonResource
     {
         return [
             'id' => $this->id_alumno,
-            'matricula' => $this->matricula,
+            'id_alumno_publico' => $this->id_alumno_publico,
             'nombre' => $this->nombre,
             'apellidos' => $this->apellidos,
             'nombre_completo' => $this->nombre_completo,

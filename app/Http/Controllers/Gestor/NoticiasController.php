@@ -1,0 +1,246 @@
+<?php
+
+namespace App\Http\Controllers\Gestor;
+
+use App\Http\Controllers\Controller;
+use App\Models\Noticia;
+use App\Services\NotificacionService;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
+
+class NoticiasController extends Controller
+{
+    public function __construct(private NotificacionService $notificaciones) {}
+
+    public function index()
+    {
+        $noticias = Noticia::with('autor')->orderByDesc('fecha_publicacion')->paginate(15);
+        return view('gestor.noticias.index', compact('noticias'));
+    }
+
+    public function create() { return view('gestor.noticias.create'); }
+
+    public function store(Request $request)
+    {
+        $data = $this->validarFormulario($request);
+
+        $imagenUrl = $this->resolverImagen($request);
+        [$pdfUrl, $pdfNombre] = $this->resolverPdf($request);
+        [$fechaPub, $inmediata] = $this->resolverFechaPublicacion($request);
+
+        $roles = $request->audiencia === 'roles' ? $request->roles : null;
+
+        $noticia = Noticia::create([
+            'user_id'           => auth()->id(),
+            'titulo'            => $request->titulo,
+            'contenido'         => $request->contenido,
+            'imagen_url'        => $imagenUrl,
+            'pdf_url'           => $pdfUrl,
+            'pdf_nombre'        => $pdfNombre,
+            'fecha_publicacion' => $fechaPub,
+            'activa'            => true,
+            'destinatarios'     => $roles,
+            'notificado'        => false,
+        ]);
+
+        // Publicación inmediata → notificar ahora y marcar como notificado.
+        // Programada → quedará pendiente; NotificacionController la disparará al llegar el momento.
+        if ($inmediata) {
+            $this->notificaciones->notificarNuevaNoticia(
+                $noticia->titulo,
+                route('noticias.show', $noticia),
+                $roles
+            );
+            $noticia->update(['notificado' => true]);
+            $msg = 'Noticia publicada.';
+        } else {
+            $msg = 'Noticia programada para el ' . $fechaPub->format('d/m/Y H:i') . '.';
+        }
+
+        return redirect()->route('gestor.noticias.index')->with('success', $msg);
+    }
+
+    public function show(Noticia $noticia) { return view('gestor.noticias.show', compact('noticia')); }
+
+    public function edit(Noticia $noticia) { return view('gestor.noticias.edit', compact('noticia')); }
+
+    public function update(Request $request, Noticia $noticia)
+    {
+        $data = $this->validarFormulario($request, $noticia);
+
+        $imagenUrl = $this->resolverImagen($request, $noticia);
+
+        if ($request->boolean('quitar_imagen') && !$request->hasFile('imagen') && !$request->imagen_url) {
+            $this->borrarImagenLocal($noticia);
+            $imagenUrl = null;
+        }
+
+        [$pdfUrl, $pdfNombre] = $this->resolverPdf($request, $noticia);
+
+        if ($request->boolean('quitar_pdf') && !$request->hasFile('pdf')) {
+            $this->borrarPdfLocal($noticia);
+            $pdfUrl = null;
+            $pdfNombre = null;
+        }
+
+        [$fechaPub, $inmediata] = $this->resolverFechaPublicacion($request);
+        $roles = $request->audiencia === 'roles' ? $request->roles : null;
+
+        $noticia->update([
+            'titulo'            => $request->titulo,
+            'contenido'         => $request->contenido,
+            'imagen_url'        => $imagenUrl,
+            'pdf_url'           => $pdfUrl,
+            'pdf_nombre'        => $pdfNombre,
+            'fecha_publicacion' => $fechaPub,
+            'destinatarios'     => $roles,
+        ]);
+
+        // Si se re-programó hacia el futuro, permitir re-notificar cuando llegue el momento.
+        if ($fechaPub->isFuture()) {
+            $noticia->update(['notificado' => false]);
+        } elseif ($inmediata && !$noticia->notificado) {
+            $this->notificaciones->notificarNuevaNoticia(
+                $noticia->titulo,
+                route('noticias.show', $noticia),
+                $roles
+            );
+            $noticia->update(['notificado' => true]);
+        }
+
+        return redirect()->route('gestor.noticias.index')->with('success', 'Noticia actualizada.');
+    }
+
+    public function destroy(Noticia $noticia)
+    {
+        $this->borrarImagenLocal($noticia);
+        $this->borrarPdfLocal($noticia);
+        $noticia->delete();
+        return redirect()->route('gestor.noticias.index')->with('success', 'Noticia eliminada.');
+    }
+
+    // ────────────────────────── helpers ──────────────────────────
+
+    /** Valida el formulario de create/update y aplica reglas de fecha/hora. */
+    private function validarFormulario(Request $request, ?Noticia $noticia = null): array
+    {
+        $rules = [
+            'titulo'            => 'required|string|max:200',
+            'contenido'         => 'required|string',
+            'tipo_publicacion'  => ['required', Rule::in(['inmediata', 'programada'])],
+            'fecha_publicacion' => 'required_if:tipo_publicacion,programada|nullable|date',
+            'hora_publicacion'  => 'required_if:tipo_publicacion,programada|nullable|date_format:H:i',
+            'audiencia'         => 'required|in:todos,roles',
+            'roles'             => 'required_if:audiencia,roles|array|min:1',
+            'roles.*'           => 'in:gestor_escolar,docente,alumno',
+            'imagen'            => 'nullable|image|max:512',
+            'imagen_url'        => 'nullable|url|max:500',
+            'pdf'               => 'nullable|file|mimes:pdf|max:10240', // PDF, máx. 10 MB
+            'pdf_nombre'        => 'nullable|string|max:150',
+        ];
+
+        $validated = $request->validate($rules);
+
+        // Reglas de negocio sobre fecha/hora para programada.
+        if ($request->tipo_publicacion === 'programada') {
+            $fechaHora = $this->combinarFechaHora($request->fecha_publicacion, $request->hora_publicacion);
+            $hoy       = Carbon::today();
+
+            if ($fechaHora->lt($hoy)) {
+                throw ValidationException::withMessages([
+                    'fecha_publicacion' => 'La fecha de publicación no puede ser anterior a hoy.',
+                ]);
+            }
+
+            if ($fechaHora->isSameDay($hoy) && $fechaHora->lte(now())) {
+                throw ValidationException::withMessages([
+                    'hora_publicacion' => 'La hora debe ser posterior a la hora actual.',
+                ]);
+            }
+
+            $finDelDia = Carbon::parse($request->fecha_publicacion)->setTime(23, 59, 59);
+            if ($fechaHora->gt($finDelDia)) {
+                throw ValidationException::withMessages([
+                    'hora_publicacion' => 'La hora no puede exceder las 23:59 del día seleccionado.',
+                ]);
+            }
+        }
+
+        return $validated;
+    }
+
+    /** Devuelve [Carbon $fecha, bool $esInmediata]. */
+    private function resolverFechaPublicacion(Request $request): array
+    {
+        if ($request->tipo_publicacion === 'inmediata') {
+            return [now(), true];
+        }
+        $fechaHora = $this->combinarFechaHora($request->fecha_publicacion, $request->hora_publicacion);
+        return [$fechaHora, $fechaHora->lte(now())];
+    }
+
+    private function combinarFechaHora(string $fecha, ?string $hora): Carbon
+    {
+        $hora = $hora ?: '00:00';
+        return Carbon::parse("$fecha $hora:00");
+    }
+
+    private function resolverImagen(Request $request, ?Noticia $noticia = null): ?string
+    {
+        if ($request->hasFile('imagen')) {
+            if ($noticia) $this->borrarImagenLocal($noticia);
+            return '/storage/' . $request->file('imagen')->store('noticias', 'public');
+        }
+        if ($request->filled('imagen_url')) {
+            if ($noticia) $this->borrarImagenLocal($noticia);
+            return $request->imagen_url;
+        }
+        return $noticia?->imagen_url;
+    }
+
+    private function borrarImagenLocal(Noticia $noticia): void
+    {
+        if ($noticia->imagen_url && str_starts_with($noticia->imagen_url, '/storage/')) {
+            $path = str_replace('/storage/', '', $noticia->imagen_url);
+            Storage::disk('public')->delete($path);
+        }
+    }
+
+    /**
+     * Devuelve [pdfUrl, pdfNombre] segun el request.
+     * Si se sube un nuevo PDF, reemplaza el anterior (si existia).
+     * Si no, conserva el existente del modelo.
+     */
+    private function resolverPdf(Request $request, ?Noticia $noticia = null): array
+    {
+        if ($request->hasFile('pdf')) {
+            if ($noticia) $this->borrarPdfLocal($noticia);
+
+            $file = $request->file('pdf');
+            $path = $file->store('noticias/pdf', 'public');
+            $nombre = $request->filled('pdf_nombre')
+                ? trim($request->pdf_nombre)
+                : pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+
+            return ['/storage/' . $path, $nombre];
+        }
+
+        // Sin nuevo archivo: si el usuario solo cambio el nombre visible, lo actualizamos.
+        if ($noticia?->pdf_url && $request->filled('pdf_nombre')) {
+            return [$noticia->pdf_url, trim($request->pdf_nombre)];
+        }
+
+        return [$noticia?->pdf_url, $noticia?->pdf_nombre];
+    }
+
+    private function borrarPdfLocal(Noticia $noticia): void
+    {
+        if ($noticia->pdf_url && str_starts_with($noticia->pdf_url, '/storage/')) {
+            $path = str_replace('/storage/', '', $noticia->pdf_url);
+            Storage::disk('public')->delete($path);
+        }
+    }
+}

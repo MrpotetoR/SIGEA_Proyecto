@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Carrera;
-use App\Models\PersonalServiciosEscolares;
+use App\Models\GestorEscolar;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -12,7 +12,7 @@ class AsignacionCarreraController extends Controller
 {
     public function index()
     {
-        $personal = PersonalServiciosEscolares::with('carreras', 'user')
+        $personal = GestorEscolar::with('carreras', 'user')
             ->orderBy('apellidos')
             ->get();
 
@@ -33,11 +33,11 @@ class AsignacionCarreraController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'id_personal' => 'required|exists:personal_servicios_escolares,id_personal',
+            'id_personal' => 'required|exists:gestores_escolares,id_personal',
             'id_carrera'  => 'required|exists:carrera,id_carrera',
         ]);
 
-        $personal = PersonalServiciosEscolares::findOrFail($request->id_personal);
+        $personal = GestorEscolar::findOrFail($request->id_personal);
         $carrera  = Carrera::findOrFail($request->id_carrera);
 
         // Regla 1: la carrera no debe estar ya asignada.
@@ -47,7 +47,7 @@ class AsignacionCarreraController extends Controller
 
         // Regla 2: el personal no debe exceder el máximo.
         if (!$personal->puedeAgregarCarrera()) {
-            $max = PersonalServiciosEscolares::MAX_CARRERAS;
+            $max = GestorEscolar::MAX_CARRERAS;
             return back()->with('error', "Este personal ya tiene {$max} carreras (límite máximo).");
         }
 
@@ -59,11 +59,11 @@ class AsignacionCarreraController extends Controller
     public function destroy(Request $request)
     {
         $request->validate([
-            'id_personal' => 'required|exists:personal_servicios_escolares,id_personal',
+            'id_personal' => 'required|exists:gestores_escolares,id_personal',
             'id_carrera'  => 'required|exists:carrera,id_carrera',
         ]);
 
-        $personal = PersonalServiciosEscolares::findOrFail($request->id_personal);
+        $personal = GestorEscolar::findOrFail($request->id_personal);
         $carrera  = Carrera::findOrFail($request->id_carrera);
 
         $personal->carreras()->detach($carrera->id_carrera);
@@ -74,11 +74,11 @@ class AsignacionCarreraController extends Controller
     public function transfer(Request $request)
     {
         $request->validate([
-            'id_personal_destino' => 'required|exists:personal_servicios_escolares,id_personal',
+            'id_personal_destino' => 'required|exists:gestores_escolares,id_personal',
             'id_carrera'          => 'required|exists:carrera,id_carrera',
         ]);
 
-        $destino = PersonalServiciosEscolares::findOrFail($request->id_personal_destino);
+        $destino = GestorEscolar::findOrFail($request->id_personal_destino);
         $carrera = Carrera::findOrFail($request->id_carrera);
 
         if (!$destino->puedeAgregarCarrera()) {

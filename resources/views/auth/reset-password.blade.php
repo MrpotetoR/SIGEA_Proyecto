@@ -3,7 +3,7 @@
     {{-- Greeting --}}
     <div class="text-center mb-7">
         <h2 class="text-[24px] font-extrabold text-gray-900 slide-up">Nueva contraseña</h2>
-        <p class="text-[13px] text-gray-400 mt-1.5 slide-up" style="animation-delay: 0.12s;">Ingresa tu nueva contrasena para acceder a tu cuenta.</p>
+        <p class="text-[13px] text-gray-400 mt-1.5 slide-up" style="animation-delay: 0.12s;">Ingresa tu nueva contraseña para acceder a tu cuenta.</p>
     </div>
 
     @if($errors->any())
@@ -33,7 +33,7 @@
         </div>
 
         <div class="slide-up" style="animation-delay: 0.2s;">
-            <label class="block text-[12px] font-semibold text-gray-500 uppercase tracking-wider mb-2">Nueva contrasena</label>
+            <label class="block text-[12px] font-semibold text-gray-500 uppercase tracking-wider mb-2">Nueva contraseña</label>
             <div class="relative">
                 <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                     <svg class="w-[18px] h-[18px] text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
@@ -60,7 +60,7 @@
 
         <div class="slide-up" style="animation-delay: 0.3s;">
             <button type="submit" class="btn-primary w-full bg-[#0606F0] hover:bg-[#04276B] text-white font-semibold py-3.5 rounded-xl text-[14px] shadow-lg shadow-gray-900/10">
-                Restablecer contrasena
+                Restablecer contraseña
             </button>
         </div>
     </form>

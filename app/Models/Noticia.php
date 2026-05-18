@@ -11,6 +11,7 @@ class Noticia extends Model
 
     protected $fillable = [
         'user_id', 'titulo', 'contenido', 'imagen_url',
+        'pdf_url', 'pdf_nombre',
         'fecha_publicacion', 'activa', 'notificado', 'destinatarios',
     ];
 

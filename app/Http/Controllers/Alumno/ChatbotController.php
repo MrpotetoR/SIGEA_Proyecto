@@ -88,8 +88,8 @@ class ChatbotController extends Controller
         ])->timeout(30)->post($url, [
                     'model' => $model,
                     'messages' => $messages,
-                    'temperature' => 0.7,
-                    'max_tokens' => 1024,
+                    'temperature' => 0.4,
+                    'max_tokens' => 256,
                 ]);
 
         if ($response->failed()) {
@@ -115,7 +115,7 @@ class ChatbotController extends Controller
 
         // Datos básicos
         $datos[] = "Nombre: {$alumno->nombre_completo}";
-        $datos[] = "Matricula: {$alumno->matricula}";
+        $datos[] = "ID: {$alumno->id_alumno_publico}";
         $datos[] = "Carrera: " . ($alumno->carrera?->nombre_carrera ?? 'No asignada');
         $datos[] = "Cuatrimestre: " . ($alumno->cuatrimestre_actual ?? 'N/D');
         $datos[] = "Estatus: {$alumno->estatus}";
@@ -124,10 +124,6 @@ class ChatbotController extends Controller
         if ($alumno->promedio_general) {
             $datos[] = "Promedio general: {$alumno->promedio_general}";
         }
-
-        // Horas ACUDE (acumuladas)
-        $horasAcude = $alumno->hrsCulturales()->sum('horas_acumuladas');
-        $datos[] = "Horas ACUDE: {$horasAcude}/90 requeridas";
 
         // Semáforo académico del ciclo actual
         $ciclo = \App\Models\CicloEscolar::cicloActual();
@@ -165,31 +161,34 @@ class ChatbotController extends Controller
     private function getSystemPrompt(string $contexto): string
     {
         return <<<PROMPT
-Eres el asistente virtual de SIGEA (Sistema de Gestion Educativa Academica).
-Tu nombre es "Asistente SIGEA". Eres amable, profesional y conciso.
+Eres el Asistente SIGEA. Estas hablando con un alumno.
+
+COMO RESPONDER:
+- Ve directo al grano. Maximo 1-2 oraciones cortas.
+- Habla claro y simple, como si le explicaras a un amigo. Sin tecnicismos.
+- No uses palabras como 'modulo', 'sistema', 'plataforma', 'consultar', 'gestionar' o 'realizar'.
+- En vez de eso usa: 'ver', 'revisar', 'entrar a', 'abrir'.
+- Nada de saludos largos ni 'Por supuesto', 'Claro que si', 'Con gusto'. Solo responde.
+- Si la respuesta esta en una seccion del menu, dilo asi: 'Esta en <b>Nombre</b>.'
+- Si te dan datos del alumno, usalos para responder concreto (numeros, nombres).
+- Responde en espanol de Mexico, tono amable pero directo.
 
 REGLAS:
-- Responde SOLO sobre temas academicos y del sistema SIGEA.
-- Usa los datos del alumno para personalizar las respuestas.
-- Si el alumno pregunta algo que no puedes responder, sugierele contactar a servicios escolares.
-- Responde en espanol (Mexico).
-- Se breve: maximo 2-3 oraciones por respuesta.
-- Usa HTML basico para formato: <b> para negritas, <br> para saltos de linea.
-- NO uses markdown. Usa HTML.
-- NO inventes datos. Solo usa la informacion del contexto.
+- Solo respondes cosas de la escuela y del sistema.
+- Usa <b> para resaltar, <br> para saltos de linea. Nada de markdown.
+- No inventes datos. Si no sabes algo, di que pregunte en servicios escolares.
 
-SECCIONES DEL SISTEMA PARA EL ALUMNO:
-- Overview/Dashboard: resumen general
-- Mi Perfil: datos personales del alumno
-- Horario: horario de clases semanal
-- Calificaciones: calificaciones del ciclo actual
-- Kardex: historial de todas las calificaciones, se puede descargar en PDF
-- Historial: historial academico completo
-- Horas ACUDE: horas culturales y deportivas (30 requeridas de cada tipo)
-- Servicio Social: informacion y estatus del servicio social
-- Evaluar Docentes: evaluacion de docentes del ciclo
-- Mis Docentes: lista de docentes actuales
-- Noticias: avisos y noticias institucionales
+SECCIONES QUE PUEDES MENCIONAR:
+- Overview: lo que pasa en general
+- Mi Perfil: tus datos
+- Horario: tus clases de la semana
+- Calificaciones: tus notas del ciclo
+- Kardex: todas tus calificaciones (se descarga en PDF)
+- Historial: tu trayectoria academica completa
+- Servicio Social: tu servicio social
+- Evaluar Docentes: para calificar a tus maestros
+- Mis Docentes: quien te da clases
+- Noticias: avisos de la escuela
 
 DATOS DEL ALUMNO:
 {$contexto}
@@ -212,8 +211,7 @@ PROMPT;
         }
 
         if (str_contains($mensaje, 'acude') || str_contains($mensaje, 'cultural') || str_contains($mensaje, 'deportiv')) {
-            $total = $alumno?->hrsCulturales()->sum('horas_acumuladas') ?? 0;
-            return "Llevas <b>{$total} horas</b> ACUDE registradas de 30 requeridas.";
+            return 'Las horas culturales / ACUDE ya no se gestionan en SIGEA.';
         }
 
         if (str_contains($mensaje, 'kardex')) {

@@ -51,7 +51,7 @@
         {{-- Personal reciente --}}
         <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm dark:shadow-gray-900/20 border border-gray-100 dark:border-gray-700 overflow-hidden">
             <div class="px-5 py-3 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between">
-                <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-200">Personal de Servicios Escolares</h3>
+                <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-200">Gestores Escolares</h3>
                 <a href="{{ route('admin.personal.index') }}" class="text-xs font-medium text-[#0606F0] dark:text-blue-400 hover:underline">Ver todos &rarr;</a>
             </div>
             <div class="overflow-x-auto">
@@ -71,7 +71,7 @@
                                 <td class="px-4 py-2 text-gray-600 dark:text-gray-400">{{ $p->user?->email }}</td>
                                 <td class="px-4 py-2 text-gray-600 dark:text-gray-400">{{ $p->especialidad }}</td>
                                 <td class="px-4 py-2 text-center">
-                                    <span class="px-2 py-1 rounded-full text-xs font-medium bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300">{{ $p->carreras->count() }} / {{ \App\Models\PersonalServiciosEscolares::MAX_CARRERAS }}</span>
+                                    <span class="px-2 py-1 rounded-full text-xs font-medium bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300">{{ $p->carreras->count() }} / {{ \App\Models\GestorEscolar::MAX_CARRERAS }}</span>
                                 </td>
                             </tr>
                         @empty

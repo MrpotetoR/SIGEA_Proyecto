@@ -3,7 +3,7 @@
     {{-- Heading --}}
     <div style="margin-bottom: 32px;">
         <h1 style="font-size: 26px; font-weight: 800; color: #111827; letter-spacing: -0.025em; line-height: 1.2; margin-bottom: 6px;">
-            Iniciar Sesion
+            Iniciar Sesión
         </h1>
         <p style="font-size: 13.5px; color: #6B7280;">Ingresa tus credenciales para continuar</p>
     </div>
@@ -53,7 +53,7 @@
             </div>
             <div style="position: relative;">
                 <input id="password" type="password" name="password" required autocomplete="current-password"
-                    placeholder="Ingresa tu contrasena" class="login-input" style="padding-right: 44px;">
+                    placeholder="Ingresa tu contraseña" class="login-input" style="padding-right: 44px;">
                 <button type="button" onclick="togglePassword()" class="pass-toggle" tabindex="-1">
                     <svg id="eye-off" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"/>
@@ -71,7 +71,7 @@
 
         {{-- Login button --}}
         <button type="submit" class="login-btn" id="btnLogin">
-            <span id="btnText">Iniciar sesion</span>
+            <span id="btnText">Iniciar Sesión</span>
             <svg id="btnSpinner" class="login-spinner" width="20" height="20" viewBox="0 0 24 24" fill="none" style="display:none; margin:0 auto;">
                 <circle cx="12" cy="12" r="10" stroke="rgba(255,255,255,0.3)" stroke-width="4"></circle>
                 <path fill="white" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>

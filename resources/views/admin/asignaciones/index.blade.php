@@ -38,7 +38,7 @@
                         @foreach($personal as $p)
                             @php $disponible = $p->carrerasRestantes(); @endphp
                             <option value="{{ $p->id_personal }}" @if($disponible === 0) disabled @endif>
-                                {{ $p->nombre_completo }} ({{ $p->carreras->count() }}/{{ \App\Models\PersonalServiciosEscolares::MAX_CARRERAS }})
+                                {{ $p->nombre_completo }} ({{ $p->carreras->count() }}/{{ \App\Models\GestorEscolar::MAX_CARRERAS }})
                                 @if($disponible === 0) — sin cupo @endif
                             </option>
                         @endforeach
@@ -107,14 +107,14 @@
                                     @endif
                                 </td>
                                 <td class="px-4 py-3 text-center align-top">
-                                    @php $usadas = $p->carreras->count(); $max = \App\Models\PersonalServiciosEscolares::MAX_CARRERAS; @endphp
+                                    @php $usadas = $p->carreras->count(); $max = \App\Models\GestorEscolar::MAX_CARRERAS; @endphp
                                     <span class="text-xs font-semibold {{ $usadas >= $max ? 'text-red-600' : 'text-gray-600 dark:text-gray-300' }}">
                                         {{ $usadas }} / {{ $max }}
                                     </span>
                                 </td>
                             </tr>
                         @empty
-                            <tr><td colspan="3" class="px-4 py-10 text-center text-gray-400">Aún no hay personal de Servicios Escolares registrado. <a href="{{ route('admin.personal.create') }}" class="text-[#0606F0] hover:underline">Crear el primero →</a></td></tr>
+                            <tr><td colspan="3" class="px-4 py-10 text-center text-gray-400">Aún no hay Gestores Escolares registrado. <a href="{{ route('admin.personal.create') }}" class="text-[#0606F0] hover:underline">Crear el primero →</a></td></tr>
                         @endforelse
                     </tbody>
                 </table>

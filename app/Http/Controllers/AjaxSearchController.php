@@ -20,7 +20,7 @@ class AjaxSearchController extends Controller
         if ($request->filled('q')) {
             $termino = $request->q;
             $query->where(fn($q) =>
-                $q->where('matricula', 'like', "%{$termino}%")
+                $q->where('id_alumno_publico', 'like', "%{$termino}%")
                   ->orWhere('nombre', 'like', "%{$termino}%")
                   ->orWhere('apellidos', 'like', "%{$termino}%")
             );
@@ -29,7 +29,7 @@ class AjaxSearchController extends Controller
         return response()->json(
             $query->orderBy('apellidos')->limit(20)->get()->map(fn($a) => [
                 'id' => $a->id_alumno,
-                'texto' => "{$a->apellidos}, {$a->nombre} — {$a->matricula}",
+                'texto' => "{$a->apellidos}, {$a->nombre} — {$a->id_alumno_publico}",
                 'extra' => $a->carrera?->clave_carrera,
             ])
         );

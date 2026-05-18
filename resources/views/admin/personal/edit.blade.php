@@ -12,8 +12,14 @@
             </div>
         @endif
 
-        <form method="POST" action="{{ route('admin.personal.update', $personal) }}" enctype="multipart/form-data" class="space-y-6">
+        <form method="POST" action="{{ route('admin.personal.update', $personal) }}" enctype="multipart/form-data"
+              class="space-y-6"
+              x-data="formEditGestor()"
+              data-nombre="{{ old('nombre', $personal->nombre) }}"
+              data-apellidos="{{ old('apellidos', $personal->apellidos) }}"
+              data-permiso="{{ $personal->puede_asignar_carreras ? '1' : '0' }}">
             @csrf @method('PUT')
+            <input type="hidden" name="puede_asignar_carreras" :value="permisoActual ? '1' : '0'">
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <div class="bg-white dark:bg-gray-800 rounded-xl shadow dark:shadow-gray-900/20 p-6 border border-transparent dark:border-gray-700">
@@ -25,6 +31,7 @@
                                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nombre(s) *</label>
                                 <input type="text" name="nombre" value="{{ old('nombre', $personal->nombre) }}" required maxlength="80"
                                        pattern="[A-Za-zÁÉÍÓÚáéíóúÑñÜü\s]+"
+                                       x-model="nombre"
                                        oninput="this.value = this.value.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñÜü\s]/g, '');"
                                        class="w-full border dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400 focus:outline-none">
                             </div>
@@ -32,6 +39,7 @@
                                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Apellidos *</label>
                                 <input type="text" name="apellidos" value="{{ old('apellidos', $personal->apellidos) }}" required maxlength="100"
                                        pattern="[A-Za-zÁÉÍÓÚáéíóúÑñÜü\s]+"
+                                       x-model="apellidos"
                                        oninput="this.value = this.value.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñÜü\s]/g, '');"
                                        class="w-full border dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400 focus:outline-none">
                             </div>
@@ -61,6 +69,30 @@
                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Especialidad *</label>
                             <input type="text" name="especialidad" value="{{ old('especialidad', $personal->especialidad) }}" required maxlength="150"
                                    class="w-full border dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400 focus:outline-none">
+                        </div>
+
+                        {{-- ── Permiso especial: asignar carreras a otros gestores ── --}}
+                        <div class="border-2 border-dashed border-amber-300 dark:border-amber-700/60 bg-amber-50/40 dark:bg-amber-900/10 rounded-lg p-4">
+                            <label class="flex items-start gap-3 cursor-pointer">
+                                <input type="checkbox"
+                                       x-model="permisoActual"
+                                       @change="onTogglePermiso($event)"
+                                       class="mt-1 rounded text-amber-600 focus:ring-amber-400">
+                                <div class="flex-1">
+                                    <p class="text-sm font-medium text-gray-800 dark:text-gray-200">
+                                        ¿Otorgarle a <strong x-text="nombreCompleto"></strong> permisos para asignar carreras a otros gestores escolares?
+                                    </p>
+                                    <p x-show="cambioConfirmado" x-cloak class="text-xs text-green-700 dark:text-green-400 mt-1.5 flex items-center gap-1">
+                                        <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                        </svg>
+                                        Cambio confirmado con tu contraseña.
+                                    </p>
+                                    <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-1.5">
+                                        Cualquier cambio (otorgar o revocar) requiere validar tu contraseña de administrador.
+                                    </p>
+                                </div>
+                            </label>
                         </div>
 
                         <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-lg px-3 py-2">
@@ -119,3 +151,57 @@
         </form>
     </div>
 </x-panel>
+
+<script>
+function formEditGestor() {
+    return {
+        nombre: '',
+        apellidos: '',
+        permisoInicial: false,
+        permisoActual:  false,
+        cambioConfirmado: false,
+
+        init() {
+            // Hidratar desde data-* attributes del form (escape HTML correcto).
+            const ds = this.$el.dataset;
+            this.nombre         = ds.nombre || '';
+            this.apellidos      = ds.apellidos || '';
+            this.permisoInicial = ds.permiso === '1';
+            this.permisoActual  = this.permisoInicial;
+        },
+
+        get nombreCompleto() {
+            return `${(this.nombre || '').trim()} ${(this.apellidos || '').trim()}`.trim();
+        },
+
+        onTogglePermiso() {
+            // ¿Cambió respecto al estado inicial guardado en BD?
+            if (this.permisoActual === this.permisoInicial) {
+                this.cambioConfirmado = false;
+                return;
+            }
+
+            // Si ya estaba confirmado este cambio, no pedir reauth de nuevo.
+            if (this.cambioConfirmado) return;
+
+            const accion = this.permisoActual ? 'otorgar_permiso_especial' : 'revocar_permiso_especial';
+            const verbo  = this.permisoActual ? 'otorgarle' : 'revocarle';
+            const self   = this;
+
+            window.dispatchEvent(new CustomEvent('reauth:open', {
+                detail: {
+                    action: accion,
+                    title:  this.permisoActual ? 'Otorgar permiso especial' : 'Revocar permiso especial',
+                    description: `Estás por ${verbo} a ${self.nombreCompleto} la capacidad de asignar carreras a otros gestores. Confirma con tu contraseña.`,
+                    onSuccess: () => { self.cambioConfirmado = true; },
+                    onCancel:  () => {
+                        // Revertir el toggle si cancela.
+                        self.permisoActual = self.permisoInicial;
+                        self.cambioConfirmado = false;
+                    },
+                },
+            }));
+        },
+    };
+}
+</script>

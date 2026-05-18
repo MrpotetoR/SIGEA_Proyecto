@@ -186,14 +186,14 @@ class DatosPruebaSeeder extends Seeder
             if (!$user->hasRole('alumno')) $user->assignRole('alumno');
 
             $seq[$a['carrera']]++;
-            $matricula = strtoupper($a['carrera']) . date('Y') . str_pad($seq[$a['carrera']], 3, '0', STR_PAD_LEFT);
+            $idAlumno = strtoupper($a['carrera']) . '-' . date('Y') . '-' . str_pad($seq[$a['carrera']], 3, '0', STR_PAD_LEFT);
 
             $alumno = Alumno::firstOrCreate(
                 ['user_id' => $user->id],
                 [
                     'id_carrera'        => $carrera->id_carrera,
                     'id_tutor'          => $tutorObj->id_docente,
-                    'matricula'         => $matricula,
+                    'id_alumno_publico'         => $idAlumno,
                     'nombre'            => $a['nombre'],
                     'apellidos'         => $a['apellidos'],
                     'cuatrimestre_actual' => $a['cuatrimestre'],

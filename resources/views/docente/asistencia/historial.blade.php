@@ -127,7 +127,7 @@
                                         @endif
                                         <div class="min-w-0">
                                             <div class="text-[13px] font-medium text-gray-800 dark:text-gray-200 truncate">{{ $fila['alumno']->nombre_completo }}</div>
-                                            <div class="text-[10px] text-gray-400 dark:text-gray-500 font-mono">{{ $fila['alumno']->matricula }}</div>
+                                            <div class="text-[10px] text-gray-400 dark:text-gray-500 font-mono">{{ $fila['alumno']->id_alumno_publico }}</div>
                                         </div>
                                     </div>
                                 </td>

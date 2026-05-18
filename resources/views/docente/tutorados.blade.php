@@ -19,7 +19,7 @@
                             </div>
                             <div>
                                 <p class="text-[14px] font-bold text-gray-800 dark:text-gray-200">{{ $alumno->nombre_completo }}</p>
-                                <p class="text-[11px] text-gray-400 dark:text-gray-500">{{ $alumno->matricula }}</p>
+                                <p class="text-[11px] text-gray-400 dark:text-gray-500">{{ $alumno->id_alumno_publico }}</p>
                             </div>
                         </div>
 

@@ -1,4 +1,4 @@
-<x-panel title="Nuevo Personal de Servicios Escolares" panelNombre="Panel Admin">
+<x-panel title="Nuevo Gestores Escolares" panelNombre="Panel Admin">
     <x-slot name="nav">@include('partials.admin-nav')</x-slot>
 
     <div class="max-w-5xl">
@@ -13,8 +13,13 @@
             </div>
         @endif
 
-        <form method="POST" action="{{ route('admin.personal.store') }}" enctype="multipart/form-data" class="space-y-6">
+        <form method="POST" action="{{ route('admin.personal.store') }}" enctype="multipart/form-data"
+              class="space-y-6" x-data="formNuevoGestor()"
+              data-nombre="{{ old('nombre', '') }}"
+              data-apellidos="{{ old('apellidos', '') }}">
             @csrf
+            {{-- Flag de permiso especial: solo se envía si reauth fue exitoso. --}}
+            <input type="hidden" name="puede_asignar_carreras" :value="permisoEspecialConfirmado ? '1' : '0'">
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {{-- Datos del personal --}}
@@ -27,6 +32,7 @@
                                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nombre(s) *</label>
                                 <input type="text" name="nombre" value="{{ old('nombre') }}" required maxlength="80"
                                        pattern="[A-Za-zÁÉÍÓÚáéíóúÑñÜü\s]+" title="Solo letras y espacios"
+                                       x-model="nombre"
                                        oninput="this.value = this.value.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñÜü\s]/g, '');"
                                        class="w-full border dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400 focus:outline-none">
                             </div>
@@ -34,6 +40,7 @@
                                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Apellidos *</label>
                                 <input type="text" name="apellidos" value="{{ old('apellidos') }}" required maxlength="100"
                                        pattern="[A-Za-zÁÉÍÓÚáéíóúÑñÜü\s]+" title="Solo letras y espacios"
+                                       x-model="apellidos"
                                        oninput="this.value = this.value.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñÜü\s]/g, '');"
                                        class="w-full border dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400 focus:outline-none">
                             </div>
@@ -43,7 +50,7 @@
                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Correo electrónico *</label>
                             <input type="email" name="email" value="{{ old('email') }}" required maxlength="255"
                                    class="w-full border dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400 focus:outline-none">
-                            <p class="text-xs text-gray-400 mt-1">Contraseña inicial: <code class="dark:text-gray-300">servicios{{ date('Y') }}</code></p>
+                            <p class="text-xs text-gray-400 mt-1">Contraseña inicial: <code class="dark:text-gray-300">gestor{{ date('Y') }}</code></p>
                         </div>
 
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -68,9 +75,39 @@
                             <p class="text-xs text-gray-400 mt-1">Las carreras se asignan en el siguiente paso (sección "Asignar carreras").</p>
                         </div>
 
+                        {{-- ── Permiso especial: asignar carreras a otros gestores ── --}}
+                        <div class="border-2 border-dashed border-amber-300 dark:border-amber-700/60 bg-amber-50/40 dark:bg-amber-900/10 rounded-lg p-4">
+                            <label class="flex items-start gap-3 cursor-pointer">
+                                <input type="checkbox"
+                                       x-model="permisoEspecialCheck"
+                                       @change="onTogglePermiso($event)"
+                                       :disabled="!nombreCompleto"
+                                       class="mt-1 rounded text-amber-600 focus:ring-amber-400 disabled:opacity-40">
+                                <div class="flex-1">
+                                    <p class="text-sm font-medium text-gray-800 dark:text-gray-200">
+                                        <template x-if="nombreCompleto">
+                                            <span>¿Deseas otorgarle permisos a <strong x-text="nombreCompleto"></strong> para que pueda asignar carreras a otros gestores escolares?</span>
+                                        </template>
+                                        <template x-if="!nombreCompleto">
+                                            <span class="text-gray-400">Llena nombre y apellidos para habilitar el permiso especial.</span>
+                                        </template>
+                                    </p>
+                                    <p x-show="permisoEspecialConfirmado" x-cloak class="text-xs text-green-700 dark:text-green-400 mt-1.5 flex items-center gap-1">
+                                        <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                        </svg>
+                                        Permiso confirmado con tu contraseña.
+                                    </p>
+                                    <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-1.5">
+                                        Esta acción es sensible y requiere validar tu contraseña de administrador.
+                                    </p>
+                                </div>
+                            </label>
+                        </div>
+
                         <div>
                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                Asignar carreras <span class="text-gray-400 font-normal">(opcional, máx. {{ \App\Models\PersonalServiciosEscolares::MAX_CARRERAS }})</span>
+                                Asignar carreras <span class="text-gray-400 font-normal">(opcional, máx. {{ \App\Models\GestorEscolar::MAX_CARRERAS }})</span>
                             </label>
                             @if($carrerasDisponibles->isEmpty())
                                 <p class="text-xs text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700 rounded-lg px-3 py-2">
@@ -82,7 +119,7 @@
                                         <label class="flex items-center gap-2 cursor-pointer hover:bg-white dark:hover:bg-gray-700 px-2 py-1 rounded">
                                             <input type="checkbox" name="carreras[]" value="{{ $c->id_carrera }}"
                                                    class="rounded text-[#0606F0] focus:ring-blue-400 carrera-check"
-                                                   data-max="{{ \App\Models\PersonalServiciosEscolares::MAX_CARRERAS }}"
+                                                   data-max="{{ \App\Models\GestorEscolar::MAX_CARRERAS }}"
                                                    {{ in_array($c->id_carrera, old('carreras', [])) ? 'checked' : '' }}>
                                             <span class="text-sm text-gray-700 dark:text-gray-200">{{ $c->nombre_carrera }}</span>
                                             <span class="text-[10px] text-gray-400 ml-auto">{{ $c->clave_carrera }}</span>
@@ -146,4 +183,47 @@
     checks.forEach(c => c.addEventListener('change', refresh));
     refresh();
 })();
+
+function formNuevoGestor() {
+    return {
+        nombre: '',
+        apellidos: '',
+        permisoEspecialCheck: false,
+        permisoEspecialConfirmado: false,
+
+        init() {
+            const ds = this.$el.dataset;
+            this.nombre    = ds.nombre || '';
+            this.apellidos = ds.apellidos || '';
+        },
+
+        get nombreCompleto() {
+            const n = (this.nombre || '').trim();
+            const a = (this.apellidos || '').trim();
+            return (n || a) ? `${n} ${a}`.trim() : '';
+        },
+
+        onTogglePermiso(event) {
+            // Si se desmarca, simplemente cancela.
+            if (!this.permisoEspecialCheck) {
+                this.permisoEspecialConfirmado = false;
+                return;
+            }
+            // Si ya estaba confirmado, no pedir reauth otra vez.
+            if (this.permisoEspecialConfirmado) return;
+
+            // Solicitar reauth.
+            const self = this;
+            window.dispatchEvent(new CustomEvent('reauth:open', {
+                detail: {
+                    action: 'otorgar_permiso_especial',
+                    title:  'Otorgar permiso especial',
+                    description: `Estás por darle a ${self.nombreCompleto} la capacidad de asignar carreras a otros gestores. Confirma con tu contraseña.`,
+                    onSuccess: () => { self.permisoEspecialConfirmado = true; },
+                    onCancel:  () => { self.permisoEspecialCheck = false; self.permisoEspecialConfirmado = false; },
+                },
+            }));
+        },
+    };
+}
 </script>

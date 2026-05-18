@@ -46,7 +46,7 @@
         {{-- Cards de resumen (estilo mockup: borde sutil, 3 columnas con datos e ícono) --}}
         <div class="bg-white dark:bg-gray-800 dark:border-gray-700 dark:shadow-gray-900/20 rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
             <div class="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-gray-100 dark:divide-gray-700">
-                {{-- Progress / Matrícula --}}
+                {{-- Progress / ID --}}
                 <div class="p-5 card-hover">
                     <div class="flex items-center justify-between mb-3">
                         <div class="flex items-center gap-2">
@@ -55,10 +55,10 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0"/>
                                 </svg>
                             </span>
-                            <span class="text-[13px] font-semibold text-gray-700 dark:text-gray-200">Matrícula</span>
+                            <span class="text-[13px] font-semibold text-gray-700 dark:text-gray-200">ID</span>
                         </div>
                     </div>
-                    <p class="text-[22px] font-bold text-gray-900 dark:text-gray-100 leading-none">{{ $alumno?->matricula ?? '—' }}</p>
+                    <p class="text-[22px] font-bold text-gray-900 dark:text-gray-100 leading-none">{{ $alumno?->id_alumno_publico ?? '—' }}</p>
                     <p class="text-[11px] text-gray-400 dark:text-gray-500 mt-1.5">{{ $alumno?->carrera?->nombre_carrera ?? 'Sin carrera asignada' }}</p>
                 </div>
 

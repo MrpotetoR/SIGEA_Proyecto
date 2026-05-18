@@ -5,7 +5,7 @@
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <div>
             <p class="text-sm text-gray-500 dark:text-gray-400">Alumno: <span class="font-semibold text-gray-800 dark:text-gray-200">{{ $alumno?->nombre_completo }}</span></p>
-            <p class="text-sm text-gray-500 dark:text-gray-400">Matrícula: <span class="font-mono font-semibold text-blue-700 dark:text-blue-400">{{ $alumno?->matricula }}</span></p>
+            <p class="text-sm text-gray-500 dark:text-gray-400">ID: <span class="font-mono font-semibold text-blue-700 dark:text-blue-400">{{ $alumno?->id_alumno_publico }}</span></p>
             <p class="text-sm text-gray-500 dark:text-gray-400">Carrera: <span class="font-medium text-gray-800 dark:text-gray-200">{{ $alumno?->carrera?->nombre_carrera }}</span></p>
         </div>
         @if($alumno)

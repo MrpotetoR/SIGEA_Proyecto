@@ -47,15 +47,15 @@ class User extends Authenticatable
         return $this->hasOne(Docente::class, 'user_id');
     }
 
-    public function personalServiciosEscolares()
+    public function gestorEscolar()
     {
-        return $this->hasOne(PersonalServiciosEscolares::class, 'user_id');
+        return $this->hasOne(GestorEscolar::class, 'user_id');
     }
 
     /**
-     * Devuelve los IDs de carreras asignadas al usuario actual de Servicios Escolares.
+     * Devuelve los IDs de carreras asignadas al Gestor Escolar.
      * - Admin: todas las carreras (acceso pleno).
-     * - Servicios Escolares: solo las carreras vinculadas a su perfil personal.
+     * - Gestor Escolar: solo las carreras vinculadas a su perfil.
      * - Otros roles: array vacío.
      */
     public function carrerasAsignadasIds(): array
@@ -64,8 +64,8 @@ class User extends Authenticatable
             return Carrera::pluck('id_carrera')->all();
         }
 
-        if ($this->hasRole('servicios_escolares')) {
-            return $this->personalServiciosEscolares?->carreras()
+        if ($this->hasRole('gestor_escolar')) {
+            return $this->gestorEscolar?->carreras()
                 ->pluck('carrera.id_carrera')->all() ?? [];
         }
 
@@ -103,11 +103,8 @@ class User extends Authenticatable
         if ($this->hasRole('admin')) {
             return '/admin/dashboard';
         }
-        if ($this->hasRole('servicios_escolares')) {
-            return '/servicios/dashboard';
-        }
-        if ($this->hasRole('director_carrera')) {
-            return '/director/dashboard';
+        if ($this->hasRole('gestor_escolar')) {
+            return '/gestor-escolar/dashboard';
         }
         if ($this->hasRole('docente')) {
             return '/docente/dashboard';

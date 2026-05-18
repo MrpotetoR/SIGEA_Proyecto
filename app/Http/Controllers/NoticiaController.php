@@ -26,7 +26,7 @@ class NoticiaController extends Controller
 
         // Si tiene destinatarios restringidos, validar rol del usuario.
         if (!empty($noticia->destinatarios)) {
-            $tienePermiso = $user->hasRole('servicios_escolares')
+            $tienePermiso = $user->hasRole('gestor_escolar')
                 || $user->hasAnyRole($noticia->destinatarios);
 
             abort_unless($tienePermiso, 403, 'Esta noticia no está dirigida a tu rol.');

@@ -19,7 +19,6 @@ class DocumentoPersonalSE extends Model
     public const TIPOS = [
         'comprobante_domicilio'        => 'Comprobante de domicilio',
         'ine'                          => 'INE',
-        'numero_seguridad_social'      => 'Número de seguridad social',
         'carta_motivos'                => 'Carta de motivos',
         'curp'                         => 'CURP',
         'acta_nacimiento'              => 'Acta de nacimiento',
@@ -29,6 +28,6 @@ class DocumentoPersonalSE extends Model
 
     public function personal()
     {
-        return $this->belongsTo(PersonalServiciosEscolares::class, 'id_personal');
+        return $this->belongsTo(GestorEscolar::class, 'id_personal');
     }
 }

@@ -1,10 +1,9 @@
 @php
     /** @var \App\Models\Noticia $noticia */
     $labels = [
-        'servicios_escolares' => ['Servicios Escolares', 'bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-800/60'],
-        'director_carrera'    => ['Directores de Carrera', 'bg-purple-50 text-purple-700 border-purple-200 dark:bg-purple-900/30 dark:text-purple-300 dark:border-purple-800/60'],
-        'docente'             => ['Docentes', 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-300 dark:border-emerald-800/60'],
-        'alumno'              => ['Alumnos', 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-900/30 dark:text-amber-300 dark:border-amber-800/60'],
+        'gestor_escolar' => ['Gestores Escolares', 'bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-800/60'],
+        'docente'        => ['Docentes', 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-300 dark:border-emerald-800/60'],
+        'alumno'         => ['Alumnos', 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-900/30 dark:text-amber-300 dark:border-amber-800/60'],
     ];
     $destinatarios = $noticia->destinatarios;
     $esTodos = empty($destinatarios);

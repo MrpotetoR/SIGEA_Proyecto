@@ -1,4 +1,4 @@
-<x-panel title="Personal de Servicios Escolares" panelNombre="Panel Admin">
+<x-panel title="Gestores Escolares" panelNombre="Panel Admin">
     <x-slot name="nav">@include('partials.admin-nav')</x-slot>
 
     @if(session('success'))
@@ -17,6 +17,13 @@
         </div>
         <button type="submit"
                 class="bg-[#0606F0] hover:bg-[#04276B] text-white px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-colors">Filtrar</button>
+        <a href="{{ route('admin.personal.historial') }}"
+           class="bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap inline-flex items-center gap-1.5">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            Historial
+        </a>
         <a href="{{ route('admin.personal.create') }}"
            class="sm:ml-auto bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap w-full sm:w-auto text-center">
             + Nuevo personal
@@ -38,7 +45,20 @@
             <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
                 @forelse($personal as $p)
                     <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
-                        <td class="px-4 py-3 font-medium text-gray-900 dark:text-gray-100">{{ $p->nombre_completo }}</td>
+                        <td class="px-4 py-3 font-medium text-gray-900 dark:text-gray-100">
+                            <div class="flex items-center gap-2">
+                                <span>{{ $p->nombre_completo }}</span>
+                                @if($p->puede_asignar_carreras)
+                                    <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-semibold uppercase tracking-wide bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-700"
+                                          title="Puede asignar carreras a otros gestores">
+                                        <svg class="w-2.5 h-2.5" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/>
+                                        </svg>
+                                        Permiso especial
+                                    </span>
+                                @endif
+                            </div>
+                        </td>
                         <td class="px-4 py-3 text-gray-600 dark:text-gray-400">{{ $p->user?->email }}</td>
                         <td class="px-4 py-3 text-gray-600 dark:text-gray-400">{{ $p->especialidad }}</td>
                         <td class="px-4 py-3">
@@ -48,7 +68,7 @@
                                         <span class="inline-block px-2 py-0.5 rounded-full text-[11px] font-medium bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300">{{ $c->clave_carrera }}</span>
                                     @endforeach
                                 </div>
-                                <span class="text-[10px] text-gray-400 mt-1 inline-block">{{ $p->carreras->count() }} / {{ \App\Models\PersonalServiciosEscolares::MAX_CARRERAS }}</span>
+                                <span class="text-[10px] text-gray-400 mt-1 inline-block">{{ $p->carreras->count() }} / {{ \App\Models\GestorEscolar::MAX_CARRERAS }}</span>
                             @else
                                 <span class="text-xs text-gray-400">Sin carreras</span>
                             @endif

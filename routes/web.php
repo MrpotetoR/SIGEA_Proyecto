@@ -49,6 +49,33 @@ Route::middleware('auth')->prefix('ajax')->name('ajax.')->group(function () {
 });
 
 // ============================================================
+// TIENDA INSTITUCIONAL (alumno + docente)
+// ============================================================
+Route::middleware(['auth', 'verified', 'role:alumno|docente'])
+    ->prefix('tienda')->name('tienda.')
+    ->group(function () {
+        Route::get('/',                  [\App\Http\Controllers\TiendaController::class, 'catalogo'])->name('catalogo');
+        Route::get('/producto/{producto}', [\App\Http\Controllers\TiendaController::class, 'detalle'])->name('detalle');
+
+        // Carrito (sesion)
+        Route::get('/carrito',           [\App\Http\Controllers\TiendaController::class, 'carrito'])->name('carrito');
+        Route::post('/carrito',          [\App\Http\Controllers\TiendaController::class, 'agregarAlCarrito'])->name('carrito.agregar');
+        Route::patch('/carrito/{idVariante}', [\App\Http\Controllers\TiendaController::class, 'actualizarCarrito'])->name('carrito.actualizar');
+        Route::post('/carrito/vaciar',   [\App\Http\Controllers\TiendaController::class, 'vaciarCarrito'])->name('carrito.vaciar');
+
+        // Checkout
+        Route::get('/checkout',          [\App\Http\Controllers\TiendaController::class, 'checkout'])->name('checkout');
+        Route::post('/checkout/confirmar', [\App\Http\Controllers\TiendaController::class, 'confirmarPedido'])->name('pedido.confirmar');
+
+        // Mis pedidos
+        Route::get('/pedidos',           [\App\Http\Controllers\TiendaController::class, 'pedidos'])->name('pedidos');
+        Route::get('/pedidos/{pedido}',  [\App\Http\Controllers\TiendaController::class, 'verPedido'])->name('pedido.show');
+        Route::post('/pedidos/{pedido}/vaucher',  [\App\Http\Controllers\TiendaController::class, 'subirVaucher'])->name('pedido.vaucher');
+        Route::post('/pedidos/{pedido}/cancelar', [\App\Http\Controllers\TiendaController::class, 'cancelarPedido'])->name('pedido.cancelar');
+        Route::get('/pedidos/{pedido}/comprobante.pdf', [\App\Http\Controllers\TiendaController::class, 'comprobantePdf'])->name('pedido.comprobante');
+    });
+
+// ============================================================
 // PANEL ALUMNO
 // ============================================================
 Route::prefix('alumno')->name('alumno.')->middleware(['auth', 'verified', 'role:alumno'])->group(function () {
@@ -59,7 +86,6 @@ Route::prefix('alumno')->name('alumno.')->middleware(['auth', 'verified', 'role:
     Route::get('/kardex',           [\App\Http\Controllers\Alumno\KardexController::class,             'index'])->name('kardex');
     Route::get('/kardex/pdf',       [\App\Http\Controllers\Alumno\KardexController::class,             'descargarPdf'])->name('kardex.pdf');
     Route::get('/historial',        [\App\Http\Controllers\Alumno\HistorialAcademicoController::class, 'index'])->name('historial');
-    Route::get('/horas-culturales', [\App\Http\Controllers\Alumno\HrsCulturalesController::class,     'index'])->name('horas-culturales');
     Route::get('/servicio-social',  [\App\Http\Controllers\Alumno\ServicioSocialController::class,    'index'])->name('servicio-social');
     Route::get('/evaluacion-docente',  [\App\Http\Controllers\Alumno\EvaluacionDocenteController::class, 'index'])->name('evaluacion-docente');
     Route::post('/evaluacion-docente', [\App\Http\Controllers\Alumno\EvaluacionDocenteController::class, 'store'])->name('evaluacion-docente.store');
@@ -97,57 +123,14 @@ Route::prefix('docente')->name('docente.')->middleware(['auth', 'verified', 'rol
     Route::get('/reporte-rendimiento',  [\App\Http\Controllers\Docente\ReporteRendimientoController::class, 'index'])->name('reporte-rendimiento');
 
     // Horas ACUDE
-    Route::resource('horas-culturales', \App\Http\Controllers\Docente\HrsCulturalesController::class)
-        ->parameters(['horas-culturales' => 'horasCultural']);
 
     // Servicio Social
-    Route::resource('servicio-social', \App\Http\Controllers\Docente\ServicioSocialController::class)
-        ->parameters(['servicio-social' => 'servicioSocial']);
+    // Servicio Social: movido al rol Gestor Escolar (decision institucional UDEA).
+
 
     // Evaluación y Noticias
     Route::get('/evaluacion-resultados', [\App\Http\Controllers\Docente\EvaluacionResultadosController::class, 'index'])->name('evaluacion-resultados');
     Route::get('/noticias',              [\App\Http\Controllers\Docente\NoticiasController::class,              'index'])->name('noticias');
-
-    // Chatbot
-    Route::post('/chatbot', [\App\Http\Controllers\ChatbotController::class, 'responder'])->name('chatbot');
-});
-
-// ============================================================
-// PANEL DIRECTOR DE CARRERA
-// ============================================================
-Route::prefix('director')->name('director.')->middleware(['auth', 'verified', 'role:director_carrera'])->group(function () {
-    Route::get('/dashboard', [\App\Http\Controllers\Director\DashboardController::class, 'index'])->name('dashboard');
-    Route::get('/perfil',    [\App\Http\Controllers\Director\PerfilController::class,    'index'])->name('perfil');
-
-    // Grupos (CRUD)
-    Route::resource('grupos', \App\Http\Controllers\Director\GruposController::class);
-    Route::post('grupos/{grupo}/inscribir', [\App\Http\Controllers\Director\GruposController::class, 'inscribir'])->name('grupos.inscribir');
-    Route::delete('grupos/{grupo}/desinscribir/{alumno}', [\App\Http\Controllers\Director\GruposController::class, 'desinscribir'])->name('grupos.desinscribir');
-
-    // Horarios (CRUD)
-    Route::resource('horarios', \App\Http\Controllers\Director\HorariosController::class);
-
-    // Docentes
-    Route::get('/docentes', [\App\Http\Controllers\Director\DocentesController::class, 'index'])->name('docentes');
-
-    // Alumnos
-    Route::get('/alumnos',              [\App\Http\Controllers\Director\AlumnosController::class, 'index'])->name('alumnos');
-    Route::get('/alumnos/{alumno}/historial', [\App\Http\Controllers\Director\AlumnosController::class, 'historial'])->name('alumnos.historial');
-
-    // Asistencia
-    Route::get('/asistencia', [\App\Http\Controllers\Director\AsistenciaController::class, 'index'])->name('asistencia');
-
-    // Índice de aprobación
-    Route::get('/indice-aprobacion', [\App\Http\Controllers\Director\IndiceAprobacionController::class, 'index'])->name('indice-aprobacion');
-
-    // Evaluación docente
-    Route::get('/evaluacion-docente', [\App\Http\Controllers\Director\EvaluacionDocenteController::class, 'index'])->name('evaluacion-docente');
-
-    // Plan de estudios
-    Route::get('/plan-estudios', [\App\Http\Controllers\Director\PlanEstudiosController::class, 'index'])->name('plan-estudios');
-
-    // Noticias
-    Route::get('/noticias', [\App\Http\Controllers\Director\NoticiasController::class, 'index'])->name('noticias');
 
     // Chatbot
     Route::post('/chatbot', [\App\Http\Controllers\ChatbotController::class, 'responder'])->name('chatbot');
@@ -159,8 +142,13 @@ Route::prefix('director')->name('director.')->middleware(['auth', 'verified', 'r
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'verified', 'role:admin'])->group(function () {
     Route::get('/dashboard', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
 
-    // Personal de Servicios Escolares (CRUD).
+    // Personal de Gestor Escolar (CRUD).
     Route::resource('personal', \App\Http\Controllers\Admin\PersonalController::class);
+
+    // Historial de asignaciones de carrera (auditoría).
+    Route::get('/personal-historial',
+        [\App\Http\Controllers\Admin\HistorialAsignacionesController::class, 'index'])
+        ->name('personal.historial');
 
     // Asignación de carreras a personal.
     Route::get('/asignaciones',           [\App\Http\Controllers\Admin\AsignacionCarreraController::class, 'index'])->name('asignaciones.index');
@@ -172,71 +160,172 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'verified', 'role:ad
     Route::resource('administradores', \App\Http\Controllers\Admin\AdministradoresController::class)
         ->except(['show']);
 
+    // Reportes consolidados (Universidad + Bachillerato).
+    Route::get('/reportes-consolidados',
+        [\App\Http\Controllers\Admin\ReportesConsolidadosController::class, 'index'])
+        ->name('reportes-consolidados');
+
+    // Configuración de la Tienda Institucional (cuenta bancaria, ubicación entrega).
+    Route::get('/configuracion/tienda',
+        [\App\Http\Controllers\Admin\ConfiguracionTiendaController::class, 'edit'])
+        ->name('configuracion.tienda');
+    Route::put('/configuracion/tienda',
+        [\App\Http\Controllers\Admin\ConfiguracionTiendaController::class, 'update'])
+        ->name('configuracion.tienda.update');
+
     // Chatbot (compartido).
     Route::post('/chatbot', [\App\Http\Controllers\ChatbotController::class, 'responder'])->name('chatbot');
 });
 
 // ============================================================
-// PANEL SERVICIOS ESCOLARES
+// REAUTH — accesible para admin y gestor_escolar (acciones sensibles
+// como crear carrera, asignar carreras, otorgar permiso especial, etc.)
 // ============================================================
-Route::prefix('servicios')->name('servicios.')->middleware(['auth', 'verified', 'role:servicios_escolares'])->group(function () {
+Route::prefix('admin')->name('admin.')->middleware(['auth', 'verified', 'role:admin|gestor_escolar'])->group(function () {
+    Route::post('/reauth', [\App\Http\Controllers\Admin\ReauthController::class, 'verificar'])
+        ->name('reauth');
+    Route::get('/reauth/estado', [\App\Http\Controllers\Admin\ReauthController::class, 'estado'])
+        ->name('reauth.estado');
+});
 
-    Route::get('/dashboard', [\App\Http\Controllers\Servicios\DashboardController::class, 'index'])
-        ->name('dashboard');
+// ============================================================
+// PANEL GESTOR ESCOLAR (fusion de Servicios Escolares + Director de Carrera)
+//
+// El middleware "contexto.educativo" se encarga de:
+//   1. Validar que el usuario tenga al menos un nivel asignado (universidad/bachillerato).
+//   2. Auto-seleccionar el nivel cuando solo hay uno disponible.
+//   3. Redirigir al selector cuando el usuario tiene ambos.
+//   4. Compartir $contextoActual, $contextoDisponibles, $contextoColor con las vistas.
+// ============================================================
 
-    Route::resource('alumnos', \App\Http\Controllers\Servicios\AlumnosController::class);
-    Route::delete('/alumnos/documentos/{documento}', [\App\Http\Controllers\Servicios\AlumnosController::class, 'eliminarDocumento'])
-        ->name('alumnos.documentos.destroy');
-    Route::post('/alumnos/{alumno}/baja', [\App\Http\Controllers\Servicios\AlumnosController::class, 'registrarBaja'])
-        ->name('alumnos.baja');
-    Route::post('/alumnos/{alumno}/reingreso', [\App\Http\Controllers\Servicios\AlumnosController::class, 'registrarReingreso'])
-        ->name('alumnos.reingreso');
-    Route::post('/alumnos/{alumno}/baucher', [\App\Http\Controllers\Servicios\AlumnosController::class, 'subirBaucher'])
-        ->name('alumnos.baucher');
-    Route::post('/pagos/{pago}/aprobar', [\App\Http\Controllers\Servicios\AlumnosController::class, 'aprobarBaucher'])
-        ->name('pagos.aprobar');
-    Route::post('/pagos/{pago}/rechazar', [\App\Http\Controllers\Servicios\AlumnosController::class, 'rechazarBaucher'])
-        ->name('pagos.rechazar');
+// Pantalla de seleccion + cambio de contexto (NO requiere contexto previo).
+Route::prefix('gestor-escolar')->name('gestor.contexto.')->middleware(['auth', 'verified', 'role:gestor_escolar'])->group(function () {
+    Route::get('/seleccionar-area', [\App\Http\Controllers\Gestor\ContextoController::class, 'seleccionar'])->name('seleccionar');
+    Route::post('/cambiar-area',    [\App\Http\Controllers\Gestor\ContextoController::class, 'cambiar'])->name('cambiar');
+});
 
-    Route::resource('docentes', \App\Http\Controllers\Servicios\DocentesController::class);
-    Route::delete('/docentes/documentos/{documento}', [\App\Http\Controllers\Servicios\DocentesController::class, 'eliminarDocumento'])
-        ->name('docentes.documentos.destroy');
+Route::prefix('gestor-escolar')->name('gestor.')->middleware(['auth', 'verified', 'role:gestor_escolar', 'contexto.educativo'])->group(function () {
 
-    Route::resource('directores', \App\Http\Controllers\Servicios\DirectoresController::class);
+    // Dashboard y perfil
+    Route::get('/dashboard', [\App\Http\Controllers\Gestor\DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/perfil',    [\App\Http\Controllers\Gestor\PerfilController::class,    'index'])->name('perfil');
 
-    // NOTA: el CRUD de Personal de Servicios Escolares se movió al panel Admin (/admin/personal).
-    Route::resource('carreras', \App\Http\Controllers\Servicios\CarrerasController::class);
+    // Alumnos (CRUD completo + bajas/reingresos/pagos)
+    Route::resource('alumnos', \App\Http\Controllers\Gestor\AlumnosController::class);
+    Route::delete('/alumnos/documentos/{documento}', [\App\Http\Controllers\Gestor\AlumnosController::class, 'eliminarDocumento'])->name('alumnos.documentos.destroy');
+    Route::post('/alumnos/{alumno}/baja',       [\App\Http\Controllers\Gestor\AlumnosController::class, 'registrarBaja'])->name('alumnos.baja');
+    Route::post('/alumnos/{alumno}/reingreso',  [\App\Http\Controllers\Gestor\AlumnosController::class, 'registrarReingreso'])->name('alumnos.reingreso');
+    Route::post('/alumnos/{alumno}/baucher',    [\App\Http\Controllers\Gestor\AlumnosController::class, 'subirBaucher'])->name('alumnos.baucher');
+    Route::post('/pagos/{pago}/aprobar',  [\App\Http\Controllers\Gestor\AlumnosController::class, 'aprobarBaucher'])->name('pagos.aprobar');
+    Route::post('/pagos/{pago}/rechazar', [\App\Http\Controllers\Gestor\AlumnosController::class, 'rechazarBaucher'])->name('pagos.rechazar');
 
-    Route::resource('materias', \App\Http\Controllers\Servicios\MateriasController::class);
+    // Historial academico de alumnos (heredado de Director)
+    Route::get('/historial-alumnos',                  [\App\Http\Controllers\Gestor\HistorialAlumnosController::class, 'index'])->name('historial-alumnos.index');
+    Route::get('/historial-alumnos/{alumno}',         [\App\Http\Controllers\Gestor\HistorialAlumnosController::class, 'show'])->name('historial-alumnos.show');
 
-    Route::resource('ciclos', \App\Http\Controllers\Servicios\CiclosController::class);
+    // Docentes (CRUD)
+    Route::resource('docentes', \App\Http\Controllers\Gestor\DocentesController::class);
+    Route::delete('/docentes/documentos/{documento}', [\App\Http\Controllers\Gestor\DocentesController::class, 'eliminarDocumento'])->name('docentes.documentos.destroy');
 
-    Route::get('/inscripciones', [\App\Http\Controllers\Servicios\InscripcionesController::class, 'index'])
-        ->name('inscripciones');
-    Route::get('/inscripciones/check', [\App\Http\Controllers\Servicios\InscripcionesController::class, 'check'])
-        ->name('inscripciones.check');
-    Route::post('/inscripciones', [\App\Http\Controllers\Servicios\InscripcionesController::class, 'store'])
-        ->name('inscripciones.store');
-    Route::delete('/inscripciones/{inscripcion}', [\App\Http\Controllers\Servicios\InscripcionesController::class, 'destroy'])
-        ->name('inscripciones.destroy');
+    // ====== Rutas SOLO Universidad ======
+    Route::middleware('contexto.solo:universidad')->group(function () {
+        // Carreras (Bachillerato usa "planes-bachillerato" en su lugar)
+        Route::resource('carreras', \App\Http\Controllers\Gestor\CarrerasController::class);
+        // Asignar/reasignar carrera a un gestor (acción sensible: reauth + motivo + log).
+        Route::post('carreras/{carrera}/asignar',
+            [\App\Http\Controllers\Gestor\CarrerasController::class, 'asignar'])
+            ->name('carreras.asignar');
+        // Plan de Estudios (Universidad)
+        Route::get('/plan-estudios', [\App\Http\Controllers\Gestor\PlanEstudiosController::class, 'index'])->name('plan-estudios');
+    });
 
-    Route::get('/constancias', [\App\Http\Controllers\Servicios\ConstanciasController::class, 'index'])
-        ->name('constancias');
-    Route::post('/constancias', [\App\Http\Controllers\Servicios\ConstanciasController::class, 'store'])
-        ->name('constancias.store');
-    Route::get('/constancias/{constancia}/pdf', [\App\Http\Controllers\Servicios\ConstanciasController::class, 'pdf'])
-        ->name('constancias.pdf');
+    // ====== Rutas SOLO Bachillerato ======
+    Route::middleware('contexto.solo:bachillerato')->group(function () {
+        Route::resource('planes-bachillerato', \App\Http\Controllers\Gestor\BachilleratoPlanesController::class)
+            ->parameters(['planes-bachillerato' => 'plan'])
+            ->except(['show']);
+    });
 
-    Route::resource('noticias', \App\Http\Controllers\Servicios\NoticiasController::class);
+    // Materias y ciclos: aplican en ambos contextos (el formulario se adapta)
+    Route::resource('materias', \App\Http\Controllers\Gestor\MateriasController::class);
+    Route::resource('ciclos',   \App\Http\Controllers\Gestor\CiclosController::class);
 
-    Route::resource('documentos', \App\Http\Controllers\Servicios\DocumentosController::class);
+    // Grupos (CRUD + inscripcion individual)
+    Route::resource('grupos', \App\Http\Controllers\Gestor\GruposController::class);
+    Route::post('grupos/{grupo}/inscribir',                [\App\Http\Controllers\Gestor\GruposController::class, 'inscribir'])->name('grupos.inscribir');
+    Route::delete('grupos/{grupo}/desinscribir/{alumno}',  [\App\Http\Controllers\Gestor\GruposController::class, 'desinscribir'])->name('grupos.desinscribir');
 
-    Route::get('/reportes', [\App\Http\Controllers\Servicios\ReportesController::class, 'index'])
-        ->name('reportes');
+    // Horarios (CRUD)
+    Route::resource('horarios', \App\Http\Controllers\Gestor\HorariosController::class);
+
+    // Inscripciones masivas
+    Route::get('/inscripciones',                  [\App\Http\Controllers\Gestor\InscripcionesController::class, 'index'])->name('inscripciones');
+    Route::get('/inscripciones/check',            [\App\Http\Controllers\Gestor\InscripcionesController::class, 'check'])->name('inscripciones.check');
+    Route::post('/inscripciones',                 [\App\Http\Controllers\Gestor\InscripcionesController::class, 'store'])->name('inscripciones.store');
+    Route::delete('/inscripciones/{inscripcion}', [\App\Http\Controllers\Gestor\InscripcionesController::class, 'destroy'])->name('inscripciones.destroy');
+
+    // Constancias
+    Route::get('/constancias',                    [\App\Http\Controllers\Gestor\ConstanciasController::class, 'index'])->name('constancias');
+    Route::post('/constancias',                   [\App\Http\Controllers\Gestor\ConstanciasController::class, 'store'])->name('constancias.store');
+    Route::get('/constancias/{constancia}/pdf',   [\App\Http\Controllers\Gestor\ConstanciasController::class, 'pdf'])->name('constancias.pdf');
+
+    // Servicio Social (movido del rol Docente al Gestor Escolar)
+    Route::resource('servicio-social', \App\Http\Controllers\Gestor\ServicioSocialController::class)
+        ->parameters(['servicio-social' => 'servicioSocial']);
+
+    // Asistencia, indices, evaluaciones (heredados de Director)
+    Route::get('/asistencia',          [\App\Http\Controllers\Gestor\AsistenciaController::class,          'index'])->name('asistencia');
+    Route::get('/indice-aprobacion',   [\App\Http\Controllers\Gestor\IndiceAprobacionController::class,   'index'])->name('indice-aprobacion');
+    Route::get('/evaluacion-docente',  [\App\Http\Controllers\Gestor\EvaluacionDocenteController::class,  'index'])->name('evaluacion-docente');
+
+    // Noticias, documentos, reportes
+    Route::resource('noticias',   \App\Http\Controllers\Gestor\NoticiasController::class);
+    Route::resource('documentos', \App\Http\Controllers\Gestor\DocumentosController::class);
+    Route::get('/reportes', [\App\Http\Controllers\Gestor\ReportesController::class, 'index'])->name('reportes');
+
+    // Tienda Institucional — Productos (CRUD)
+    Route::resource('productos', \App\Http\Controllers\Gestor\ProductosController::class);
+    Route::delete('/productos/imagenes/{imagen}',
+        [\App\Http\Controllers\Gestor\ProductosController::class, 'eliminarImagen'])
+        ->name('productos.imagenes.destroy');
+
+    // Gestion de stock / variantes
+    Route::post('/productos/variantes/{variante}/ajustar',
+        [\App\Http\Controllers\Gestor\ProductosController::class, 'ajustarStock'])
+        ->name('productos.variantes.ajustar');
+    Route::patch('/productos/variantes/{variante}/stock-minimo',
+        [\App\Http\Controllers\Gestor\ProductosController::class, 'actualizarStockMinimo'])
+        ->name('productos.variantes.stock-minimo');
+    Route::post('/productos/{producto}/variantes',
+        [\App\Http\Controllers\Gestor\ProductosController::class, 'agregarVariante'])
+        ->name('productos.variantes.agregar');
+    Route::delete('/productos/variantes/{variante}',
+        [\App\Http\Controllers\Gestor\ProductosController::class, 'eliminarVariante'])
+        ->name('productos.variantes.eliminar');
+    Route::post('/productos/{producto}/variantes/guardar-cambios',
+        [\App\Http\Controllers\Gestor\ProductosController::class, 'guardarCambiosBatch'])
+        ->name('productos.variantes.guardar-cambios');
+    Route::post('/productos/{producto}/imagenes',
+        [\App\Http\Controllers\Gestor\ProductosController::class, 'agregarImagenes'])
+        ->name('productos.imagenes.agregar');
+    Route::post('/productos/{producto}/reactivar',
+        [\App\Http\Controllers\Gestor\ProductosController::class, 'reactivar'])
+        ->name('productos.reactivar');
+    Route::delete('/productos/{producto}/eliminar-permanente',
+        [\App\Http\Controllers\Gestor\ProductosController::class, 'eliminarPermanente'])
+        ->name('productos.eliminar-permanente');
+
+    // Tienda Institucional — Bandeja de Pedidos (Gestor)
+    Route::get('/pedidos',                [\App\Http\Controllers\Gestor\PedidosController::class, 'index'])->name('pedidos.index');
+    Route::get('/pedidos/{pedido}',       [\App\Http\Controllers\Gestor\PedidosController::class, 'show'])->name('pedidos.show');
+    Route::post('/pedidos/{pedido}/aprobar',  [\App\Http\Controllers\Gestor\PedidosController::class, 'aprobar'])->name('pedidos.aprobar');
+    Route::post('/pedidos/{pedido}/rechazar', [\App\Http\Controllers\Gestor\PedidosController::class, 'rechazar'])->name('pedidos.rechazar');
+    Route::post('/pedidos/{pedido}/listo',    [\App\Http\Controllers\Gestor\PedidosController::class, 'listoRecoger'])->name('pedidos.listo');
+    Route::post('/pedidos/{pedido}/entregar', [\App\Http\Controllers\Gestor\PedidosController::class, 'entregar'])->name('pedidos.entregar');
+    Route::post('/pedidos/{pedido}/cancelar', [\App\Http\Controllers\Gestor\PedidosController::class, 'cancelar'])->name('pedidos.cancelar');
 
     // Chatbot
-    Route::post('/chatbot', [\App\Http\Controllers\ChatbotController::class, 'responder'])
-        ->name('chatbot');
+    Route::post('/chatbot', [\App\Http\Controllers\ChatbotController::class, 'responder'])->name('chatbot');
 });
 
 require __DIR__.'/auth.php';

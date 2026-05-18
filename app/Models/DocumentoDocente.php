@@ -15,7 +15,6 @@ class DocumentoDocente extends Model
     public const TIPOS = [
         'comprobante_domicilio'        => 'Comprobante de domicilio',
         'ine'                          => 'INE',
-        'numero_seguridad_social'      => 'Número de seguridad social',
         'carta_motivos'                => 'Carta de motivos',
         'curp'                         => 'CURP',
         'acta_nacimiento'              => 'Acta de nacimiento',

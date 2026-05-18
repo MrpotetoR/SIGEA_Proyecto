@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Scopes\DocenteCarrerasAsignadasScope;
+use App\Models\Scopes\NivelEducativoScope;
 use Illuminate\Database\Eloquent\Model;
 
 class Docente extends Model
@@ -14,6 +15,7 @@ class Docente extends Model
     protected static function booted(): void
     {
         static::addGlobalScope(new DocenteCarrerasAsignadasScope());
+        static::addGlobalScope(new NivelEducativoScope());
     }
 
     /** Bypass del scope para uso interno (admin, panel del propio docente, etc.). */
@@ -22,10 +24,17 @@ class Docente extends Model
         return $query->withoutGlobalScope(DocenteCarrerasAsignadasScope::class);
     }
 
+    /** Bypass deliberado del scope por nivel (uso admin / reportes consolidados). */
+    public function scopeSinFiltroNivel($query)
+    {
+        return $query->withoutGlobalScope(NivelEducativoScope::class);
+    }
+
     protected $fillable = [
         'user_id', 'nombre', 'apellidos',
         'especialidad', 'num_cedula', 'rfc',
         'horas_contrato', 'es_tutor',
+        'nivel_educativo',
     ];
 
     protected function casts(): array
@@ -36,11 +45,6 @@ class Docente extends Model
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
-    }
-
-    public function carrerasDirigidas()
-    {
-        return $this->hasMany(Carrera::class, 'id_director');
     }
 
     public function carrerasImparte()

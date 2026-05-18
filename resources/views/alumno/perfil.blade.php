@@ -15,7 +15,7 @@
                 </div>
                 <div>
                     <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100">{{ $alumno->nombre_completo }}</h2>
-                    <p class="text-[#0606F0] font-mono text-sm mt-1">Matrícula: {{ $alumno->matricula }}</p>
+                    <p class="text-[#0606F0] font-mono text-sm mt-1">ID: {{ $alumno->id_alumno_publico }}</p>
                     <span class="inline-block mt-2 px-3 py-1 rounded-full text-xs font-semibold
                         {{ $alumno->estatus === 'activo' ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300' :
                            ($alumno->estatus === 'baja_temporal' ? 'bg-yellow-100 text-yellow-800 dark:bg-amber-900/30 dark:text-amber-300' : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400') }}">

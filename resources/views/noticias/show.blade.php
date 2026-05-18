@@ -3,8 +3,7 @@
     [$panelNombre, $navPartial, $indexRoute] = match(true) {
         $user->hasRole('alumno')            => ['Panel Alumno',      'partials.alumno-nav',    'alumno.noticias'],
         $user->hasRole('docente')           => ['Panel Docente',     'partials.docente-nav',   'docente.noticias'],
-        $user->hasRole('director_carrera')  => ['Panel Director',    'partials.director-nav',  'director.noticias'],
-        $user->hasRole('servicios_escolares') => ['Servicios Escolares', 'partials.servicios-nav', 'servicios.noticias.index'],
+        $user->hasRole('gestor_escolar')    => ['Gestor Escolar',    'partials.gestor-nav',    'gestor.noticias.index'],
         default                             => ['SIGEA', null, null],
     };
 @endphp
@@ -38,9 +37,33 @@
                 <div class="prose prose-sm dark:prose-invert max-w-none text-gray-700 dark:text-gray-300 whitespace-pre-line">{{ $noticia->contenido }}</div>
             </div>
 
-            @if($user->hasRole('servicios_escolares'))
+            @if($noticia->pdf_url)
+                <div class="mt-5 pt-5 border-t dark:border-gray-700">
+                    <p class="text-[11px] font-semibold uppercase tracking-wide text-gray-400 mb-2">Documento adjunto</p>
+                    <a href="{{ $noticia->pdf_url }}" target="_blank" download="{{ $noticia->pdf_nombre ?? 'documento' }}.pdf"
+                       class="inline-flex items-center gap-3 px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/40 hover:border-red-300 dark:hover:border-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors group">
+                        <span class="w-10 h-10 rounded-lg bg-red-100 dark:bg-red-900/40 flex items-center justify-center flex-shrink-0">
+                            <svg class="w-5 h-5 text-red-600 dark:text-red-400" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"/>
+                                <path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd"/>
+                            </svg>
+                        </span>
+                        <span class="flex-1 min-w-0">
+                            <span class="block text-sm font-semibold text-gray-800 dark:text-gray-200 truncate">
+                                {{ $noticia->pdf_nombre ?? 'Documento oficial' }}
+                            </span>
+                            <span class="block text-[11px] text-gray-500 dark:text-gray-400">PDF — abrir o descargar</span>
+                        </span>
+                        <svg class="w-4 h-4 text-gray-400 group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                        </svg>
+                    </a>
+                </div>
+            @endif
+
+            @if($user->hasRole('gestor_escolar'))
                 <div class="flex gap-3 pt-5 mt-5 border-t dark:border-gray-700">
-                    <a href="{{ route('servicios.noticias.edit', $noticia) }}"
+                    <a href="{{ route('gestor.noticias.edit', $noticia) }}"
                        class="bg-blue-700 hover:bg-blue-800 dark:bg-indigo-600 dark:hover:bg-indigo-500 text-white px-5 py-2 rounded-lg text-sm font-semibold transition-colors">Editar</a>
                 </div>
             @endif

@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Admin\ReauthController;
 use App\Http\Controllers\Controller;
 use App\Models\Carrera;
 use App\Models\DocumentoPersonalSE;
-use App\Models\PersonalServiciosEscolares;
+use App\Models\GestorEscolar;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -15,7 +16,7 @@ class PersonalController extends Controller
 {
     public function index(Request $request)
     {
-        $personal = PersonalServiciosEscolares::with('user', 'carreras')
+        $personal = GestorEscolar::with('user', 'carreras')
             ->when($request->buscar, fn($q) =>
                 $q->where('nombre', 'like', "%{$request->buscar}%")
                   ->orWhere('apellidos', 'like', "%{$request->buscar}%")
@@ -45,13 +46,13 @@ class PersonalController extends Controller
             'num_cedula'   => 'nullable|string|max:30',
             'rfc'          => 'nullable|string|max:20',
             'especialidad' => 'required|string|max:150',
-            'carreras'     => 'nullable|array|max:' . PersonalServiciosEscolares::MAX_CARRERAS,
+            'carreras'     => 'nullable|array|max:' . GestorEscolar::MAX_CARRERAS,
             'carreras.*'   => 'integer|exists:carrera,id_carrera',
         ];
         $messages = [
             'nombre.regex'        => 'El nombre solo debe contener letras y espacios.',
             'apellidos.regex'     => 'Los apellidos solo deben contener letras y espacios.',
-            'carreras.max'        => 'Solo puedes asignar hasta ' . PersonalServiciosEscolares::MAX_CARRERAS . ' carreras por personal.',
+            'carreras.max'        => 'Solo puedes asignar hasta ' . GestorEscolar::MAX_CARRERAS . ' carreras por personal.',
             'especialidad.required' => 'La especialidad es obligatoria.',
         ];
         foreach (DocumentoPersonalSE::TIPOS as $tipo => $label) {
@@ -77,22 +78,28 @@ class PersonalController extends Controller
             }
         }
 
-        DB::transaction(function () use ($request) {
+        // Permiso especial: solo se concede si el admin confirmó por reauth
+        // (verificamos el grace period que dejó el ReauthController).
+        $puedeAsignar = $request->boolean('puede_asignar_carreras')
+            && ReauthController::tieneGracePeriod('otorgar_permiso_especial');
+
+        DB::transaction(function () use ($request, $puedeAsignar) {
             $user = User::create([
                 'name'     => "{$request->nombre} {$request->apellidos}",
                 'email'    => $request->email,
-                'password' => bcrypt('servicios' . date('Y')),
+                'password' => bcrypt('gestor' . date('Y')),
                 'activo'   => true,
             ]);
-            $user->assignRole('servicios_escolares');
+            $user->assignRole('gestor_escolar');
 
-            $personal = PersonalServiciosEscolares::create([
-                'user_id'      => $user->id,
-                'nombre'       => $request->nombre,
-                'apellidos'    => $request->apellidos,
-                'num_cedula'   => $request->num_cedula,
-                'rfc'          => $request->rfc,
-                'especialidad' => $request->especialidad,
+            $personal = GestorEscolar::create([
+                'user_id'                => $user->id,
+                'nombre'                 => $request->nombre,
+                'apellidos'              => $request->apellidos,
+                'num_cedula'             => $request->num_cedula,
+                'rfc'                    => $request->rfc,
+                'especialidad'           => $request->especialidad,
+                'puede_asignar_carreras' => $puedeAsignar,
             ]);
 
             // Carreras asignadas (opcional al crear).
@@ -115,30 +122,30 @@ class PersonalController extends Controller
         });
 
         return redirect()->route('admin.personal.index')
-            ->with('success', 'Personal de Servicios Escolares registrado correctamente.');
+            ->with('success', 'Gestor Escolar registrado correctamente.');
     }
 
-    public function show(PersonalServiciosEscolares $personal)
+    public function show(GestorEscolar $personal)
     {
         $personal->load('user', 'carreras', 'documentos');
         return view('admin.personal.show', compact('personal'));
     }
 
-    public function edit(PersonalServiciosEscolares $personal)
+    public function edit(GestorEscolar $personal)
     {
         $personal->load('user', 'carreras', 'documentos');
 
         // Carreras: las suyas + las que estén libres.
         $carrerasDisponibles = Carrera::where(function ($q) use ($personal) {
                 $q->doesntHave('personalAsignado')
-                  ->orWhereHas('personalAsignado', fn($p) => $p->where('personal_servicios_escolares.id_personal', $personal->id_personal));
+                  ->orWhereHas('personalAsignado', fn($p) => $p->where('gestores_escolares.id_personal', $personal->id_personal));
             })
             ->orderBy('nombre_carrera')->get();
 
         return view('admin.personal.edit', compact('personal', 'carrerasDisponibles'));
     }
 
-    public function update(Request $request, PersonalServiciosEscolares $personal)
+    public function update(Request $request, GestorEscolar $personal)
     {
         $request->validate([
             'nombre'       => ['required', 'string', 'max:80', 'regex:/^[\pL\s]+$/u'],
@@ -155,13 +162,28 @@ class PersonalController extends Controller
             'especialidad.required' => 'La especialidad es obligatoria.',
         ]);
 
-        DB::transaction(function () use ($request, $personal) {
+        // Permiso especial: el flag llega del form. Si CAMBIA respecto a lo
+        // que el gestor tenía, exigir reauth (otorgar o revocar).
+        $flagSolicitado   = $request->boolean('puede_asignar_carreras');
+        $valorActual      = (bool) $personal->puede_asignar_carreras;
+        $puedeAsignarFinal = $valorActual;
+
+        if ($flagSolicitado !== $valorActual) {
+            $accion = $flagSolicitado ? 'otorgar_permiso_especial' : 'revocar_permiso_especial';
+            if (ReauthController::tieneGracePeriod($accion)) {
+                $puedeAsignarFinal = $flagSolicitado;
+            }
+            // Si no hay grace period, ignoramos el cambio (no se altera el flag).
+        }
+
+        DB::transaction(function () use ($request, $personal, $puedeAsignarFinal) {
             $personal->update([
-                'nombre'       => $request->nombre,
-                'apellidos'    => $request->apellidos,
-                'num_cedula'   => $request->num_cedula,
-                'rfc'          => $request->rfc,
-                'especialidad' => $request->especialidad,
+                'nombre'                 => $request->nombre,
+                'apellidos'              => $request->apellidos,
+                'num_cedula'             => $request->num_cedula,
+                'rfc'                    => $request->rfc,
+                'especialidad'           => $request->especialidad,
+                'puede_asignar_carreras' => $puedeAsignarFinal,
             ]);
 
             $personal->user->update([
@@ -189,7 +211,7 @@ class PersonalController extends Controller
             ->with('success', 'Personal actualizado.');
     }
 
-    public function destroy(PersonalServiciosEscolares $personal)
+    public function destroy(GestorEscolar $personal)
     {
         DB::transaction(function () use ($personal) {
             // Liberar carreras (vuelven a "sin asignar").

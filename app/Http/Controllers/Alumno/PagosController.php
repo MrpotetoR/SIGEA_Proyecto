@@ -83,12 +83,12 @@ class PagosController extends Controller
         ]);
 
         // Notificar a todos los usuarios de servicios escolares
-        $staffUsers = User::role('servicios_escolares')->where('activo', true)->get();
+        $staffUsers = User::role('gestor_escolar')->where('activo', true)->get();
         $this->notificaciones->enviarMasivo(
             $staffUsers,
             'pago',
             'Váucher pendiente de revisión',
-            "El alumno {$alumno->nombre_completo} (matrícula {$alumno->matricula}) ha cargado su váucher del {$cuatri}° cuatrimestre para revisión.",
+            "El alumno {$alumno->nombre_completo} (matrícula {$alumno->id_alumno_publico}) ha cargado su váucher del {$cuatri}° cuatrimestre para revisión.",
             ['icono' => 'clipboard-check', 'color' => 'amber', 'url' => route('servicios.alumnos.show', $alumno)]
         );
 

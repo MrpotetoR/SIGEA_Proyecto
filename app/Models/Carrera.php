@@ -10,7 +10,7 @@ class Carrera extends Model
     protected $primaryKey = 'id_carrera';
     public $timestamps = false;
 
-    protected $fillable = ['id_director', 'nombre_carrera', 'clave_carrera', 'area_academica', 'tipo_periodo', 'duracion_periodos'];
+    protected $fillable = ['nombre_carrera', 'clave_carrera', 'rvoe', 'area_academica', 'tipo_periodo', 'duracion_periodos'];
 
     public const AREAS_ACADEMICAS = [
         'ciencias_salud'       => 'Ciencias de la Salud',
@@ -118,11 +118,6 @@ class Carrera extends Model
         return $initials . '-' . date('Y');
     }
 
-    public function director()
-    {
-        return $this->belongsTo(Docente::class, 'id_director', 'id_docente');
-    }
-
     public function alumnos()
     {
         return $this->hasMany(Alumno::class, 'id_carrera');
@@ -145,7 +140,7 @@ class Carrera extends Model
     public function personalAsignado()
     {
         return $this->belongsToMany(
-            PersonalServiciosEscolares::class,
+            GestorEscolar::class,
             'personal_carrera',
             'id_carrera',
             'id_personal'
@@ -177,7 +172,7 @@ class Carrera extends Model
         if ($user->hasRole('admin')) {
             return $query;
         }
-        if (!$user->hasRole('servicios_escolares')) {
+        if (!$user->hasRole('gestor_escolar')) {
             return $query;
         }
         $ids = $user->carrerasAsignadasIds();

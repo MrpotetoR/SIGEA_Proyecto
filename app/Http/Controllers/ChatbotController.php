@@ -68,10 +68,8 @@ class ChatbotController extends Controller
      */
     private function detectarRol($user): string
     {
-        if ($user->hasRole('servicios_escolares'))
-            return 'servicios';
-        if ($user->hasRole('director_carrera'))
-            return 'director';
+        if ($user->hasRole('gestor_escolar'))
+            return 'gestor';
         if ($user->hasRole('docente'))
             return 'docente';
         if ($user->hasRole('alumno'))
@@ -104,8 +102,8 @@ class ChatbotController extends Controller
         $response = Http::timeout(120)->post($url, [
             'model' => $model,
             'messages' => $messages,
-            'temperature' => 0.7,
-            'max_tokens' => 1024,
+            'temperature' => 0.4,
+            'max_tokens' => 256,
             'stream' => false,
         ]);
 
@@ -138,8 +136,8 @@ class ChatbotController extends Controller
         ])->timeout(30)->post($url, [
                     'model' => $model,
                     'messages' => $messages,
-                    'temperature' => 0.7,
-                    'max_tokens' => 1024,
+                    'temperature' => 0.4,
+                    'max_tokens' => 256,
                 ]);
 
         if ($response->failed()) {
@@ -159,11 +157,10 @@ class ChatbotController extends Controller
     private function construirContexto($user, string $rol): string
     {
         return match ($rol) {
-            'alumno' => $this->contextoAlumno($user),
+            'alumno'  => $this->contextoAlumno($user),
             'docente' => $this->contextoDocente($user),
-            'director' => $this->contextoDirector($user),
-            'servicios' => $this->contextoServicios($user),
-            default => 'Usuario del sistema SIGEA.',
+            'gestor'  => $this->contextoGestor($user),
+            default   => 'Usuario del sistema SIGEA.',
         };
     }
 
@@ -178,7 +175,7 @@ class ChatbotController extends Controller
 
         $datos = [];
         $datos[] = "Nombre: {$alumno->nombre_completo}";
-        $datos[] = "Matricula: {$alumno->matricula}";
+        $datos[] = "ID: {$alumno->id_alumno_publico}";
         $datos[] = "Carrera: " . ($alumno->carrera?->nombre_carrera ?? 'No asignada');
         $datos[] = "Cuatrimestre: " . ($alumno->cuatrimestre_actual ?? 'N/D');
         $datos[] = "Estatus: {$alumno->estatus}";
@@ -186,9 +183,6 @@ class ChatbotController extends Controller
         if ($alumno->promedio_general) {
             $datos[] = "Promedio general: {$alumno->promedio_general}";
         }
-
-        $horasAcude = $alumno->hrsCulturales()->sum('horas_acumuladas');
-        $datos[] = "Horas ACUDE: {$horasAcude}/90 requeridas";
 
         $ciclo = CicloEscolar::cicloActual();
         if ($ciclo) {
@@ -275,47 +269,15 @@ class ChatbotController extends Controller
     }
 
     /**
-     * Contexto para DIRECTOR DE CARRERA — estadísticas de su carrera.
+     * Contexto para GESTOR ESCOLAR — estadísticas generales del sistema y
+     * de las carreras asignadas (fusion de antiguo Servicios Escolares + Director).
      * NO incluye datos personales individuales de alumnos ni docentes.
      */
-    private function contextoDirector($user): string
-    {
-        $docente = $user->docente;
-        if (!$docente)
-            return 'No se encontraron datos del director.';
-
-        $carrera = $docente->carrerasDirigidas()->first();
-
-        $datos = [];
-        $datos[] = "Nombre: {$docente->nombre_completo}";
-        $datos[] = "Rol: Director de Carrera";
-
-        if ($carrera) {
-            $datos[] = "Carrera que dirige: {$carrera->nombre_carrera} ({$carrera->clave_carrera})";
-            $datos[] = "Total alumnos en carrera: " . $carrera->alumnos()->count();
-            $datos[] = "Alumnos activos: " . $carrera->alumnos()->where('estatus', 'activo')->count();
-            $datos[] = "Total materias: " . $carrera->materias()->count();
-
-            $ciclo = CicloEscolar::cicloActual();
-            if ($ciclo) {
-                $datos[] = "Ciclo actual: {$ciclo->nombre}";
-                $gruposActivos = $carrera->grupos()->where('id_ciclo', $ciclo->id_ciclo)->count();
-                $datos[] = "Grupos activos este ciclo: {$gruposActivos}";
-            }
-        }
-
-        return implode("\n", $datos);
-    }
-
-    /**
-     * Contexto para SERVICIOS ESCOLARES — estadísticas generales del sistema.
-     * NO incluye datos personales de ningún usuario individual.
-     */
-    private function contextoServicios($user): string
+    private function contextoGestor($user): string
     {
         $datos = [];
         $datos[] = "Nombre: {$user->name}";
-        $datos[] = "Rol: Servicios Escolares";
+        $datos[] = "Rol: Gestor Escolar";
 
         $datos[] = "Total alumnos registrados: " . \App\Models\Alumno::count();
         $datos[] = "Alumnos activos: " . \App\Models\Alumno::where('estatus', 'activo')->count();
@@ -328,6 +290,14 @@ class ChatbotController extends Controller
             $datos[] = "Ciclo actual: {$ciclo->nombre}";
             $datos[] = "Grupos este ciclo: " . \App\Models\Grupo::where('id_ciclo', $ciclo->id_ciclo)->count();
             $datos[] = "Inscripciones este ciclo: " . \App\Models\Inscripcion::whereHas('grupo', fn($q) => $q->where('id_ciclo', $ciclo->id_ciclo))->count();
+        }
+
+        // Carreras asignadas a este gestor (cuando aplique).
+        $carrerasIds = $user->carrerasAsignadasIds();
+        if (!empty($carrerasIds)) {
+            $nombres = \App\Models\Carrera::whereIn('id_carrera', $carrerasIds)
+                ->pluck('nombre_carrera')->implode(', ');
+            $datos[] = "Carreras asignadas: {$nombres}";
         }
 
         return implode("\n", $datos);
@@ -347,7 +317,6 @@ class ChatbotController extends Controller
                 . "- Calificaciones: calificaciones del ciclo actual\n"
                 . "- Kardex: historial de todas las calificaciones, se puede descargar en PDF\n"
                 . "- Historial: historial academico completo\n"
-                . "- Horas ACUDE: horas culturales y deportivas (30 requeridas de cada tipo)\n"
                 . "- Servicio Social: informacion y estatus del servicio social\n"
                 . "- Evaluar Docentes: evaluacion de docentes del ciclo\n"
                 . "- Mis Docentes: lista de docentes actuales\n"
@@ -362,64 +331,51 @@ class ChatbotController extends Controller
                 . "- Calificaciones: captura y consulta de calificaciones\n"
                 . "- Reporte Asistencia: reportes de asistencia por grupo\n"
                 . "- Reporte Rendimiento: reportes de rendimiento academico\n"
-                . "- Horas ACUDE: gestion de horas culturales y deportivas de alumnos\n"
-                . "- Servicio Social: gestion de servicio social\n"
                 . "- Evaluacion Resultados: ver resultados de evaluaciones docentes\n"
                 . "- Noticias: avisos y noticias institucionales",
 
-            'director' => "SECCIONES DEL SISTEMA PARA EL DIRECTOR DE CARRERA:\n"
-                . "- Dashboard: KPIs y estadisticas de la carrera\n"
+            'gestor' => "SECCIONES PARA EL GESTOR ESCOLAR:\n"
+                . "- Overview: resumen general\n"
                 . "- Mi Perfil: datos personales\n"
-                . "- Grupos: gestion CRUD de grupos de la carrera\n"
-                . "- Horarios: gestion CRUD de horarios\n"
-                . "- Docentes: listado de docentes de la carrera\n"
-                . "- Alumnos: listado y historial de alumnos\n"
-                . "- Asistencia: consulta de asistencia por grupo\n"
-                . "- Indice Aprobacion: porcentaje de aprobacion/reprobacion\n"
-                . "- Evaluacion Docente: resultados de evaluaciones por docente\n"
-                . "- Plan de Estudios: materias organizadas por cuatrimestre\n"
-                . "- Noticias: avisos institucionales",
-
-            'servicios' => "SECCIONES DEL SISTEMA PARA SERVICIOS ESCOLARES:\n"
-                . "- Dashboard: estadisticas generales del sistema\n"
-                . "- Alumnos: gestion CRUD de alumnos, bajas y reingresos\n"
-                . "- Docentes: gestion CRUD de docentes\n"
-                . "- Carreras: gestion CRUD de carreras\n"
-                . "- Materias: gestion CRUD de materias\n"
-                . "- Ciclos Escolares: gestion de ciclos\n"
+                . "- Alumnos: registrar, dar de baja, reingresos, pagos\n"
+                . "- Historial Alumnos: ver historial academico\n"
                 . "- Inscripciones: inscribir alumnos a grupos\n"
                 . "- Constancias: generar constancias en PDF\n"
-                . "- Noticias: publicar y gestionar noticias\n"
-                . "- Documentos: gestion de documentos\n"
-                . "- Reportes: reportes generales del sistema",
+                . "- Servicio Social: gestion del servicio social de los alumnos\n"
+                . "- Docentes / Directores: registrar y gestionar\n"
+                . "- Carreras / Materias / Ciclos Escolares: catalogos\n"
+                . "- Grupos / Horarios: armar grupos y horarios\n"
+                . "- Plan de Estudios: materias por cuatrimestre\n"
+                . "- Asistencia / Indice Aprobacion / Eval. Docentes: reportes\n"
+                . "- Noticias / Documentos: publicar avisos y archivos",
         ];
 
         $seccionesRol = $secciones[$rol] ?? 'SECCIONES DEL SISTEMA: Navegue por el menu lateral.';
 
         $rolLabels = [
-            'alumno' => 'un alumno',
+            'alumno'  => 'un alumno',
             'docente' => 'un docente',
-            'director' => 'un director de carrera',
-            'servicios' => 'personal de servicios escolares',
+            'gestor'  => 'un gestor escolar',
         ];
         $rolLabel = $rolLabels[$rol] ?? 'un usuario';
 
-        return "Eres el asistente virtual de SIGEA (Sistema de Gestion Educativa Academica).\n"
-            . "Tu nombre es \"Asistente SIGEA\". Eres amable, profesional y conciso.\n\n"
-            . "Estas hablando con {$rolLabel}.\n\n"
+        return "Eres el Asistente SIGEA. Estas hablando con {$rolLabel}.\n\n"
+            . "COMO RESPONDER:\n"
+            . "- Ve directo al grano. Maximo 1-2 oraciones cortas.\n"
+            . "- Habla claro y simple, como si le explicaras a un amigo. Sin tecnicismos.\n"
+            . "- No uses palabras como 'modulo', 'sistema', 'plataforma', 'consultar', 'gestionar' o 'realizar'.\n"
+            . "- En vez de eso usa palabras simples: 'ver', 'revisar', 'entrar a', 'abrir'.\n"
+            . "- Nada de saludos largos ni frases tipo 'Por supuesto', 'Claro que si', 'Con gusto'. Solo responde.\n"
+            . "- Si la respuesta esta en una seccion del menu, dilo asi: 'Esta en <b>Nombre</b>.'\n"
+            . "- Si te dan datos del usuario, usalos para responder concreto (con numeros, nombres, fechas).\n"
+            . "- Responde en espanol de Mexico, tono amable pero directo.\n\n"
             . "REGLAS:\n"
-            . "- Responde SOLO sobre temas academicos y del sistema SIGEA.\n"
-            . "- Usa los datos del usuario para personalizar las respuestas.\n"
-            . "- Si preguntan algo que no puedes responder, sugiere contactar a servicios escolares.\n"
-            . "- Responde en espanol (Mexico).\n"
-            . "- Se breve: maximo 2-3 oraciones por respuesta.\n"
-            . "- Usa HTML basico para formato: <b> para negritas, <br> para saltos de linea.\n"
-            . "- NO uses markdown. Usa HTML.\n"
-            . "- NO inventes datos. Solo usa la informacion del contexto.\n"
-            . "- NUNCA reveles datos personales de otros usuarios (alumnos, docentes, etc.).\n"
-            . "- Solo proporciona informacion que corresponda al rol del usuario.\n\n"
-            . "{$seccionesRol}\n\n"
-            . "DATOS DEL USUARIO:\n{$contexto}";
+            . "- Solo respondes cosas de la escuela y del sistema.\n"
+            . "- Usa <b> para resaltar, <br> para saltos de linea. Nada de markdown.\n"
+            . "- No inventes datos. Si no sabes algo, di que pregunte en servicios escolares.\n"
+            . "- No reveles datos personales de otras personas.\n\n"
+            . "SECCIONES QUE PUEDES MENCIONAR:\n{$seccionesRol}\n\n"
+            . "DATOS DE QUIEN PREGUNTA:\n{$contexto}";
     }
 
     // ─────────────────────────────────────────────────────────────
@@ -435,11 +391,10 @@ class ChatbotController extends Controller
         }
 
         return match ($rol) {
-            'alumno' => $this->fallbackAlumno($mensaje),
+            'alumno'  => $this->fallbackAlumno($mensaje),
             'docente' => $this->fallbackDocente($mensaje),
-            'director' => $this->fallbackDirector($mensaje),
-            'servicios' => $this->fallbackServicios($mensaje),
-            default => 'El asistente IA no esta disponible. Intenta mas tarde.',
+            'gestor'  => $this->fallbackGestor($mensaje),
+            default   => 'El asistente IA no esta disponible. Intenta mas tarde.',
         };
     }
 
@@ -452,7 +407,7 @@ class ChatbotController extends Controller
             return 'Tu horario esta en la seccion <b>Horario</b>.';
         }
         if (str_contains($mensaje, 'acude') || str_contains($mensaje, 'cultural') || str_contains($mensaje, 'deportiv')) {
-            return 'Consulta tus horas ACUDE en la seccion <b>Horas ACUDE</b>.';
+            return 'Las horas culturales / ACUDE ya no se gestionan en SIGEA.';
         }
         if (str_contains($mensaje, 'kardex')) {
             return 'Tu kardex esta en la seccion <b>Kardex</b>. Puedes descargarlo en PDF.';
@@ -480,40 +435,32 @@ class ChatbotController extends Controller
         return 'El asistente IA no esta disponible. Navega el menu lateral para encontrar lo que necesitas.';
     }
 
-    private function fallbackDirector(string $mensaje): string
-    {
-        if (str_contains($mensaje, 'alumno')) {
-            return 'Consulta el listado de alumnos en la seccion <b>Alumnos</b>.';
-        }
-        if (str_contains($mensaje, 'docente')) {
-            return 'El listado de docentes esta en la seccion <b>Docentes</b>.';
-        }
-        if (str_contains($mensaje, 'grupo')) {
-            return 'Gestiona los grupos en la seccion <b>Grupos</b>.';
-        }
-        if (str_contains($mensaje, 'aprobacion') || str_contains($mensaje, 'reprobacion')) {
-            return 'Consulta los indices en la seccion <b>Indice de Aprobacion</b>.';
-        }
-        if (str_contains($mensaje, 'evaluaci')) {
-            return 'Los resultados de evaluacion docente estan en <b>Evaluacion Docente</b>.';
-        }
-        return 'El asistente IA no esta disponible. Navega el menu lateral para encontrar lo que necesitas.';
-    }
-
-    private function fallbackServicios(string $mensaje): string
+    private function fallbackGestor(string $mensaje): string
     {
         if (str_contains($mensaje, 'alumno') || str_contains($mensaje, 'inscri')) {
-            return 'Gestiona alumnos e inscripciones desde las secciones <b>Alumnos</b> e <b>Inscripciones</b>.';
+            return 'Esta en <b>Alumnos</b> o <b>Inscripciones</b>.';
         }
         if (str_contains($mensaje, 'docente')) {
-            return 'Gestiona docentes en la seccion <b>Docentes</b>.';
+            return 'Esta en <b>Docentes</b>.';
         }
         if (str_contains($mensaje, 'constancia')) {
-            return 'Genera constancias en la seccion <b>Constancias</b>.';
+            return 'Esta en <b>Constancias</b>.';
+        }
+        if (str_contains($mensaje, 'grupo')) {
+            return 'Esta en <b>Grupos</b>.';
+        }
+        if (str_contains($mensaje, 'horario')) {
+            return 'Esta en <b>Horarios</b>.';
+        }
+        if (str_contains($mensaje, 'aprobacion') || str_contains($mensaje, 'reprobacion')) {
+            return 'Esta en <b>Indice de Aprobacion</b>.';
+        }
+        if (str_contains($mensaje, 'evaluaci')) {
+            return 'Esta en <b>Eval. Docentes</b>.';
         }
         if (str_contains($mensaje, 'reporte')) {
-            return 'Los reportes estan disponibles en la seccion <b>Reportes</b>.';
+            return 'Esta en <b>Reportes</b>.';
         }
-        return 'El asistente IA no esta disponible. Navega el menu lateral para encontrar lo que necesitas.';
+        return 'El asistente no esta disponible. Revisa el menu lateral.';
     }
 }

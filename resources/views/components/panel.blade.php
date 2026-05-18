@@ -354,33 +354,27 @@
 
         {{-- Backdrop (solo móvil, cuando el sidebar está abierto) --}}
         <div x-show="sidebarOpen" x-transition.opacity
-             @click="sidebarOpen = false"
-             class="fixed inset-0 bg-black/50 z-30 lg:hidden"
-             style="display: none;"></div>
+            @click="sidebarOpen = false"
+            class="fixed inset-0 bg-black/50 z-30 lg:hidden"
+            style="display: none;"></div>
 
         {{-- ======== SIDEBAR ======== --}}
         <aside
             class="bg-white dark:bg-[#1C1E46] border-r border-gray-200 dark:border-white/10 flex flex-col flex-shrink-0
-                   fixed lg:static inset-y-0 left-0 z-40 w-[260px] lg:w-[220px]
-                   transform transition-transform duration-200 ease-out
-                   lg:translate-x-0"
+                fixed lg:static inset-y-0 left-0 z-40 w-[260px] lg:w-[220px]
+                transform transition-transform duration-200 ease-out
+                lg:translate-x-0"
             :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'">
 
             {{-- Logo --}}
-            <div class="flex items-center gap-3 px-5 h-16 border-b border-gray-100 dark:border-white/10">
-                <div class="w-9 h-9 bg-[#04276B] dark:bg-[#0606F0] rounded-xl flex items-center justify-center logo-enter">
-                    <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                        stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                    </svg>
-                </div>
-                <span class="text-[15px] font-bold text-[#121D30] dark:text-[#F7F7F7] tracking-tight">SIGEA</span>
+            <div class="flex items-center px-5 h-20 border-b border-gray-100 dark:border-white/10 logo-enter">
+                <img src="{{ asset('images/logo-udea-azul.png') }}" alt="UDEA" class="h-16 dark:hidden">
+                <img src="{{ asset('images/logo-udea-blanco.png') }}" alt="UDEA" class="h-16 hidden dark:block">
             </div>
 
             {{-- Menú label --}}
             <div class="px-5 pt-5 pb-2">
-                <p class="text-[10px] font-semibold text-[#04276B]/50 dark:text-[#E5CCBE] uppercase tracking-[0.12em]">
+                <p class="text-[10px] font-semibold text-[#04276B]/50 dark:text-[#f3f4f6] uppercase tracking-[0.12em]">
                     {{ $panelNombre ?? 'Menú' }}
                 </p>
             </div>
@@ -413,12 +407,12 @@
                 </div>
                 <div class="flex-1 min-w-0">
                     <p class="text-[13px] font-semibold text-[#121D30] dark:text-[#F7F7F7] truncate">{{ auth()->user()->name }}</p>
-                    <p class="text-[11px] text-[#04276B]/40 dark:text-[#E5CCBE]/70 truncate">
+                    <p class="text-[11px] text-[#04276B]/40 dark:text-[#f3f4f6]/70 truncate">
                         @php
                             $user = auth()->user();
                             $rolLabel = match (true) {
-                                $user->hasRole('servicios_escolares') => 'Servicios Escolares',
-                                $user->hasRole('director_carrera') => 'Director de Carrera',
+                                $user->hasRole('admin') => 'Administrador',
+                                $user->hasRole('gestor_escolar') => 'Gestor Escolar',
                                 $user->hasRole('docente') => 'Docente',
                                 $user->hasRole('alumno') => 'Alumno',
                                 default => 'Usuario',
@@ -456,7 +450,29 @@
 
                 {{-- Breadcrumb --}}
                 <div class="flex items-center gap-2 text-[12px] sm:text-[13px] breadcrumb-enter min-w-0 flex-1">
-                    <span class="hidden sm:inline text-[#121D30]/40 dark:text-[#F7F7F7]/40">SIGEA</span>
+                    <span class="hidden sm:inline text-[#121D30]/40 dark:text-[#F7F7F7]/40">UDEA</span>
+
+                    {{-- Badge de contexto educativo (solo Gestor Escolar) --}}
+                    @isset($contextoActual)
+                        <svg class="hidden sm:inline w-3.5 h-3.5 text-[#121D30]/25 dark:text-[#F7F7F7]/25" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                        </svg>
+                        @php $esBachi = $contextoActual === 'bachillerato'; @endphp
+                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-bold uppercase tracking-wide
+                                     {{ $esBachi
+                                        ? 'bg-amber-100 dark:bg-amber-500/20 text-amber-700 dark:text-amber-300'
+                                        : 'bg-[#0606F0]/10 dark:bg-[#0606F0]/25 text-[#0606F0] dark:text-blue-300' }}">
+                            <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                @if($esBachi)
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                                @else
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/>
+                                @endif
+                            </svg>
+                            {{ $esBachi ? 'Bachillerato' : 'Universidad' }}
+                        </span>
+                    @endisset
+
                     <svg class="hidden sm:inline w-3.5 h-3.5 text-[#121D30]/25 dark:text-[#F7F7F7]/25" fill="none" viewBox="0 0 24 24" stroke="currentColor"
                         stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
@@ -481,20 +497,20 @@
                                     d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                             </svg>
                             <span x-show="noLeidas > 0" x-transition
-                                  class="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] flex items-center justify-center bg-[#0606F0] text-white text-[10px] font-bold rounded-full px-1 shadow-sm shadow-[#0606F0]/30"
-                                  x-text="noLeidas > 99 ? '99+' : noLeidas"></span>
+                                class="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] flex items-center justify-center bg-[#0606F0] text-white text-[10px] font-bold rounded-full px-1 shadow-sm shadow-[#0606F0]/30"
+                                x-text="noLeidas > 99 ? '99+' : noLeidas"></span>
                         </button>
 
                         {{-- Dropdown --}}
                         <div x-show="abierto" @click.outside="abierto = false"
-                             x-transition:enter="transition ease-out duration-200"
-                             x-transition:enter-start="opacity-0 scale-95 -translate-y-1"
-                             x-transition:enter-end="opacity-100 scale-100 translate-y-0"
-                             x-transition:leave="transition ease-in duration-150"
-                             x-transition:leave-start="opacity-100 scale-100"
-                             x-transition:leave-end="opacity-0 scale-95 -translate-y-1"
-                             class="absolute right-0 top-full mt-2 w-[380px] bg-white dark:bg-gray-800 rounded-2xl shadow-xl dark:shadow-gray-900/50 border border-gray-200 dark:border-gray-700 z-50 overflow-hidden"
-                             style="display: none;">
+                            x-transition:enter="transition ease-out duration-200"
+                            x-transition:enter-start="opacity-0 scale-95 -translate-y-1"
+                            x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+                            x-transition:leave="transition ease-in duration-150"
+                            x-transition:leave-start="opacity-100 scale-100"
+                            x-transition:leave-end="opacity-0 scale-95 -translate-y-1"
+                            class="absolute right-0 top-full mt-2 w-[380px] bg-white dark:bg-gray-800 rounded-2xl shadow-xl dark:shadow-gray-900/50 border border-gray-200 dark:border-gray-700 z-50 overflow-hidden"
+                            style="display: none;">
 
                             {{-- Header --}}
                             <div class="px-5 py-3.5 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between">
@@ -518,8 +534,8 @@
 
                                 <template x-for="item in items" :key="item.id">
                                     <div @click="abrirNotificacion(item)"
-                                         :class="item.leida ? 'opacity-60' : 'bg-[#0606F0]/[0.03] dark:bg-blue-900/10'"
-                                         class="px-5 py-3.5 flex gap-3 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors border-b border-gray-50 dark:border-gray-700/50 last:border-b-0">
+                                        :class="item.leida ? 'opacity-60' : 'bg-[#0606F0]/[0.03] dark:bg-blue-900/10'"
+                                        class="px-5 py-3.5 flex gap-3 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors border-b border-gray-50 dark:border-gray-700/50 last:border-b-0">
                                         {{-- Icono --}}
                                         <div class="flex-shrink-0 w-9 h-9 rounded-xl flex items-center justify-center" :class="item.color_class">
                                             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
@@ -582,6 +598,17 @@
                     {{ session('error') }}
                 </div>
             @endif
+            @if (session('warning'))
+                <div
+                    class="mx-4 sm:mx-7 mb-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 text-amber-800 dark:text-amber-300 px-4 py-3 rounded-2xl text-[13px] flex items-start gap-2 fade-in">
+                    <svg class="w-4 h-4 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                        stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M12 9v2m0 4h.01M4.93 19h14.14c1.54 0 2.5-1.67 1.73-3L13.73 4a2 2 0 00-3.46 0L3.2 16c-.77 1.33.19 3 1.73 3z" />
+                    </svg>
+                    <span>{{ session('warning') }}</span>
+                </div>
+            @endif
 
             {{-- Contenido --}}
             <main class="flex-1 overflow-y-auto custom-scrollbar px-4 sm:px-7 pb-7 pt-1">
@@ -592,6 +619,11 @@
         </div>
     </div>
 
+    {{-- Modal global de re-autenticación para acciones administrativas sensibles. --}}
+    @auth
+        <x-reauth-modal />
+    @endauth
+
     @stack('scripts')
 
     {{-- ════════ CHATBOT FLOTANTE (TODOS LOS ROLES) ════════ --}}
@@ -599,8 +631,7 @@
         @php
             $chatUser = auth()->user();
             $chatRol = match (true) {
-                $chatUser->hasRole('servicios_escolares') => 'servicios',
-                $chatUser->hasRole('director_carrera') => 'director',
+                $chatUser->hasRole('gestor_escolar') => 'gestor',
                 $chatUser->hasRole('docente') => 'docente',
                 $chatUser->hasRole('alumno') => 'alumno',
                 default => null,
@@ -609,13 +640,13 @@
             $chatRoute = match ($chatRol) {
                 'alumno' => route('alumno.chatbot'),
                 'docente' => route('docente.chatbot'),
-                'director' => route('director.chatbot'),
-                'servicios' => route('servicios.chatbot'),
+                'director' => route('gestor.chatbot'),
+                'servicios' => route('gestor.chatbot'),
                 default => null,
             };
 
             $chatSugerencias = match ($chatRol) {
-                'alumno' => ['Calificaciones', 'Horas ACUDE', 'Horario', 'Servicio Social', 'Kardex', 'Docentes'],
+                'alumno' => ['Calificaciones', 'Horario', 'Servicio Social', 'Kardex', 'Docentes'],
                 'docente' => ['Mis Grupos', 'Horario', 'Asistencia', 'Calificaciones', 'Evaluaciones', 'Reportes'],
                 'director' => ['Alumnos', 'Docentes', 'Grupos', 'Aprobacion', 'Evaluaciones', 'Plan de Estudios'],
                 'servicios' => ['Alumnos', 'Docentes', 'Inscripciones', 'Constancias', 'Carreras', 'Reportes'],
@@ -623,7 +654,7 @@
             };
 
             $chatDescripcion = match ($chatRol) {
-                'alumno' => 'Pregunta sobre calificaciones, horario, horas ACUDE y mas.',
+                'alumno' => 'Pregunta sobre calificaciones, horario, kardex y mas.',
                 'docente' => 'Pregunta sobre tus grupos, asistencia, calificaciones y mas.',
                 'director' => 'Consulta estadisticas de carrera, docentes, alumnos y mas.',
                 'servicios' => 'Consulta sobre alumnos, inscripciones, reportes y mas.',
@@ -674,7 +705,7 @@
                     <div class="flex flex-wrap gap-1.5 justify-center" id="sugerencias">
                         @foreach($chatSugerencias as $sug)
                             <button onclick="enviarSugerencia(this)" class="text-[11px] font-medium bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-600 dark:text-gray-300
-                                                       px-3 py-1.5 rounded-full transition-colors">
+                                                    px-3 py-1.5 rounded-full transition-colors">
                                 {{ $sug }}
                             </button>
                         @endforeach
@@ -688,7 +719,7 @@
                             class="flex-1 bg-transparent text-[13px] text-gray-700 dark:text-gray-200 outline-none placeholder-gray-400"
                             onkeydown="if(event.key==='Enter') enviarMensaje()" />
                         <button onclick="enviarMensaje()" class="w-8 h-8 bg-[#0606F0] rounded-lg flex items-center justify-center
-                                           hover:bg-[#04276B] flex-shrink-0 transition-colors">
+                                        hover:bg-[#04276B] flex-shrink-0 transition-colors">
                             <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"
                                 stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />

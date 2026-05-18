@@ -31,7 +31,7 @@ class KardexService
 
         $pdf = Pdf::loadView('pdf.kardex', compact('alumno', 'historial', 'promedio'));
 
-        $path = storage_path("app/public/kardex_{$alumno->matricula}.pdf");
+        $path = storage_path("app/public/kardex_{$alumno->id_alumno_publico}.pdf");
         $pdf->save($path);
 
         return $path;
