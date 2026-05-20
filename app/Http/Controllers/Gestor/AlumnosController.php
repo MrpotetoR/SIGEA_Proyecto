@@ -90,7 +90,7 @@ class AlumnosController extends Controller
             ->paginate(20)->withQueryString();
 
         $carreras = Carrera::misCarreras()->orderBy('nombre_carrera')->get();
-
+        $carrera  = null;
         return view('gestor.alumnos.index', compact('alumnos', 'carreras', 'esBachi', 'tabs', 'modalidad'));
     }
 

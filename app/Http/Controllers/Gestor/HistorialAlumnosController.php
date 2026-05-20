@@ -26,6 +26,7 @@ class HistorialAlumnosController extends Controller
                 ->paginate(25)
             : collect();
 
+        $carrera = null;
         return view('gestor.historial-alumnos.index', compact('alumnos'));
     }
 
