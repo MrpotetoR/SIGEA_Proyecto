@@ -7,6 +7,7 @@ use App\Models\Noticia;
 use App\Services\NotificacionService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class NotificacionController extends Controller
 {
@@ -71,10 +72,25 @@ class NotificacionController extends Controller
     /**
      * Recorre las noticias cuya fecha_publicacion ya pasó pero aún no se notifican,
      * envía la notificación a los destinatarios y las marca como notificadas.
-     * Se invoca "lazy" desde el polling del panel — no requiere cron.
+     *
+     * Se invoca "lazy" desde el polling del panel — no requiere cron. Para evitar que
+     * cada poll de cada usuario pague el costo del procesamiento, usamos un lock global
+     * en cache: sólo el primer request dentro de cada ventana de 60s ejecuta el trabajo.
+     * Si una noticia se programa para "ahora", el retraso máximo será de ~60s, aceptable.
      */
     private function procesarNoticiasProgramadas(): void
     {
+        // Throttle global: si ya corrió en los últimos 60s, salir inmediatamente.
+        // Cache::add devuelve true solo si la clave no existía (atómico en cache).
+        if (!Cache::add('procesar-noticias-programadas:lock', 1, 60)) {
+            return;
+        }
+
+        // Salida temprana barata: si no hay nada pendiente, evitamos el ->get() y el loop.
+        if (!Noticia::pendientesNotificacion()->exists()) {
+            return;
+        }
+
         $pendientes = Noticia::pendientesNotificacion()->get();
         foreach ($pendientes as $n) {
             $this->notificaciones->notificarNuevaNoticia(

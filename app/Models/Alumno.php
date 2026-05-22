@@ -72,6 +72,15 @@ class Alumno extends Model
         return $this->hasMany(SemaforoAcademico::class, 'id_alumno');
     }
 
+    /**
+     * Último semáforo académico del alumno (por id_ciclo más reciente).
+     * Útil en listados para evitar traer toda la colección sólo para tomar el último.
+     */
+    public function ultimoSemaforo()
+    {
+        return $this->hasOne(SemaforoAcademico::class, 'id_alumno')->latestOfMany('id_ciclo');
+    }
+
     public function servicioSocial()
     {
         return $this->hasOne(ServicioSocial::class, 'id_alumno');

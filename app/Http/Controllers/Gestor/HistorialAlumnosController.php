@@ -21,13 +21,13 @@ class HistorialAlumnosController extends Controller
             ? Alumno::whereIn('id_carrera', $carrerasIds)
                 ->when($request->estatus, fn($q) => $q->where('estatus', $request->estatus))
                 ->when($request->cuatrimestre, fn($q) => $q->where('cuatrimestre_actual', $request->cuatrimestre))
-                ->with('carrera', 'semaforosAcademicos')
+                ->with('carrera', 'ultimoSemaforo')
                 ->orderBy('apellidos')
                 ->paginate(25)
             : collect();
 
         $carrera = null;
-        return view('gestor.historial-alumnos.index', compact('alumnos'));
+        return view('gestor.historial-alumnos.index', compact('alumnos', 'carrera'));
     }
 
     public function show(Request $request, Alumno $alumno)

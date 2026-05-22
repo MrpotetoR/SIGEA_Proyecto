@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Gestor;
 use App\Http\Controllers\Controller;
 use App\Models\CicloEscolar;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class CiclosController extends Controller
 {
@@ -107,7 +108,38 @@ class CiclosController extends Controller
 
     public function destroy(CicloEscolar $ciclo)
     {
+        $dependientes = $this->contarDependientes($ciclo->id_ciclo);
+
+        if (!empty($dependientes)) {
+            $detalle = collect($dependientes)
+                ->map(fn($n, $label) => "$n $label")
+                ->implode(', ');
+            return redirect()->route('gestor.ciclos.index')
+                ->with('error', "No se puede eliminar el ciclo \"{$ciclo->nombre}\" porque tiene registros asociados: {$detalle}.");
+        }
+
         $ciclo->delete();
         return redirect()->route('gestor.ciclos.index')->with('success', 'Ciclo eliminado.');
+    }
+
+    /**
+     * Cuenta registros en tablas que referencian este ciclo vía FK.
+     * Devuelve sólo las tablas con count > 0, mapeadas a etiquetas legibles.
+     */
+    private function contarDependientes(int $idCiclo): array
+    {
+        $tablas = [
+            'calificacion'       => 'calificaciones',
+            'grupo'              => 'grupos',
+            'semaforo_academico' => 'registros de semáforo académico',
+            'evaluacion_docente' => 'evaluaciones docentes',
+        ];
+
+        $resultado = [];
+        foreach ($tablas as $tabla => $etiqueta) {
+            $n = DB::table($tabla)->where('id_ciclo', $idCiclo)->count();
+            if ($n > 0) $resultado[$etiqueta] = $n;
+        }
+        return $resultado;
     }
 }

@@ -59,8 +59,7 @@
                 <tbody class="divide-y divide-gray-50 dark:divide-gray-700">
                     @foreach($alumnos as $alumno)
                         @php
-                            $semaforo = $alumno->semaforosAcademicos->last();
-                            $nivel = $semaforo->nivel ?? 'sin datos';
+                            $nivel = $alumno->ultimoSemaforo->nivel ?? 'sin datos';
                             $colorSemaforo = match($nivel) {
                                 'verde' => 'bg-green-100 text-green-700',
                                 'amarillo' => 'bg-yellow-100 text-yellow-700',
