@@ -10,7 +10,7 @@
     @endif
 
     {{-- Filtros --}}
-    <form method="GET" action="{{ route('gestor.alumnos') }}" class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm dark:shadow-gray-900/20 border border-gray-100 dark:border-gray-700 p-5 mb-6">
+    <form method="GET" action="{{ route('gestor.alumnos.index') }}" class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm dark:shadow-gray-900/20 border border-gray-100 dark:border-gray-700 p-5 mb-6">
         <div class="flex items-end gap-4">
             <div class="flex-1">
                 <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1.5">Estatus</label>
