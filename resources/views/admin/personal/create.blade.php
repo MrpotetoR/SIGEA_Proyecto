@@ -20,6 +20,8 @@
             @csrf
             {{-- Flag de permiso especial: solo se envía si reauth fue exitoso. --}}
             <input type="hidden" name="puede_asignar_carreras" :value="permisoEspecialConfirmado ? '1' : '0'">
+            {{-- Flag de permiso de Caja Chica: solo se envía si reauth fue exitoso. --}}
+            <input type="hidden" name="puede_gestionar_caja_chica" :value="cajaChicaConfirmado ? '1' : '0'">
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {{-- Datos del personal --}}
@@ -100,6 +102,52 @@
                                     </p>
                                     <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-1.5">
                                         Esta acción es sensible y requiere validar tu contraseña de administrador.
+                                    </p>
+                                </div>
+                            </label>
+                        </div>
+
+                        {{-- ── Permiso especial: gestión de Caja Chica (Fondo de Emergencia) ── --}}
+                        @php $cuposLibres = $cupoCajaChicaMax - $cupoCajaChicaUsado; @endphp
+                        <div class="border-2 border-dashed border-emerald-300 dark:border-emerald-700/60 bg-emerald-50/40 dark:bg-emerald-900/10 rounded-lg p-4">
+                            <label class="flex items-start gap-3 cursor-pointer">
+                                <input type="checkbox"
+                                       x-model="cajaChicaCheck"
+                                       @change="onToggleCajaChica($event)"
+                                       :disabled="!nombreCompleto || {{ $cuposLibres <= 0 ? 'true' : 'false' }}"
+                                       class="mt-1 rounded text-emerald-600 focus:ring-emerald-400 disabled:opacity-40">
+                                <div class="flex-1">
+                                    <p class="text-sm font-medium text-gray-800 dark:text-gray-200">
+                                        <template x-if="nombreCompleto">
+                                            <span>¿Habilitar a <strong x-text="nombreCompleto"></strong> para administrar la <strong>Caja Chica</strong> (fondo de emergencia)?</span>
+                                        </template>
+                                        <template x-if="!nombreCompleto">
+                                            <span class="text-gray-400">Llena nombre y apellidos para habilitar el permiso de Caja Chica.</span>
+                                        </template>
+                                    </p>
+
+                                    <div class="flex items-center gap-2 mt-1.5">
+                                        <span class="text-[11px] font-semibold px-2 py-0.5 rounded
+                                                     {{ $cuposLibres > 0
+                                                        ? 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300'
+                                                        : 'bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300' }}">
+                                            Cupos: {{ $cupoCajaChicaUsado }}/{{ $cupoCajaChicaMax }}
+                                        </span>
+                                        @if($cuposLibres <= 0)
+                                            <span class="text-[11px] text-red-600 dark:text-red-400">
+                                                Cupo máximo alcanzado. Revoca a otro gestor primero.
+                                            </span>
+                                        @endif
+                                    </div>
+
+                                    <p x-show="cajaChicaConfirmado" x-cloak class="text-xs text-green-700 dark:text-green-400 mt-1.5 flex items-center gap-1">
+                                        <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                        </svg>
+                                        Permiso confirmado con tu contraseña.
+                                    </p>
+                                    <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-1.5">
+                                        Máx. {{ $cupoCajaChicaMax }} gestores activos. Acción sensible: requiere tu contraseña de administrador.
                                     </p>
                                 </div>
                             </label>
@@ -190,6 +238,8 @@ function formNuevoGestor() {
         apellidos: '',
         permisoEspecialCheck: false,
         permisoEspecialConfirmado: false,
+        cajaChicaCheck: false,
+        cajaChicaConfirmado: false,
 
         init() {
             const ds = this.$el.dataset;
@@ -221,6 +271,28 @@ function formNuevoGestor() {
                     description: `Estás por darle a ${self.nombreCompleto} la capacidad de asignar carreras a otros gestores. Confirma con tu contraseña.`,
                     onSuccess: () => { self.permisoEspecialConfirmado = true; },
                     onCancel:  () => { self.permisoEspecialCheck = false; self.permisoEspecialConfirmado = false; },
+                },
+            }));
+        },
+
+        onToggleCajaChica(event) {
+            // Si se desmarca, simplemente cancela.
+            if (!this.cajaChicaCheck) {
+                this.cajaChicaConfirmado = false;
+                return;
+            }
+            // Si ya estaba confirmado, no pedir reauth otra vez.
+            if (this.cajaChicaConfirmado) return;
+
+            // Solicitar reauth para Caja Chica.
+            const self = this;
+            window.dispatchEvent(new CustomEvent('reauth:open', {
+                detail: {
+                    action: 'otorgar_permiso_caja_chica',
+                    title:  'Habilitar gestión de Caja Chica',
+                    description: `Estás por habilitar a ${self.nombreCompleto} para administrar la Caja Chica (fondo de emergencia). Confirma con tu contraseña.`,
+                    onSuccess: () => { self.cajaChicaConfirmado = true; },
+                    onCancel:  () => { self.cajaChicaCheck = false; self.cajaChicaConfirmado = false; },
                 },
             }));
         },

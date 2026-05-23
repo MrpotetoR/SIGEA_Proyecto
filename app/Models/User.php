@@ -97,6 +97,15 @@ class User extends Authenticatable
         return $this->notificaciones()->noLeidas();
     }
 
+    /**
+     * Correos adicionales que este admin ha registrado para recibir copia de
+     * notificaciones críticas (Caja Chica, etc.). Máx 3 por admin.
+     */
+    public function correosAdicionales()
+    {
+        return $this->hasMany(AdminCorreoNotificacion::class, 'admin_user_id');
+    }
+
     // Helper para redirigir según rol
     public function panelUrl(): string
     {

@@ -28,10 +28,23 @@ class ReauthController extends Controller
 
     /** Acciones permitidas por este endpoint (lista blanca). */
     private const ACCIONES_VALIDAS = [
+        // Asignación de carreras
         'otorgar_permiso_especial',
         'revocar_permiso_especial',
         'crear_carrera',
         'asignar_carrera',
+        // Caja Chica — permisos y configuración
+        'otorgar_permiso_caja_chica',
+        'revocar_permiso_caja_chica',
+        'configurar_tope_caja_chica',
+        // Caja Chica — operaciones sobre vales
+        'autorizar_vale',
+        'rechazar_vale',
+        'cerrar_vale',
+        'cancelar_vale',
+        'subir_factura',
+        // Caja Chica — movimientos de fondo
+        'reponer_fondo',
     ];
 
     /**

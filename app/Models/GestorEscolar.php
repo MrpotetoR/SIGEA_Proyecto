@@ -28,15 +28,25 @@ class GestorEscolar extends Model
         'rfc',
         'especialidad',
         'puede_asignar_carreras',
+        'puede_gestionar_caja_chica',
     ];
 
     protected function casts(): array
     {
-        return ['puede_asignar_carreras' => 'boolean'];
+        return [
+            'puede_asignar_carreras'     => 'boolean',
+            'puede_gestionar_caja_chica' => 'boolean',
+        ];
     }
 
     /** Máximo de carreras que un gestor escolar puede administrar. */
     public const MAX_CARRERAS = 4;
+
+    /**
+     * Máximo de gestores escolares que pueden tener el permiso de Caja Chica
+     * activo simultáneamente. Validado en PersonalController al toggle del flag.
+     */
+    public const MAX_GESTORES_CAJA_CHICA = 3;
 
     public function user()
     {
