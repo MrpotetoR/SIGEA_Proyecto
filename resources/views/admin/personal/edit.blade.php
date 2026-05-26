@@ -17,9 +17,11 @@
               x-data="formEditGestor()"
               data-nombre="{{ old('nombre', $personal->nombre) }}"
               data-apellidos="{{ old('apellidos', $personal->apellidos) }}"
-              data-permiso="{{ $personal->puede_asignar_carreras ? '1' : '0' }}">
+              data-permiso="{{ $personal->puede_asignar_carreras ? '1' : '0' }}"
+              data-cajachica="{{ $personal->puede_gestionar_caja_chica ? '1' : '0' }}">
             @csrf @method('PUT')
             <input type="hidden" name="puede_asignar_carreras" :value="permisoActual ? '1' : '0'">
+            <input type="hidden" name="puede_gestionar_caja_chica" :value="cajaChicaActual ? '1' : '0'">
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <div class="bg-white dark:bg-gray-800 rounded-xl shadow dark:shadow-gray-900/20 p-6 border border-transparent dark:border-gray-700">
@@ -95,6 +97,50 @@
                             </label>
                         </div>
 
+                        {{-- ── Permiso especial: gestión de Caja Chica ── --}}
+                        @php
+                            $cuposLibres = $cupoCajaChicaMax - $cupoCajaChicaUsado;
+                            $puedeMarcar = $personal->puede_gestionar_caja_chica || $cuposLibres > 0;
+                        @endphp
+                        <div class="border-2 border-dashed border-emerald-300 dark:border-emerald-700/60 bg-emerald-50/40 dark:bg-emerald-900/10 rounded-lg p-4">
+                            <label class="flex items-start gap-3 cursor-pointer">
+                                <input type="checkbox"
+                                       x-model="cajaChicaActual"
+                                       @change="onToggleCajaChica($event)"
+                                       :disabled="{{ $puedeMarcar ? 'false' : 'true' }}"
+                                       class="mt-1 rounded text-emerald-600 focus:ring-emerald-400 disabled:opacity-40">
+                                <div class="flex-1">
+                                    <p class="text-sm font-medium text-gray-800 dark:text-gray-200">
+                                        ¿Habilitar a <strong x-text="nombreCompleto"></strong> para administrar la <strong>Caja Chica</strong> (fondo de emergencia)?
+                                    </p>
+
+                                    <div class="flex items-center gap-2 mt-1.5">
+                                        <span class="text-[11px] font-semibold px-2 py-0.5 rounded
+                                                     {{ $cuposLibres > 0 || $personal->puede_gestionar_caja_chica
+                                                        ? 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300'
+                                                        : 'bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300' }}">
+                                            Cupos: {{ $cupoCajaChicaUsado + ($personal->puede_gestionar_caja_chica ? 1 : 0) }}/{{ $cupoCajaChicaMax }}
+                                        </span>
+                                        @if(!$puedeMarcar)
+                                            <span class="text-[11px] text-red-600 dark:text-red-400">
+                                                Cupo máximo alcanzado.
+                                            </span>
+                                        @endif
+                                    </div>
+
+                                    <p x-show="cambioCajaChicaConfirmado" x-cloak class="text-xs text-green-700 dark:text-green-400 mt-1.5 flex items-center gap-1">
+                                        <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                        </svg>
+                                        Cambio confirmado con tu contraseña.
+                                    </p>
+                                    <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-1.5">
+                                        Máx. {{ $cupoCajaChicaMax }} gestores activos. Cualquier cambio (otorgar o revocar) requiere tu contraseña.
+                                    </p>
+                                </div>
+                            </label>
+                        </div>
+
                         <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-lg px-3 py-2">
                             <p class="text-xs text-blue-700 dark:text-blue-300">
                                 <strong>Carreras asignadas actualmente:</strong>
@@ -160,14 +206,19 @@ function formEditGestor() {
         permisoInicial: false,
         permisoActual:  false,
         cambioConfirmado: false,
+        cajaChicaInicial: false,
+        cajaChicaActual:  false,
+        cambioCajaChicaConfirmado: false,
 
         init() {
             // Hidratar desde data-* attributes del form (escape HTML correcto).
             const ds = this.$el.dataset;
-            this.nombre         = ds.nombre || '';
-            this.apellidos      = ds.apellidos || '';
-            this.permisoInicial = ds.permiso === '1';
-            this.permisoActual  = this.permisoInicial;
+            this.nombre            = ds.nombre || '';
+            this.apellidos         = ds.apellidos || '';
+            this.permisoInicial    = ds.permiso === '1';
+            this.permisoActual     = this.permisoInicial;
+            this.cajaChicaInicial  = ds.cajachica === '1';
+            this.cajaChicaActual   = this.cajaChicaInicial;
         },
 
         get nombreCompleto() {
@@ -198,6 +249,33 @@ function formEditGestor() {
                         // Revertir el toggle si cancela.
                         self.permisoActual = self.permisoInicial;
                         self.cambioConfirmado = false;
+                    },
+                },
+            }));
+        },
+
+        onToggleCajaChica() {
+            // ¿Cambió respecto al estado inicial guardado en BD?
+            if (this.cajaChicaActual === this.cajaChicaInicial) {
+                this.cambioCajaChicaConfirmado = false;
+                return;
+            }
+            // Si ya estaba confirmado este cambio, no pedir reauth de nuevo.
+            if (this.cambioCajaChicaConfirmado) return;
+
+            const accion = this.cajaChicaActual ? 'otorgar_permiso_caja_chica' : 'revocar_permiso_caja_chica';
+            const verbo  = this.cajaChicaActual ? 'habilitarle' : 'retirarle';
+            const self   = this;
+
+            window.dispatchEvent(new CustomEvent('reauth:open', {
+                detail: {
+                    action: accion,
+                    title:  this.cajaChicaActual ? 'Habilitar gestión de Caja Chica' : 'Retirar gestión de Caja Chica',
+                    description: `Estás por ${verbo} a ${self.nombreCompleto} la administración de la Caja Chica (fondo de emergencia). Confirma con tu contraseña.`,
+                    onSuccess: () => { self.cambioCajaChicaConfirmado = true; },
+                    onCancel:  () => {
+                        self.cajaChicaActual = self.cajaChicaInicial;
+                        self.cambioCajaChicaConfirmado = false;
                     },
                 },
             }));

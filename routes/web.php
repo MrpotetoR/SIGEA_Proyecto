@@ -173,6 +173,37 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'verified', 'role:ad
         [\App\Http\Controllers\Admin\ConfiguracionTiendaController::class, 'update'])
         ->name('configuracion.tienda.update');
 
+    // ============================================================
+    // CAJA CHICA — Fondo de emergencia (admin)
+    // ============================================================
+    Route::get('/caja-chica/fondo',
+        [\App\Http\Controllers\Admin\CajaChicaFondoController::class, 'edit'])
+        ->name('caja-chica.fondo.edit');
+    Route::put('/caja-chica/fondo',
+        [\App\Http\Controllers\Admin\CajaChicaFondoController::class, 'update'])
+        ->name('caja-chica.fondo.update');
+    Route::post('/caja-chica/fondo/repone',
+        [\App\Http\Controllers\Admin\CajaChicaFondoController::class, 'repone'])
+        ->name('caja-chica.fondo.repone');
+    // Historial completo del módulo Caja Chica (movimientos del fondo + vales + permisos).
+    Route::get('/caja-chica/historial',
+        [\App\Http\Controllers\Admin\HistorialCajaChicaController::class, 'index'])
+        ->name('caja-chica.historial');
+
+    // Correos adicionales para notificaciones de Caja Chica (máx 3 por admin).
+    Route::get('/caja-chica/correos',
+        [\App\Http\Controllers\Admin\NotificacionesCorreosController::class, 'index'])
+        ->name('caja-chica.correos.index');
+    Route::post('/caja-chica/correos',
+        [\App\Http\Controllers\Admin\NotificacionesCorreosController::class, 'store'])
+        ->name('caja-chica.correos.store');
+    Route::patch('/caja-chica/correos/{correo}/toggle',
+        [\App\Http\Controllers\Admin\NotificacionesCorreosController::class, 'toggle'])
+        ->name('caja-chica.correos.toggle');
+    Route::delete('/caja-chica/correos/{correo}',
+        [\App\Http\Controllers\Admin\NotificacionesCorreosController::class, 'destroy'])
+        ->name('caja-chica.correos.destroy');
+
     // Chatbot (compartido).
     Route::post('/chatbot', [\App\Http\Controllers\ChatbotController::class, 'responder'])->name('chatbot');
 });
@@ -282,6 +313,33 @@ Route::prefix('gestor-escolar')->name('gestor.')->middleware(['auth', 'verified'
     Route::resource('noticias',   \App\Http\Controllers\Gestor\NoticiasController::class);
     Route::resource('documentos', \App\Http\Controllers\Gestor\DocumentosController::class);
     Route::get('/reportes', [\App\Http\Controllers\Gestor\ReportesController::class, 'index'])->name('reportes');
+
+    // ============================================================
+    // CAJA CHICA — Vales (acceso por flag puede_gestionar_caja_chica)
+    // El controlador valida el permiso en cada acción.
+    // ============================================================
+    Route::prefix('caja-chica')->name('caja-chica.')->group(function () {
+        // Endpoint AJAX para autocompletado del solicitante
+        Route::get('/solicitantes/buscar',
+            [\App\Http\Controllers\Gestor\CajaChicaSolicitantesController::class, 'buscar'])
+            ->name('solicitantes.buscar');
+
+        // CRUD de vales
+        Route::get('/',                  [\App\Http\Controllers\Gestor\CajaChicaController::class, 'index'])->name('index');
+        Route::get('/nuevo',             [\App\Http\Controllers\Gestor\CajaChicaController::class, 'create'])->name('create');
+        Route::post('/',                 [\App\Http\Controllers\Gestor\CajaChicaController::class, 'store'])->name('store');
+        Route::get('/{vale}',            [\App\Http\Controllers\Gestor\CajaChicaController::class, 'show'])->name('show');
+        Route::put('/{vale}',            [\App\Http\Controllers\Gestor\CajaChicaController::class, 'update'])->name('update');
+
+        // Acciones sensibles (todas requieren reauth + motivo + opcional evidencia)
+        Route::post('/{vale}/autorizar', [\App\Http\Controllers\Gestor\CajaChicaController::class, 'autorizar'])->name('autorizar');
+        Route::post('/{vale}/rechazar',  [\App\Http\Controllers\Gestor\CajaChicaController::class, 'rechazar'])->name('rechazar');
+        Route::post('/{vale}/cancelar',  [\App\Http\Controllers\Gestor\CajaChicaController::class, 'cancelar'])->name('cancelar');
+        Route::post('/{vale}/factura',   [\App\Http\Controllers\Gestor\CajaChicaController::class, 'subirFactura'])->name('factura');
+
+        // Ticket PDF (comprobante institucional)
+        Route::get('/{vale}/ticket',     [\App\Http\Controllers\Gestor\CajaChicaController::class, 'imprimir'])->name('ticket');
+    });
 
     // Tienda Institucional — Productos (CRUD)
     Route::resource('productos', \App\Http\Controllers\Gestor\ProductosController::class);

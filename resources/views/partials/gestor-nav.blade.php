@@ -12,6 +12,10 @@ $esUniversidad  = ($contextoActual ?? 'universidad') === 'universidad';
 $esBachillerato = ($contextoActual ?? null) === 'bachillerato';
 $tieneAmbos     = count($contextoDisponibles ?? []) >= 2;
 
+// Permiso especial para administrar Caja Chica.
+// La sección "Caja Chica" del sidebar solo aparece si el gestor tiene el flag activo.
+$puedeCajaChica = (bool) (auth()->user()?->gestorEscolar?->puede_gestionar_caja_chica ?? false);
+
 $sections = [
     [
         'label' => 'Principal',
@@ -81,6 +85,16 @@ $sections = [
              'icon' => 'M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z'],
             ['route' => 'gestor.pedidos.index', 'label' => 'Pedidos', 'match' => 'gestor.pedidos.*',
              'icon' => 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4'],
+        ],
+    ],
+    [
+        'label' => 'Caja Chica',
+        'visible' => $puedeCajaChica,
+        'links' => [
+            ['route' => 'gestor.caja-chica.index',  'label' => 'Vales',           'match' => 'gestor.caja-chica.index',
+             'icon' => 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4'],
+            ['route' => 'gestor.caja-chica.create', 'label' => 'Nueva solicitud', 'match' => 'gestor.caja-chica.create',
+             'icon' => 'M12 6v6m0 0v6m0-6h6m-6 0H6'],
         ],
     ],
     [

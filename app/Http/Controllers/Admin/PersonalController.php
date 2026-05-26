@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Admin\ReauthController;
 use App\Http\Controllers\Controller;
+use App\Models\CajaChicaLog;
 use App\Models\Carrera;
 use App\Models\DocumentoPersonalSE;
 use App\Models\GestorEscolar;
@@ -11,6 +12,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\ValidationException;
 
 class PersonalController extends Controller
 {
@@ -34,7 +36,13 @@ class PersonalController extends Controller
         $carrerasDisponibles = Carrera::doesntHave('personalAsignado')
             ->orderBy('nombre_carrera')->get();
 
-        return view('admin.personal.create', compact('carrerasDisponibles'));
+        // Cupos disponibles para el permiso de Caja Chica (máx. 3 gestores).
+        $cupoCajaChicaUsado = GestorEscolar::where('puede_gestionar_caja_chica', true)->count();
+        $cupoCajaChicaMax   = GestorEscolar::MAX_GESTORES_CAJA_CHICA;
+
+        return view('admin.personal.create', compact(
+            'carrerasDisponibles', 'cupoCajaChicaUsado', 'cupoCajaChicaMax'
+        ));
     }
 
     public function store(Request $request)
@@ -83,7 +91,22 @@ class PersonalController extends Controller
         $puedeAsignar = $request->boolean('puede_asignar_carreras')
             && ReauthController::tieneGracePeriod('otorgar_permiso_especial');
 
-        DB::transaction(function () use ($request, $puedeAsignar) {
+        // Permiso de Caja Chica: requiere reauth + validación de cupo (máx 3).
+        $puedeCajaChica = $request->boolean('puede_gestionar_caja_chica')
+            && ReauthController::tieneGracePeriod('otorgar_permiso_caja_chica');
+
+        if ($puedeCajaChica) {
+            $cupoUsado = GestorEscolar::where('puede_gestionar_caja_chica', true)->count();
+            if ($cupoUsado >= GestorEscolar::MAX_GESTORES_CAJA_CHICA) {
+                throw ValidationException::withMessages([
+                    'puede_gestionar_caja_chica' =>
+                        'Ya hay ' . GestorEscolar::MAX_GESTORES_CAJA_CHICA .
+                        ' gestores con permiso de Caja Chica (máximo permitido). Revoca a otro primero.',
+                ]);
+            }
+        }
+
+        DB::transaction(function () use ($request, $puedeAsignar, $puedeCajaChica) {
             $user = User::create([
                 'name'     => "{$request->nombre} {$request->apellidos}",
                 'email'    => $request->email,
@@ -93,14 +116,28 @@ class PersonalController extends Controller
             $user->assignRole('gestor_escolar');
 
             $personal = GestorEscolar::create([
-                'user_id'                => $user->id,
-                'nombre'                 => $request->nombre,
-                'apellidos'              => $request->apellidos,
-                'num_cedula'             => $request->num_cedula,
-                'rfc'                    => $request->rfc,
-                'especialidad'           => $request->especialidad,
-                'puede_asignar_carreras' => $puedeAsignar,
+                'user_id'                    => $user->id,
+                'nombre'                     => $request->nombre,
+                'apellidos'                  => $request->apellidos,
+                'num_cedula'                 => $request->num_cedula,
+                'rfc'                        => $request->rfc,
+                'especialidad'               => $request->especialidad,
+                'puede_asignar_carreras'     => $puedeAsignar,
+                'puede_gestionar_caja_chica' => $puedeCajaChica,
             ]);
+
+            // Auditoría: si se otorgó permiso de Caja Chica, dejar huella.
+            if ($puedeCajaChica) {
+                CajaChicaLog::create([
+                    'user_id'              => $request->user()->id,
+                    'gestor_afectado_id'   => $personal->id_personal,
+                    'accion'               => 'otorgar_permiso',
+                    'motivo'               => $request->input('motivo_caja_chica', 'reorganizacion'),
+                    'motivo_personalizado' => $request->input('motivo_caja_chica_libre'),
+                    'ip'                   => $request->ip(),
+                    'user_agent'           => substr((string) $request->userAgent(), 0, 255),
+                ]);
+            }
 
             // Carreras asignadas (opcional al crear).
             if ($request->carreras) {
@@ -142,7 +179,15 @@ class PersonalController extends Controller
             })
             ->orderBy('nombre_carrera')->get();
 
-        return view('admin.personal.edit', compact('personal', 'carrerasDisponibles'));
+        // Cupos del permiso de Caja Chica (excluye al gestor actual si ya lo tiene).
+        $cupoCajaChicaUsado = GestorEscolar::where('puede_gestionar_caja_chica', true)
+            ->where('id_personal', '!=', $personal->id_personal)
+            ->count();
+        $cupoCajaChicaMax = GestorEscolar::MAX_GESTORES_CAJA_CHICA;
+
+        return view('admin.personal.edit', compact(
+            'personal', 'carrerasDisponibles', 'cupoCajaChicaUsado', 'cupoCajaChicaMax'
+        ));
     }
 
     public function update(Request $request, GestorEscolar $personal)
@@ -176,15 +221,58 @@ class PersonalController extends Controller
             // Si no hay grace period, ignoramos el cambio (no se altera el flag).
         }
 
-        DB::transaction(function () use ($request, $personal, $puedeAsignarFinal) {
+        // Permiso de Caja Chica: misma mecánica + validación de cupo al otorgar.
+        $cajaChicaSolicitado = $request->boolean('puede_gestionar_caja_chica');
+        $cajaChicaActual     = (bool) $personal->puede_gestionar_caja_chica;
+        $puedeCajaChicaFinal = $cajaChicaActual;
+        $cajaChicaCambio     = null; // 'otorgar' | 'revocar' | null
+
+        if ($cajaChicaSolicitado !== $cajaChicaActual) {
+            $accion = $cajaChicaSolicitado ? 'otorgar_permiso_caja_chica' : 'revocar_permiso_caja_chica';
+            if (ReauthController::tieneGracePeriod($accion)) {
+                if ($cajaChicaSolicitado) {
+                    // Validar cupo (máx 3, sin contar al gestor actual).
+                    $cupoUsado = GestorEscolar::where('puede_gestionar_caja_chica', true)
+                        ->where('id_personal', '!=', $personal->id_personal)
+                        ->count();
+                    if ($cupoUsado >= GestorEscolar::MAX_GESTORES_CAJA_CHICA) {
+                        throw ValidationException::withMessages([
+                            'puede_gestionar_caja_chica' =>
+                                'Ya hay ' . GestorEscolar::MAX_GESTORES_CAJA_CHICA .
+                                ' gestores con permiso de Caja Chica (máximo permitido). Revoca a otro primero.',
+                        ]);
+                    }
+                }
+                $puedeCajaChicaFinal = $cajaChicaSolicitado;
+                $cajaChicaCambio = $cajaChicaSolicitado ? 'otorgar' : 'revocar';
+            }
+        }
+
+        DB::transaction(function () use (
+            $request, $personal, $puedeAsignarFinal, $puedeCajaChicaFinal, $cajaChicaCambio
+        ) {
             $personal->update([
-                'nombre'                 => $request->nombre,
-                'apellidos'              => $request->apellidos,
-                'num_cedula'             => $request->num_cedula,
-                'rfc'                    => $request->rfc,
-                'especialidad'           => $request->especialidad,
-                'puede_asignar_carreras' => $puedeAsignarFinal,
+                'nombre'                     => $request->nombre,
+                'apellidos'                  => $request->apellidos,
+                'num_cedula'                 => $request->num_cedula,
+                'rfc'                        => $request->rfc,
+                'especialidad'               => $request->especialidad,
+                'puede_asignar_carreras'     => $puedeAsignarFinal,
+                'puede_gestionar_caja_chica' => $puedeCajaChicaFinal,
             ]);
+
+            // Auditoría: log del cambio de permiso de Caja Chica.
+            if ($cajaChicaCambio !== null) {
+                CajaChicaLog::create([
+                    'user_id'              => $request->user()->id,
+                    'gestor_afectado_id'   => $personal->id_personal,
+                    'accion'               => $cajaChicaCambio === 'otorgar' ? 'otorgar_permiso' : 'revocar_permiso',
+                    'motivo'               => $request->input('motivo_caja_chica', 'reorganizacion'),
+                    'motivo_personalizado' => $request->input('motivo_caja_chica_libre'),
+                    'ip'                   => $request->ip(),
+                    'user_agent'           => substr((string) $request->userAgent(), 0, 255),
+                ]);
+            }
 
             $personal->user->update([
                 'name'  => "{$request->nombre} {$request->apellidos}",
