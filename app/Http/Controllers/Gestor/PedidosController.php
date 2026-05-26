@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Mail\PedidoListoParaRecogerMail;
 use App\Models\ConfiguracionInstitucional;
 use App\Models\Pedido;
+use App\Services\IngresoCajaService;
 use App\Services\PedidoService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -25,7 +26,10 @@ use RuntimeException;
  */
 class PedidosController extends Controller
 {
-    public function __construct(private PedidoService $pedidoService) {}
+    public function __construct(
+        private PedidoService $pedidoService,
+        private IngresoCajaService $ingresosCaja,
+    ) {}
 
     public function index(Request $request)
     {
@@ -73,6 +77,14 @@ class PedidosController extends Controller
         } catch (RuntimeException $e) {
             return back()->with('error', $e->getMessage());
         }
+
+        // Hook a Caja General: registrar el ingreso del pedido.
+        try {
+            $this->ingresosCaja->registrarProducto($pedido->fresh(), $request->user());
+        } catch (\Throwable $e) {
+            Log::warning("CajaGeneral: fallo registro producto pedido {$pedido->folio}: {$e->getMessage()}");
+        }
+
         return back()->with('success', "Pedido {$pedido->folio} aprobado.");
     }
 
@@ -136,6 +148,19 @@ class PedidosController extends Controller
         } catch (RuntimeException $e) {
             return back()->with('error', $e->getMessage());
         }
+
+        // Hook a Caja General: si había ingreso registrado por este pedido, cancelarlo (reversa).
+        try {
+            $this->ingresosCaja->cancelarPorReferencia(
+                'pedido',
+                $pedido->id_pedido,
+                $request->user(),
+                $request->motivo ?? 'Pedido cancelado'
+            );
+        } catch (\Throwable $e) {
+            Log::warning("CajaGeneral: fallo reversa pedido {$pedido->folio}: {$e->getMessage()}");
+        }
+
         return back()->with('success', "Pedido {$pedido->folio} cancelado.");
     }
 }
