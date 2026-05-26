@@ -18,7 +18,7 @@
 
         {{-- Header --}}
         <div style="background:#0606F0; color:white; padding:24px; text-align:center;">
-            <h1 style="margin:0; font-size:22px;">⚠ Reposición pendiente</h1>
+            <h1 style="margin:0; font-size:22px;">Reposición pendiente</h1>
             <p style="margin:6px 0 0; font-size:14px; opacity:0.9;">
                 Universidad de Los Ángeles · UDEA — Caja Chica
             </p>

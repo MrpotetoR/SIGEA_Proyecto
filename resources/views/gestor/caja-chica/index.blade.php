@@ -149,7 +149,11 @@
                                     </td>
                                     <td class="py-3 px-4 text-center">
                                         @if($v->tiene_factura)
-                                            <span class="text-green-600 dark:text-green-400" title="Factura cargada">📎</span>
+                                            <span class="inline-flex items-center text-green-600 dark:text-green-400" title="Factura cargada">
+                                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/>
+                                                </svg>
+                                            </span>
                                         @else
                                             <span class="text-gray-300 dark:text-gray-600">—</span>
                                         @endif

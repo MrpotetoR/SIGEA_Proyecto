@@ -49,8 +49,11 @@
                         </template>
                     </div>
                 </div>
-                <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-1" x-show="alumnoId" x-cloak>
-                    ✓ Alumno seleccionado: <strong x-text="busqueda"></strong>
+                <p class="text-[11px] text-green-700 dark:text-green-400 mt-1 inline-flex items-center gap-1" x-show="alumnoId" x-cloak>
+                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                    </svg>
+                    <span>Alumno seleccionado: <strong x-text="busqueda"></strong></span>
                 </p>
             </div>
 

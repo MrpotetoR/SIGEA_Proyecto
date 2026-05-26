@@ -98,8 +98,11 @@
                     <div class="sm:col-span-2 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-700 rounded-lg p-3">
                         <p class="text-xs text-green-700 dark:text-green-300 uppercase font-semibold">Factura cargada</p>
                         <a href="{{ asset('storage/'.$vale->factura_path) }}" target="_blank"
-                           class="text-sm text-[#0606F0] dark:text-blue-400 hover:underline inline-flex items-center gap-1 mt-1">
-                            📎 Ver factura
+                           class="text-sm text-[#0606F0] dark:text-blue-400 hover:underline inline-flex items-center gap-1.5 mt-1">
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/>
+                            </svg>
+                            Ver factura
                         </a>
                         <p class="text-xs text-gray-400 mt-0.5">
                             Subida por {{ $vale->facturaSubidaPor?->name ?? '—' }} ·
@@ -119,26 +122,38 @@
                 <div class="flex flex-wrap gap-2 mb-5">
                     @if($puedeAutorizar)
                         <button type="button" @click="accion = (accion === 'autorizar' ? null : 'autorizar')"
-                                class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium">
-                            ✓ Autorizar
+                                class="inline-flex items-center gap-1.5 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium">
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                            </svg>
+                            Autorizar
                         </button>
                     @endif
                     @if($puedeRechazar)
                         <button type="button" @click="accion = (accion === 'rechazar' ? null : 'rechazar')"
-                                class="bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded-lg text-sm font-medium">
-                            ✗ Rechazar
+                                class="inline-flex items-center gap-1.5 bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded-lg text-sm font-medium">
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                            </svg>
+                            Rechazar
                         </button>
                     @endif
                     @if($puedeSubirFactura)
                         <button type="button" @click="accion = (accion === 'factura' ? null : 'factura')"
-                                class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium">
-                            📎 Subir factura
+                                class="inline-flex items-center gap-1.5 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium">
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/>
+                            </svg>
+                            Subir factura
                         </button>
                     @endif
                     @if($puedeCancelar)
                         <button type="button" @click="accion = (accion === 'cancelar' ? null : 'cancelar')"
-                                class="bg-slate-600 hover:bg-slate-700 text-white px-4 py-2 rounded-lg text-sm font-medium">
-                            ⊘ Cancelar
+                                class="inline-flex items-center gap-1.5 bg-slate-600 hover:bg-slate-700 text-white px-4 py-2 rounded-lg text-sm font-medium">
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/>
+                            </svg>
+                            Cancelar
                         </button>
                     @endif
                 </div>
@@ -231,8 +246,11 @@
                           @submit.prevent="onSubmit($event)"
                           class="border-t dark:border-gray-700 pt-4 space-y-3">
                         @csrf
-                        <div class="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700 rounded-lg p-3 text-xs text-amber-700 dark:text-amber-300">
-                            ⚠ La factura solo se puede subir UNA vez. Asegúrate de elegir el archivo correcto.
+                        <div class="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700 rounded-lg p-3 text-xs text-amber-700 dark:text-amber-300 inline-flex items-start gap-2 w-full">
+                            <svg class="w-4 h-4 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                            </svg>
+                            <span>La factura solo se puede subir UNA vez. Asegúrate de elegir el archivo correcto.</span>
                         </div>
                         <div>
                             <label class="text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase">Factura digital *</label>
@@ -270,8 +288,11 @@
                           class="border-t dark:border-gray-700 pt-4 space-y-3">
                         @csrf
                         @if(in_array($vale->estatus, ['autorizada', 'comprobada']))
-                            <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-lg p-3 text-xs text-blue-700 dark:text-blue-300">
-                                ℹ Al cancelar este vale, ${{ number_format((float) $vale->monto, 2) }} se devolverán al fondo de Caja Chica.
+                            <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-lg p-3 text-xs text-blue-700 dark:text-blue-300 inline-flex items-start gap-2 w-full">
+                                <svg class="w-4 h-4 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                                <span>Al cancelar este vale, ${{ number_format((float) $vale->monto, 2) }} se devolverán al fondo de Caja Chica.</span>
                             </div>
                         @endif
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -327,8 +348,11 @@
                             </p>
                             @if($log->evidencia_path)
                                 <a href="{{ $log->evidencia_url }}" target="_blank"
-                                   class="text-xs text-[#0606F0] dark:text-blue-400 hover:underline">
-                                    📎 Ver evidencia
+                                   class="text-xs text-[#0606F0] dark:text-blue-400 hover:underline inline-flex items-center gap-1 mt-1">
+                                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/>
+                                    </svg>
+                                    Ver evidencia
                                 </a>
                             @endif
                         </div>
