@@ -19,10 +19,14 @@ use Illuminate\Support\Facades\Storage;
 class AlumnosController extends Controller
 {
     private \App\Services\NotificacionService $notificaciones;
+    private \App\Services\IngresoCajaService $ingresosCaja;
 
-    public function __construct(\App\Services\NotificacionService $notificaciones)
-    {
+    public function __construct(
+        \App\Services\NotificacionService $notificaciones,
+        \App\Services\IngresoCajaService $ingresosCaja
+    ) {
         $this->notificaciones = $notificaciones;
+        $this->ingresosCaja   = $ingresosCaja;
     }
     public function index(Request $request)
     {
@@ -449,18 +453,28 @@ class AlumnosController extends Controller
         return back()->with('success', 'Reingreso registrado.');
     }
 
-    public function aprobarBaucher(PagoCuatrimestre $pago)
+    public function aprobarBaucher(Request $request, PagoCuatrimestre $pago)
     {
         if (!$pago->estaPendiente()) {
             return back()->with('error', 'Este váucher ya fue revisado.');
         }
 
-        $pago->update([
-            'estatus'      => 'aprobado',
-            'revisado_por' => auth()->id(),
-            'revisado_en'  => now(),
-            'comentario_rechazo' => null,
+        // Si el gestor capturó/confirmó monto al aprobar, persistirlo.
+        // Si no, se usará la tarifa default vía monto_efectivo accessor.
+        $request->validate([
+            'monto' => 'nullable|numeric|min:0|max:9999999.99',
         ]);
+
+        $datos = [
+            'estatus'            => 'aprobado',
+            'revisado_por'       => auth()->id(),
+            'revisado_en'        => now(),
+            'comentario_rechazo' => null,
+        ];
+        if ($request->filled('monto')) {
+            $datos['monto'] = $request->monto;
+        }
+        $pago->update($datos);
 
         $alumno = $pago->alumno;
         $this->notificaciones->enviar(
@@ -470,6 +484,15 @@ class AlumnosController extends Controller
             "Tu váucher del {$pago->cuatrimestre}° cuatrimestre ha sido validado exitosamente.",
             ['icono' => 'clipboard-check', 'color' => 'green', 'url' => route('alumno.pagos')]
         );
+
+        // Hook a Caja General: registrar el ingreso automáticamente.
+        // Idempotente: si ya existe (rara doble aprobación), no duplica.
+        try {
+            $this->ingresosCaja->registrarColegiatura($pago->fresh(), $request->user());
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::warning("CajaGeneral: fallo registro colegiatura pago #{$pago->id_pago}: {$e->getMessage()}");
+            // El baucher YA fue aprobado; no abortamos. El admin puede registrar el ingreso manualmente.
+        }
 
         return back()->with('success', "Váucher del {$pago->cuatrimestre}° cuatrimestre aprobado.");
     }

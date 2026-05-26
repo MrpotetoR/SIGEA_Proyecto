@@ -204,6 +204,40 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'verified', 'role:ad
         [\App\Http\Controllers\Admin\NotificacionesCorreosController::class, 'destroy'])
         ->name('caja-chica.correos.destroy');
 
+    // ============================================================
+    // CAJA GENERAL — Dashboard, reportes y cobros de trámites
+    // ============================================================
+    // Dashboard + reportes
+    Route::get('/caja-general',
+        [\App\Http\Controllers\Admin\CajaGeneralController::class, 'index'])
+        ->name('caja-general.index');
+    Route::get('/caja-general/consolidado',
+        [\App\Http\Controllers\Admin\CajaGeneralController::class, 'consolidado'])
+        ->name('caja-general.consolidado');
+    Route::get('/caja-general/export/pdf',
+        [\App\Http\Controllers\Admin\CajaGeneralController::class, 'exportPdf'])
+        ->name('caja-general.export-pdf');
+    Route::get('/caja-general/export/csv',
+        [\App\Http\Controllers\Admin\CajaGeneralController::class, 'exportCsv'])
+        ->name('caja-general.export-csv');
+
+    // Cobros manuales de trámites (kárdex, constancias, etc.)
+    Route::get('/caja-general/tramites',
+        [\App\Http\Controllers\Admin\CobroTramiteController::class, 'index'])
+        ->name('caja-general.cobro-tramite.index');
+    Route::get('/caja-general/tramites/nuevo',
+        [\App\Http\Controllers\Admin\CobroTramiteController::class, 'create'])
+        ->name('caja-general.cobro-tramite.create');
+    Route::post('/caja-general/tramites',
+        [\App\Http\Controllers\Admin\CobroTramiteController::class, 'store'])
+        ->name('caja-general.cobro-tramite.store');
+    Route::post('/caja-general/tramites/{cobro}/cancelar',
+        [\App\Http\Controllers\Admin\CobroTramiteController::class, 'cancelar'])
+        ->name('caja-general.cobro-tramite.cancelar');
+    Route::get('/caja-general/tramites/alumnos/buscar',
+        [\App\Http\Controllers\Admin\CobroTramiteController::class, 'buscarAlumnos'])
+        ->name('caja-general.cobro-tramite.alumnos');
+
     // Chatbot (compartido).
     Route::post('/chatbot', [\App\Http\Controllers\ChatbotController::class, 'responder'])->name('chatbot');
 });
