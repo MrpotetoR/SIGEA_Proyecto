@@ -125,14 +125,14 @@
     {{-- Aviso si está cancelado/rechazado --}}
     @if($vale->estatus === 'cancelada')
         <div class="nota-cancelado">
-            <strong>⊘ ESTE VALE FUE CANCELADO</strong>
+            <strong>ESTE VALE FUE CANCELADO</strong>
             @if($vale->cancelado_en)
                 · {{ $vale->cancelado_en->format('d/m/Y H:i') }}
             @endif
         </div>
     @elseif($vale->estatus === 'rechazada')
         <div class="nota-cancelado">
-            <strong>✗ ESTE VALE FUE RECHAZADO</strong>
+            <strong>ESTE VALE FUE RECHAZADO</strong>
             @if($vale->motivo_rechazo)
                 <div style="margin-top:4px; font-style:italic;">{{ $vale->motivo_rechazo }}</div>
             @endif
@@ -172,7 +172,7 @@
                 <tr>
                     <td class="lbl">Factura comprobada:</td>
                     <td>
-                        <span style="color:#15803d; font-weight:bold;">✓ Sí</span>
+                        <span style="color:#15803d; font-weight:bold;">Sí</span>
                         <span style="font-size:9px;color:#888;">
                             · {{ $vale->facturaSubidaPor?->name ?? '—' }}
                             · {{ $vale->factura_subida_en?->format('d/m/Y H:i') }}

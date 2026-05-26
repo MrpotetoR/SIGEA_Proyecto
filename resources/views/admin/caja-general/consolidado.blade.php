@@ -51,8 +51,11 @@
             {{-- INGRESOS (Caja General) --}}
             <div class="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border-2 border-green-300 dark:border-green-700 rounded-2xl p-6">
                 <div class="flex items-center justify-between mb-3">
-                    <h2 class="text-base font-bold text-green-700 dark:text-green-300 uppercase tracking-wider">
-                        ↗ Ingresos · Caja General
+                    <h2 class="text-base font-bold text-green-700 dark:text-green-300 uppercase tracking-wider inline-flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M7 17l9.2-9.2M17 17V7H7"/>
+                        </svg>
+                        Ingresos · Caja General
                     </h2>
                 </div>
                 <p class="text-4xl font-bold text-green-900 dark:text-green-200">
@@ -64,19 +67,39 @@
 
                 <div class="mt-4 space-y-2 text-sm">
                     <div class="flex justify-between text-gray-700 dark:text-gray-300">
-                        <span>🎓 Colegiaturas</span>
+                        <span class="inline-flex items-center gap-1.5">
+                            <svg class="w-4 h-4 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/>
+                            </svg>
+                            Colegiaturas
+                        </span>
                         <span class="font-mono font-semibold">${{ number_format($ingresosResumen['colegiaturas'], 2) }}</span>
                     </div>
                     <div class="flex justify-between text-gray-700 dark:text-gray-300">
-                        <span>🛍 Productos tienda</span>
+                        <span class="inline-flex items-center gap-1.5">
+                            <svg class="w-4 h-4 text-purple-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+                            </svg>
+                            Productos tienda
+                        </span>
                         <span class="font-mono font-semibold">${{ number_format($ingresosResumen['productos'], 2) }}</span>
                     </div>
                     <div class="flex justify-between text-gray-700 dark:text-gray-300">
-                        <span>📋 Trámites</span>
+                        <span class="inline-flex items-center gap-1.5">
+                            <svg class="w-4 h-4 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                            </svg>
+                            Trámites
+                        </span>
                         <span class="font-mono font-semibold">${{ number_format($ingresosResumen['tramites'], 2) }}</span>
                     </div>
                     <div class="flex justify-between text-gray-700 dark:text-gray-300">
-                        <span>💰 Otros</span>
+                        <span class="inline-flex items-center gap-1.5">
+                            <svg class="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            Otros
+                        </span>
                         <span class="font-mono font-semibold">${{ number_format($ingresosResumen['otros'], 2) }}</span>
                     </div>
                 </div>
@@ -85,8 +108,11 @@
             {{-- EGRESOS (Caja Chica) --}}
             <div class="bg-gradient-to-br from-rose-50 to-red-50 dark:from-rose-900/20 dark:to-red-900/20 border-2 border-rose-300 dark:border-rose-700 rounded-2xl p-6">
                 <div class="flex items-center justify-between mb-3">
-                    <h2 class="text-base font-bold text-rose-700 dark:text-rose-300 uppercase tracking-wider">
-                        ↘ Egresos · Caja Chica
+                    <h2 class="text-base font-bold text-rose-700 dark:text-rose-300 uppercase tracking-wider inline-flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M17 17L7.8 7.8M7 17h10V7"/>
+                        </svg>
+                        Egresos · Caja Chica
                     </h2>
                 </div>
                 <p class="text-4xl font-bold text-rose-900 dark:text-rose-200">

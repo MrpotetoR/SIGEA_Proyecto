@@ -31,7 +31,7 @@ class SaldoCajaChicaBajo extends Mailable
     {
         $faltante = number_format((float) $this->fondo->faltante_reponer, 2);
         return new Envelope(
-            subject: "⚠ Caja Chica · Repone \${$faltante} antes de fin de mes — UDEA",
+            subject: "Caja Chica · Repone \${$faltante} antes de fin de mes — UDEA",
         );
     }
 

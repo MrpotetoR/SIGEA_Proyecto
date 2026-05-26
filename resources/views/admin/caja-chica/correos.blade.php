@@ -20,7 +20,12 @@
 
         {{-- Info card --}}
         <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-xl p-4 text-sm text-blue-800 dark:text-blue-200">
-            <p class="font-semibold mb-1">📩 Correos adicionales para notificaciones de Caja Chica</p>
+            <p class="font-semibold mb-1 inline-flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                </svg>
+                Correos adicionales para notificaciones de Caja Chica
+            </p>
             <p class="text-xs leading-relaxed">
                 Estos correos recibirán <strong>copia</strong> de las notificaciones críticas que llegan a tu correo
                 principal (<strong>{{ auth()->user()->email }}</strong>), como el aviso de reposición pendiente
