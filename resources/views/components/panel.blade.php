@@ -5,11 +5,11 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ $title ?? 'SIGEA' }} — SIGEA</title>
+    <title>{{ $title ?? 'UDEA' }} — UDEA</title>
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=inter:300,400,500,600,700,800&display=swap" rel="stylesheet" />
     <script>
-        (function(){
+        (function () {
             var t = localStorage.getItem('theme');
             if (t === 'dark' || (!t && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
                 document.documentElement.classList.add('dark');
@@ -18,7 +18,9 @@
     </script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
-        [x-cloak] { display: none !important; }
+        [x-cloak] {
+            display: none !important;
+        }
 
         body {
             font-family: 'Inter', system-ui, sans-serif;
@@ -49,13 +51,23 @@
         }
 
         @keyframes rainbowShift {
-            0% { background-position: 0% 50%; }
-            100% { background-position: 300% 50%; }
+            0% {
+                background-position: 0% 50%;
+            }
+
+            100% {
+                background-position: 300% 50%;
+            }
         }
 
         @keyframes rainbowShine {
-            0% { left: -50%; }
-            100% { left: 150%; }
+            0% {
+                left: -50%;
+            }
+
+            100% {
+                left: 150%;
+            }
         }
 
         /* Track (container) for rainbow bars */
@@ -65,6 +77,7 @@
             overflow: hidden;
             position: relative;
         }
+
         .dark .rainbow-track {
             background: rgba(247, 247, 247, 0.1);
         }
@@ -83,21 +96,38 @@
             animation: gsapFadeIn 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
             opacity: 0;
         }
+
         @keyframes gsapFadeIn {
-            from { opacity: 0; transform: translateY(18px); }
-            to   { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(18px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         /* ─── Sidebar nav items: subtle fade-in (no blocking transform) ─── */
         .sidebar-link {
             animation: sidebarSlideIn 0.25s ease-out both;
         }
+
         @media (prefers-reduced-motion: reduce) {
-            .sidebar-link { animation: none; }
+            .sidebar-link {
+                animation: none;
+            }
         }
+
         @keyframes sidebarSlideIn {
-            from { opacity: 0; }
-            to   { opacity: 1; }
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
         }
 
         /* ─── Cards: scale + fade entrance ─── */
@@ -106,23 +136,29 @@
             opacity: 0;
             transform: translateY(24px) scale(0.97);
         }
+
         @keyframes cardEnter {
-            to { opacity: 1; transform: translateY(0) scale(1); }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
         }
 
         /* ─── Card hover: spring lift ─── */
         .card-hover {
             transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
-                        box-shadow 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+                box-shadow 0.4s cubic-bezier(0.22, 1, 0.36, 1);
         }
+
         .card-hover:hover {
             transform: translateY(-4px) scale(1.01);
             box-shadow: 0 12px 40px -8px rgba(4, 39, 107, 0.15),
-                        0 4px 12px -2px rgba(0, 0, 0, 0.06);
+                0 4px 12px -2px rgba(0, 0, 0, 0.06);
         }
+
         .dark .card-hover:hover {
             box-shadow: 0 12px 40px -8px rgba(0, 0, 0, 0.4),
-                        0 4px 12px -2px rgba(0, 0, 0, 0.2);
+                0 4px 12px -2px rgba(0, 0, 0, 0.2);
         }
 
         /* ─── Stat numbers: count-up reveal ─── */
@@ -131,8 +167,12 @@
             opacity: 0;
             transform: translateY(12px) scale(0.9);
         }
+
         @keyframes statReveal {
-            to { opacity: 1; transform: translateY(0) scale(1); }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
         }
 
         /* ─── Header breadcrumb: slide from right ─── */
@@ -141,8 +181,12 @@
             opacity: 0;
             transform: translateX(-10px);
         }
+
         @keyframes breadcrumbIn {
-            to { opacity: 1; transform: translateX(0); }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
         }
 
         /* ─── Logo: subtle pulse on load ─── */
@@ -151,8 +195,12 @@
             opacity: 0;
             transform: scale(0.8);
         }
+
         @keyframes logoEnter {
-            to { opacity: 1; transform: scale(1); }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
         }
 
         /* ─── Nav group labels: fade in ─── */
@@ -160,18 +208,23 @@
             animation: navLabelIn 0.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
             opacity: 0;
         }
+
         @keyframes navLabelIn {
-            to { opacity: 1; }
+            to {
+                opacity: 1;
+            }
         }
 
         /* ─── Button interactions: micro spring ─── */
         .btn-spring {
             transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
-                        box-shadow 0.3s ease;
+                box-shadow 0.3s ease;
         }
+
         .btn-spring:hover {
             transform: translateY(-2px);
         }
+
         .btn-spring:active {
             transform: translateY(0) scale(0.96);
         }
@@ -179,8 +232,9 @@
         /* ─── Icon buttons: smooth rotate on hover ─── */
         .icon-hover {
             transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
-                        color 0.2s ease;
+                color 0.2s ease;
         }
+
         .icon-hover:hover {
             transform: scale(1.12) rotate(-6deg);
         }
@@ -191,17 +245,31 @@
             opacity: 0;
             transform: translateY(10px);
         }
+
         @keyframes userEnter {
-            to { opacity: 1; transform: translateY(0); }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         /* ─── Notification dot pulse ─── */
         .pulse-dot {
             animation: pulseDot 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
         }
+
         @keyframes pulseDot {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.6; transform: scale(1.5); }
+
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.6;
+                transform: scale(1.5);
+            }
         }
 
         /* ─── Notification badge ─── */
@@ -217,16 +285,36 @@
             animation: pageSlide 0.65s cubic-bezier(0.22, 1, 0.36, 1) forwards;
             opacity: 0;
         }
+
         @keyframes pageSlide {
-            from { opacity: 0; transform: translateY(20px); }
-            to   { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         /* ─── Guard global anti-overflow horizontal en movil ─── */
         @media (max-width: 767px) {
-            html, body { overflow-x: hidden; max-width: 100vw; }
-            main { max-width: 100vw; overflow-x: hidden; }
-            main > * { max-width: 100%; }
+
+            html,
+            body {
+                overflow-x: hidden;
+                max-width: 100vw;
+            }
+
+            main {
+                max-width: 100vw;
+                overflow-x: hidden;
+            }
+
+            main>* {
+                max-width: 100%;
+            }
         }
 
         /* ─── Responsive helpers ─── */
@@ -236,35 +324,45 @@
            - Si NO tiene wrapper con overflow, se limita al ancho disponible
              (caso borde: tablas pequenas se ven bien; tablas largas se adaptan).
            Ademas, un helper JS auto-envuelve tablas sueltas (ver script al final). */
-        main .overflow-x-auto > table,
-        main .overflow-auto > table,
-        main .overflow-y-auto > table,
-        main .custom-scrollbar > table {
+        main .overflow-x-auto>table,
+        main .overflow-auto>table,
+        main .overflow-y-auto>table,
+        main .custom-scrollbar>table {
             min-width: max-content;
             width: 100%;
         }
+
         /* Para scroll vertical (no horizontal), la tabla SIEMPRE debe ocupar 100%
            del ancho del contenedor — evita que columnas con poco contenido dejen
            espacio blanco a la derecha. */
-        main .overflow-y-auto > table,
-        main .custom-scrollbar > table {
+        main .overflow-y-auto>table,
+        main .custom-scrollbar>table {
             min-width: 100%;
             width: 100% !important;
             table-layout: auto;
         }
+
         /* Wrapper auto-inyectado */
         main .auto-table-wrap {
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
             max-width: 100%;
         }
-        main .auto-table-wrap > table { min-width: max-content; }
+
+        main .auto-table-wrap>table {
+            min-width: max-content;
+        }
 
         /* Forms: inputs que son type=number/text no deben ser mas anchos que su contenedor */
-        main input, main select, main textarea { max-width: 100%; }
+        main input,
+        main select,
+        main textarea {
+            max-width: 100%;
+        }
 
         /* Contenedores con max-w-* en movil: relajar a 100% para que no se salgan del viewport */
         @media (max-width: 639px) {
+
             main .max-w-xl,
             main .max-w-2xl,
             main .max-w-3xl,
@@ -277,9 +375,9 @@
         }
 
         /* Botones de accion en tablas: permitir que se envuelvan sin overflow */
-        main td > .flex.gap-1,
-        main td > .flex.gap-2,
-        main td > .flex.items-center.gap-2 {
+        main td>.flex.gap-1,
+        main td>.flex.gap-2,
+        main td>.flex.items-center.gap-2 {
             flex-wrap: wrap;
         }
 
@@ -289,9 +387,11 @@
             main .grid.grid-cols-2:not([class*="sm:grid-cols-"]):not([class*="md:grid-cols-"]):not([class*="lg:grid-cols-"]) {
                 grid-template-columns: minmax(0, 1fr);
             }
+
             main .grid.grid-cols-3:not([class*="sm:grid-cols-"]):not([class*="md:grid-cols-"]):not([class*="lg:grid-cols-"]) {
                 grid-template-columns: minmax(0, 1fr);
             }
+
             main .grid.grid-cols-4:not([class*="sm:grid-cols-"]):not([class*="md:grid-cols-"]):not([class*="lg:grid-cols-"]) {
                 grid-template-columns: repeat(2, minmax(0, 1fr));
             }
@@ -311,7 +411,7 @@
         /* Notif dropdown: en móvil usamos position:fixed anclado al viewport
            para que no quede cortado por el header ni se desborde por la izquierda. */
         @media (max-width: 639px) {
-            [x-data*="notificaciones"] > div.absolute {
+            [x-data*="notificaciones"]>div.absolute {
                 position: fixed !important;
                 top: 60px !important;
                 left: 8px !important;
@@ -322,26 +422,172 @@
             }
         }
 
+        /* ════════════════════════════════════════════════════════════
+           ─── Liquid Glass (estilo Apple) ─────────────────────────────
+           Capas usadas para imitar el material translúcido de iOS/macOS:
+             1. Background tint MUY bajo (≤15%) sobre backdrop muy borroso
+                + saturate + contrast → da el efecto "frosted".
+             2. Hairline border casi invisible (alpha ≤ 0.25).
+             3. ::before  → specular reflection (banda blanca superior).
+             4. ::after   → inner refraction (gradiente diagonal interno).
+             5. Sombra multi-capa: cercana fuerte + lejana ambiental + glow
+                tintado del estado.
+             6. Inset highlight en el borde superior y "scoop" inferior.
+           ════════════════════════════════════════════════════════════ */
+        /* Base: pill clara translúcida con blur */
+        .liquid-glass {
+            position: relative;
+            isolation: isolate;
+            background: rgba(255, 255, 255, 0.55);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow:
+                0 8px 24px -6px rgba(15, 23, 42, 0.12),
+                0 24px 60px -16px rgba(15, 23, 42, 0.18),
+                inset 0 1px 0 rgba(255, 255, 255, 0.8);
+            transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+                box-shadow 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        /* Specular highlight superior — reflejo de luz muy sutil */
+        .liquid-glass::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 10%;
+            right: 10%;
+            height: 40%;
+            border-radius: inherit;
+            background: linear-gradient(180deg,
+                    rgba(255, 255, 255, 0.45) 0%,
+                    rgba(255, 255, 255, 0) 100%);
+            pointer-events: none;
+            opacity: 0.6;
+            z-index: 1;
+        }
+
+        .liquid-glass>* {
+            position: relative;
+            z-index: 2;
+        }
+
+        .liquid-glass:hover {
+            transform: translateY(-1px);
+        }
+
+        /* ─── Variantes: borde delgado de color + glow tintado sutil ─── */
+        .liquid-glass--success {
+            border: 1.5px solid rgba(16, 185, 129, 0.55);
+            box-shadow:
+                0 8px 24px -6px rgba(16, 185, 129, 0.18),
+                0 24px 60px -16px rgba(16, 185, 129, 0.22),
+                inset 0 1px 0 rgba(255, 255, 255, 0.8);
+        }
+
+        .liquid-glass--error {
+            border: 1.5px solid rgba(239, 68, 68, 0.55);
+            box-shadow:
+                0 8px 24px -6px rgba(239, 68, 68, 0.18),
+                0 24px 60px -16px rgba(239, 68, 68, 0.22),
+                inset 0 1px 0 rgba(255, 255, 255, 0.8);
+        }
+
+        .liquid-glass--warning {
+            border: 1.5px solid rgba(245, 158, 11, 0.55);
+            box-shadow:
+                0 8px 24px -6px rgba(245, 158, 11, 0.18),
+                0 24px 60px -16px rgba(245, 158, 11, 0.22),
+                inset 0 1px 0 rgba(255, 255, 255, 0.8);
+        }
+
+        /* Variante dark: mismo concepto, fondo oscuro */
+        .dark .liquid-glass {
+            background: rgba(30, 41, 59, 0.55);
+            border-color: rgba(255, 255, 255, 0.15);
+            box-shadow:
+                0 8px 24px -6px rgba(0, 0, 0, 0.45),
+                0 24px 60px -16px rgba(0, 0, 0, 0.55),
+                inset 0 1px 0 rgba(255, 255, 255, 0.15);
+        }
+
+        .dark .liquid-glass::before {
+            background: linear-gradient(180deg,
+                    rgba(255, 255, 255, 0.18) 0%,
+                    rgba(255, 255, 255, 0) 100%);
+            opacity: 0.5;
+        }
+
+        .dark .liquid-glass--success {
+            border-color: rgba(52, 211, 153, 0.55);
+            box-shadow:
+                0 8px 24px -6px rgba(16, 185, 129, 0.25),
+                0 24px 60px -16px rgba(16, 185, 129, 0.35),
+                inset 0 1px 0 rgba(255, 255, 255, 0.15);
+        }
+
+        .dark .liquid-glass--error {
+            border-color: rgba(248, 113, 113, 0.55);
+            box-shadow:
+                0 8px 24px -6px rgba(239, 68, 68, 0.25),
+                0 24px 60px -16px rgba(239, 68, 68, 0.35),
+                inset 0 1px 0 rgba(255, 255, 255, 0.15);
+        }
+
+        .dark .liquid-glass--warning {
+            border-color: rgba(251, 191, 36, 0.55);
+            box-shadow:
+                0 8px 24px -6px rgba(245, 158, 11, 0.25),
+                0 24px 60px -16px rgba(245, 158, 11, 0.35),
+                inset 0 1px 0 rgba(255, 255, 255, 0.15);
+        }
+
+        @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+            .liquid-glass {
+                background: rgba(255, 255, 255, 0.95);
+            }
+
+            .dark .liquid-glass {
+                background: rgba(30, 41, 59, 0.95);
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .liquid-glass {
+                transition: none;
+            }
+
+            .liquid-glass:hover {
+                transform: none;
+            }
+        }
+
         /* ─── Smooth scrollbar ─── */
         .custom-scrollbar {
             scroll-behavior: smooth;
         }
+
         .custom-scrollbar::-webkit-scrollbar {
             width: 5px;
         }
+
         .custom-scrollbar::-webkit-scrollbar-track {
             background: transparent;
         }
+
         .custom-scrollbar::-webkit-scrollbar-thumb {
             background: rgba(4, 39, 107, 0.15);
             border-radius: 9999px;
         }
+
         .custom-scrollbar::-webkit-scrollbar-thumb:hover {
             background: rgba(4, 39, 107, 0.3);
         }
+
         .dark .custom-scrollbar::-webkit-scrollbar-thumb {
             background: rgba(247, 247, 247, 0.15);
         }
+
         .dark .custom-scrollbar::-webkit-scrollbar-thumb:hover {
             background: rgba(247, 247, 247, 0.3);
         }
@@ -353,18 +599,14 @@
     <div class="flex h-screen overflow-hidden">
 
         {{-- Backdrop (solo móvil, cuando el sidebar está abierto) --}}
-        <div x-show="sidebarOpen" x-transition.opacity
-            @click="sidebarOpen = false"
-            class="fixed inset-0 bg-black/50 z-30 lg:hidden"
-            style="display: none;"></div>
+        <div x-show="sidebarOpen" x-transition.opacity @click="sidebarOpen = false"
+            class="fixed inset-0 bg-black/50 z-30 lg:hidden" style="display: none;"></div>
 
         {{-- ======== SIDEBAR ======== --}}
-        <aside
-            class="bg-white dark:bg-[#1C1E46] border-r border-gray-200 dark:border-white/10 flex flex-col flex-shrink-0
+        <aside class="bg-white dark:bg-[#1C1E46] border-r border-gray-200 dark:border-white/10 flex flex-col flex-shrink-0
                 fixed lg:static inset-y-0 left-0 z-40 w-[260px] lg:w-[220px]
                 transform transition-transform duration-200 ease-out
-                lg:translate-x-0"
-            :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'">
+                lg:translate-x-0" :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'">
 
             {{-- Logo --}}
             <div class="flex items-center px-5 h-20 border-b border-gray-100 dark:border-white/10 logo-enter">
@@ -406,7 +648,9 @@
                     {{ strtoupper(substr(auth()->user()->name, 0, 2)) }}
                 </div>
                 <div class="flex-1 min-w-0">
-                    <p class="text-[13px] font-semibold text-[#121D30] dark:text-[#F7F7F7] truncate">{{ auth()->user()->name }}</p>
+                    <p class="text-[13px] font-semibold text-[#121D30] dark:text-[#F7F7F7] truncate">
+                        {{ auth()->user()->name }}
+                    </p>
                     <p class="text-[11px] text-[#04276B]/40 dark:text-[#f3f4f6]/70 truncate">
                         @php
                             $user = auth()->user();
@@ -438,13 +682,14 @@
         <div class="flex-1 flex flex-col overflow-hidden">
 
             {{-- Header --}}
-            <header class="bg-[#EEEEEE] dark:bg-[#121D30] flex items-center justify-between gap-2 px-4 sm:px-7 h-14 flex-shrink-0">
+            <header
+                class="bg-[#EEEEEE] dark:bg-[#121D30] flex items-center justify-between gap-2 px-4 sm:px-7 h-14 flex-shrink-0">
                 {{-- Hamburger (solo móvil/tablet) --}}
                 <button type="button" @click="sidebarOpen = true"
-                        class="lg:hidden p-2 -ml-1 rounded-xl text-[#121D30]/60 dark:text-[#F7F7F7]/60 hover:text-[#0606F0] dark:hover:text-[#F7F7F7] hover:bg-[#04276B]/5 dark:hover:bg-white/10 transition-colors flex-shrink-0"
-                        aria-label="Abrir menú">
+                    class="lg:hidden p-2 -ml-1 rounded-xl text-[#121D30]/60 dark:text-[#F7F7F7]/60 hover:text-[#0606F0] dark:hover:text-[#F7F7F7] hover:bg-[#04276B]/5 dark:hover:bg-white/10 transition-colors flex-shrink-0"
+                    aria-label="Abrir menú">
                     <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
                     </svg>
                 </button>
 
@@ -454,35 +699,40 @@
 
                     {{-- Badge de contexto educativo (solo Gestor Escolar) --}}
                     @isset($contextoActual)
-                        <svg class="hidden sm:inline w-3.5 h-3.5 text-[#121D30]/25 dark:text-[#F7F7F7]/25" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
-                        </svg>
-                        @php $esBachi = $contextoActual === 'bachillerato'; @endphp
-                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-bold uppercase tracking-wide
-                                     {{ $esBachi
-                                        ? 'bg-amber-100 dark:bg-amber-500/20 text-amber-700 dark:text-amber-300'
-                                        : 'bg-[#0606F0]/10 dark:bg-[#0606F0]/25 text-[#0606F0] dark:text-blue-300' }}">
-                            <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                                @if($esBachi)
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
-                                @else
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/>
-                                @endif
-                            </svg>
-                            {{ $esBachi ? 'Bachillerato' : 'Universidad' }}
-                        </span>
+                                    <svg class="hidden sm:inline w-3.5 h-3.5 text-[#121D30]/25 dark:text-[#F7F7F7]/25" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                                    </svg>
+                                    @php $esBachi = $contextoActual === 'bachillerato'; @endphp
+                                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-bold uppercase tracking-wide
+                                                                                     {{ $esBachi
+                        ? 'bg-amber-100 dark:bg-amber-500/20 text-amber-700 dark:text-amber-300'
+                        : 'bg-[#0606F0]/10 dark:bg-[#0606F0]/25 text-[#0606F0] dark:text-blue-300' }}">
+                                        <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                            @if($esBachi)
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                    d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                                            @else
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                    d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
+                                            @endif
+                                        </svg>
+                                        {{ $esBachi ? 'Bachillerato' : 'Universidad' }}
+                                    </span>
                     @endisset
 
-                    <svg class="hidden sm:inline w-3.5 h-3.5 text-[#121D30]/25 dark:text-[#F7F7F7]/25" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                        stroke-width="2">
+                    <svg class="hidden sm:inline w-3.5 h-3.5 text-[#121D30]/25 dark:text-[#F7F7F7]/25" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
                     </svg>
-                    <span class="hidden md:inline text-[#121D30]/40 dark:text-[#F7F7F7]/40 truncate">{{ $panelNombre ?? 'Panel' }}</span>
-                    <svg class="hidden md:inline w-3.5 h-3.5 text-[#121D30]/25 dark:text-[#F7F7F7]/25 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                        stroke-width="2">
+                    <span
+                        class="hidden md:inline text-[#121D30]/40 dark:text-[#F7F7F7]/40 truncate">{{ $panelNombre ?? 'Panel' }}</span>
+                    <svg class="hidden md:inline w-3.5 h-3.5 text-[#121D30]/25 dark:text-[#F7F7F7]/25 flex-shrink-0"
+                        fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
                     </svg>
-                    <span class="font-medium text-[#121D30] dark:text-[#F7F7F7] truncate">{{ $title ?? 'Dashboard' }}</span>
+                    <span
+                        class="font-medium text-[#121D30] dark:text-[#F7F7F7] truncate">{{ $title ?? 'Dashboard' }}</span>
                 </div>
 
                 {{-- Acciones header --}}
@@ -491,8 +741,10 @@
                     <x-theme-toggle />
                     {{-- Notificaciones --}}
                     <div x-data="notificaciones()" x-init="init()" class="relative">
-                        <button @click="toggle()" class="relative p-2.5 rounded-xl text-[#121D30]/40 dark:text-[#F7F7F7]/40 hover:text-[#0606F0] dark:hover:text-[#F7F7F7] hover:bg-[#04276B]/5 dark:hover:bg-white/10 transition-colors">
-                            <svg class="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                        <button @click="toggle()"
+                            class="relative p-2.5 rounded-xl text-[#121D30]/40 dark:text-[#F7F7F7]/40 hover:text-[#0606F0] dark:hover:text-[#F7F7F7] hover:bg-[#04276B]/5 dark:hover:bg-white/10 transition-colors">
+                            <svg class="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                                stroke-width="1.8">
                                 <path stroke-linecap="round" stroke-linejoin="round"
                                     d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                             </svg>
@@ -513,10 +765,11 @@
                             style="display: none;">
 
                             {{-- Header --}}
-                            <div class="px-5 py-3.5 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between">
+                            <div
+                                class="px-5 py-3.5 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between">
                                 <h3 class="text-[14px] font-bold text-gray-800 dark:text-gray-100">Notificaciones</h3>
                                 <button x-show="noLeidas > 0" @click="marcarTodasLeidas()"
-                                        class="text-[11px] font-medium text-[#0606F0] dark:text-blue-400 hover:underline">
+                                    class="text-[11px] font-medium text-[#0606F0] dark:text-blue-400 hover:underline">
                                     Marcar todas como leídas
                                 </button>
                             </div>
@@ -525,8 +778,10 @@
                             <div class="max-h-[400px] overflow-y-auto custom-scrollbar">
                                 <template x-if="items.length === 0">
                                     <div class="px-5 py-10 text-center">
-                                        <svg class="w-10 h-10 text-gray-200 dark:text-gray-600 mx-auto mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+                                        <svg class="w-10 h-10 text-gray-200 dark:text-gray-600 mx-auto mb-2" fill="none"
+                                            viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                                         </svg>
                                         <p class="text-[13px] text-gray-400 dark:text-gray-500">Sin notificaciones</p>
                                     </div>
@@ -537,19 +792,26 @@
                                         :class="item.leida ? 'opacity-60' : 'bg-[#0606F0]/[0.03] dark:bg-blue-900/10'"
                                         class="px-5 py-3.5 flex gap-3 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors border-b border-gray-50 dark:border-gray-700/50 last:border-b-0">
                                         {{-- Icono --}}
-                                        <div class="flex-shrink-0 w-9 h-9 rounded-xl flex items-center justify-center" :class="item.color_class">
-                                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-                                                <path stroke-linecap="round" stroke-linejoin="round" :d="item.icono_svg"/>
+                                        <div class="flex-shrink-0 w-9 h-9 rounded-xl flex items-center justify-center"
+                                            :class="item.color_class">
+                                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                                                stroke-width="1.8">
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                    :d="item.icono_svg" />
                                             </svg>
                                         </div>
                                         {{-- Contenido --}}
                                         <div class="flex-1 min-w-0">
                                             <div class="flex items-start justify-between gap-2">
-                                                <p class="text-[12px] font-semibold text-gray-800 dark:text-gray-200 leading-tight" x-text="item.titulo"></p>
-                                                <span x-show="!item.leida" class="flex-shrink-0 w-2 h-2 bg-[#0606F0] rounded-full mt-1"></span>
+                                                <p class="text-[12px] font-semibold text-gray-800 dark:text-gray-200 leading-tight"
+                                                    x-text="item.titulo"></p>
+                                                <span x-show="!item.leida"
+                                                    class="flex-shrink-0 w-2 h-2 bg-[#0606F0] rounded-full mt-1"></span>
                                             </div>
-                                            <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5 line-clamp-2" x-text="item.mensaje"></p>
-                                            <p class="text-[10px] text-gray-400 dark:text-gray-500 mt-1" x-text="item.tiempo"></p>
+                                            <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5 line-clamp-2"
+                                                x-text="item.mensaje"></p>
+                                            <p class="text-[10px] text-gray-400 dark:text-gray-500 mt-1"
+                                                x-text="item.tiempo"></p>
                                         </div>
                                     </div>
                                 </template>
@@ -566,7 +828,8 @@
                         </svg>
                     </button>
                     {{-- Buscar --}}
-                    <button class="hidden sm:flex p-2.5 rounded-xl text-[#121D30]/40 dark:text-[#F7F7F7]/40 hover:text-[#0606F0] dark:hover:text-[#F7F7F7] hover:bg-[#04276B]/5 dark:hover:bg-white/10 transition-colors">
+                    <button
+                        class="hidden sm:flex p-2.5 rounded-xl text-[#121D30]/40 dark:text-[#F7F7F7]/40 hover:text-[#0606F0] dark:hover:text-[#F7F7F7] hover:bg-[#04276B]/5 dark:hover:bg-white/10 transition-colors">
                         <svg class="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor"
                             stroke-width="1.8">
                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -576,37 +839,90 @@
                 </div>
             </header>
 
-            {{-- Alertas de sesión --}}
-            @if (session('success'))
-                <div
-                    class="mx-4 sm:mx-7 mb-3 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300 px-4 py-3 rounded-2xl text-[13px] flex items-center gap-2 fade-in">
-                    <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                        stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-                    </svg>
-                    {{ session('success') }}
-                </div>
-            @endif
-            @if (session('error'))
-                <div
-                    class="mx-4 sm:mx-7 mb-3 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-700 text-red-700 dark:text-red-300 px-4 py-3 rounded-2xl text-[13px] flex items-center gap-2 fade-in">
-                    <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                        stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    {{ session('error') }}
-                </div>
-            @endif
-            @if (session('warning'))
-                <div
-                    class="mx-4 sm:mx-7 mb-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 text-amber-800 dark:text-amber-300 px-4 py-3 rounded-2xl text-[13px] flex items-start gap-2 fade-in">
-                    <svg class="w-4 h-4 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                        stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M12 9v2m0 4h.01M4.93 19h14.14c1.54 0 2.5-1.67 1.73-3L13.73 4a2 2 0 00-3.46 0L3.2 16c-.77 1.33.19 3 1.73 3z" />
-                    </svg>
-                    <span>{{ session('warning') }}</span>
+            {{-- Alertas flotantes de sesión (auto-cierre 15s + botón X) --}}
+            @if (session('success') || session('error') || session('warning'))
+                <div class="fixed top-16 sm:top-20 left-1/2 -translate-x-1/2 z-[60] flex flex-col items-center gap-2 pointer-events-none"
+                    style="max-width: calc(100vw - 1.5rem);">
+
+                    @if (session('success'))
+                        <div x-data="{ show: false }"
+                            x-init="$nextTick(() => show = true); setTimeout(() => show = false, 10000);" x-show="show"
+                            x-transition:enter="transition ease-out duration-400"
+                            x-transition:enter-start="opacity-0 -translate-y-3 scale-95"
+                            x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+                            x-transition:leave="transition ease-in duration-500"
+                            x-transition:leave-start="opacity-100 translate-y-0 scale-100"
+                            x-transition:leave-end="opacity-0 -translate-y-2 scale-95"
+                            class="liquid-glass liquid-glass--success pointer-events-auto relative text-emerald-700 dark:text-emerald-100 pl-4 pr-1.5 py-2.5 rounded-full text-[13px] font-medium flex items-center gap-2.5"
+                            style="display: none;">
+                            <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                                stroke-width="2.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                            </svg>
+                            <span class="whitespace-nowrap">{{ session('success') }}</span>
+                            <button type="button" @click="show = false"
+                                class="flex-shrink-0 ml-auto w-6 h-6 flex items-center justify-center rounded-full text-emerald-600/70 dark:text-emerald-300/70 hover:text-emerald-800 dark:hover:text-emerald-100 hover:bg-emerald-500/15 dark:hover:bg-emerald-400/15 transition-colors"
+                                aria-label="Cerrar notificación">
+                                <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                        </div>
+                    @endif
+
+                    @if (session('error'))
+                        <div x-data="{ show: false }"
+                            x-init="$nextTick(() => show = true); setTimeout(() => show = false, 15000);" x-show="show"
+                            x-transition:enter="transition ease-out duration-400"
+                            x-transition:enter-start="opacity-0 -translate-y-3 scale-95"
+                            x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+                            x-transition:leave="transition ease-in duration-500"
+                            x-transition:leave-start="opacity-100 translate-y-0 scale-100"
+                            x-transition:leave-end="opacity-0 -translate-y-2 scale-95"
+                            class="liquid-glass liquid-glass--error pointer-events-auto relative text-red-700 dark:text-red-100 pl-4 pr-1.5 py-2.5 rounded-full text-[13px] font-medium flex items-center gap-2.5"
+                            style="display: none;">
+                            <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                                stroke-width="2.5">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <span class="whitespace-nowrap">{{ session('error') }}</span>
+                            <button type="button" @click="show = false"
+                                class="flex-shrink-0 ml-auto w-6 h-6 flex items-center justify-center rounded-full text-red-600/70 dark:text-red-300/70 hover:text-red-800 dark:hover:text-red-100 hover:bg-red-500/15 dark:hover:bg-red-400/15 transition-colors"
+                                aria-label="Cerrar notificación">
+                                <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                        </div>
+                    @endif
+
+                    @if (session('warning'))
+                        <div x-data="{ show: false }"
+                            x-init="$nextTick(() => show = true); setTimeout(() => show = false, 15000);" x-show="show"
+                            x-transition:enter="transition ease-out duration-400"
+                            x-transition:enter-start="opacity-0 -translate-y-3 scale-95"
+                            x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+                            x-transition:leave="transition ease-in duration-500"
+                            x-transition:leave-start="opacity-100 translate-y-0 scale-100"
+                            x-transition:leave-end="opacity-0 -translate-y-2 scale-95"
+                            class="liquid-glass liquid-glass--warning pointer-events-auto relative text-amber-800 dark:text-amber-100 pl-4 pr-1.5 py-2.5 rounded-full text-[13px] font-medium flex items-center gap-2.5"
+                            style="display: none;">
+                            <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                                stroke-width="2.5">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M12 9v2m0 4h.01M4.93 19h14.14c1.54 0 2.5-1.67 1.73-3L13.73 4a2 2 0 00-3.46 0L3.2 16c-.77 1.33.19 3 1.73 3z" />
+                            </svg>
+                            <span class="whitespace-nowrap">{{ session('warning') }}</span>
+                            <button type="button" @click="show = false"
+                                class="flex-shrink-0 ml-auto w-6 h-6 flex items-center justify-center rounded-full text-amber-700/70 dark:text-amber-300/70 hover:text-amber-900 dark:hover:text-amber-100 hover:bg-amber-500/15 dark:hover:bg-amber-400/15 transition-colors"
+                                aria-label="Cerrar notificación">
+                                <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                        </div>
+                    @endif
                 </div>
             @endif
 
@@ -624,6 +940,9 @@
         <x-reauth-modal />
     @endauth
 
+    {{-- Modal global de confirmacion (reemplaza a window.confirm). --}}
+    <x-udea-confirm />
+
     @stack('scripts')
 
     {{-- ════════ CHATBOT FLOTANTE (TODOS LOS ROLES) ════════ --}}
@@ -640,46 +959,55 @@
             $chatRoute = match ($chatRol) {
                 'alumno' => route('alumno.chatbot'),
                 'docente' => route('docente.chatbot'),
-                'director' => route('gestor.chatbot'),
-                'servicios' => route('gestor.chatbot'),
+                'gestor' => route('gestor.chatbot'),
                 default => null,
             };
 
             $chatSugerencias = match ($chatRol) {
                 'alumno' => ['Calificaciones', 'Horario', 'Servicio Social', 'Kardex', 'Docentes'],
                 'docente' => ['Mis Grupos', 'Horario', 'Asistencia', 'Calificaciones', 'Evaluaciones', 'Reportes'],
-                'director' => ['Alumnos', 'Docentes', 'Grupos', 'Aprobacion', 'Evaluaciones', 'Plan de Estudios'],
-                'servicios' => ['Alumnos', 'Docentes', 'Inscripciones', 'Constancias', 'Carreras', 'Reportes'],
+                'gestor' => ['Alumnos', 'Inscripciones', 'Constancias', 'Docentes', 'Carreras', 'Reportes'],
                 default => [],
             };
 
             $chatDescripcion = match ($chatRol) {
                 'alumno' => 'Pregunta sobre calificaciones, horario, kardex y mas.',
                 'docente' => 'Pregunta sobre tus grupos, asistencia, calificaciones y mas.',
-                'director' => 'Consulta estadisticas de carrera, docentes, alumnos y mas.',
-                'servicios' => 'Consulta sobre alumnos, inscripciones, reportes y mas.',
+                'gestor' => 'Consulta sobre alumnos, inscripciones, docentes, carreras y reportes.',
                 default => 'Pregunta lo que necesites.',
             };
         @endphp
 
         @if($chatRoute)
             <div id="chatbot-panel"
-                class="fixed z-50 right-4 bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 overflow-hidden flex-col" style="top: 60px; width: 300px; display: none;
-                                max-height: calc(100vh - 80px);
-                                box-shadow: 0 20px 60px -10px rgba(0,0,0,0.18), 0 4px 20px -4px rgba(0,0,0,0.08);">
+                class="fixed z-50 right-4 bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 overflow-hidden flex-col"
+                style="top: 60px; width: 300px; display: none;
+                                                        max-height: calc(100vh - 80px);
+                                                        box-shadow: 0 20px 60px -10px rgba(0,0,0,0.18), 0 4px 20px -4px rgba(0,0,0,0.08);">
 
                 {{-- Header --}}
-                <div class="px-5 py-4 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between flex-shrink-0">
+                <div
+                    class="px-5 py-4 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between flex-shrink-0">
                     <div class="flex items-center gap-2">
-                        <span class="text-[13px] font-bold text-gray-800 dark:text-gray-100">Asistente SIGEA</span>
+                        <span class="text-[13px] font-bold text-gray-800 dark:text-gray-100">Asistente UDEA</span>
                         <span class="text-[10px] font-semibold bg-[#0606F0] text-white px-2.5 py-0.5 rounded-full">IA</span>
                     </div>
-                    <button onclick="toggleChatbot()"
-                        class="p-1 rounded-lg text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                    </button>
+                    <div class="flex items-center gap-1">
+                        {{-- Nueva conversacion: limpia DOM, localStorage y la sesion del servidor --}}
+                        <button onclick="nuevaConversacionChat()" id="btn-chat-reset" title="Nueva conversacion"
+                            class="p-1 rounded-lg text-gray-400 hover:text-[#0606F0] dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                            </svg>
+                        </button>
+                        <button onclick="toggleChatbot()" title="Cerrar"
+                            class="p-1 rounded-lg text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
                 </div>
 
                 {{-- Mensajes --}}
@@ -687,8 +1015,9 @@
                     style="min-height: 280px; max-height: 380px;">
                     {{-- Bienvenida --}}
                     <div class="text-center py-4" id="chat-welcome">
-                        <div class="w-14 h-14 mx-auto rounded-2xl bg-gradient-to-br from-[#0606F0] to-[#04276B]
-                                            flex items-center justify-center mb-4 shadow-lg shadow-[#0606F0]/20">
+                        <div
+                            class="w-14 h-14 mx-auto rounded-2xl bg-gradient-to-br from-[#0606F0] to-[#04276B]
+                                                                    flex items-center justify-center mb-4 shadow-lg shadow-[#0606F0]/20">
                             <svg class="w-7 h-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"
                                 stroke-width="1.5">
                                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -704,8 +1033,9 @@
                     {{-- Sugerencias rápidas según rol --}}
                     <div class="flex flex-wrap gap-1.5 justify-center" id="sugerencias">
                         @foreach($chatSugerencias as $sug)
-                            <button onclick="enviarSugerencia(this)" class="text-[11px] font-medium bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-600 dark:text-gray-300
-                                                    px-3 py-1.5 rounded-full transition-colors">
+                            <button onclick="enviarSugerencia(this)"
+                                class="text-[11px] font-medium bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-600 dark:text-gray-300
+                                                                                        px-3 py-1.5 rounded-full transition-colors">
                                 {{ $sug }}
                             </button>
                         @endforeach
@@ -719,7 +1049,7 @@
                             class="flex-1 bg-transparent text-[13px] text-gray-700 dark:text-gray-200 outline-none placeholder-gray-400"
                             onkeydown="if(event.key==='Enter') enviarMensaje()" />
                         <button onclick="enviarMensaje()" class="w-8 h-8 bg-[#0606F0] rounded-lg flex items-center justify-center
-                                        hover:bg-[#04276B] flex-shrink-0 transition-colors">
+                                                                hover:bg-[#04276B] flex-shrink-0 transition-colors">
                             <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"
                                 stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
@@ -777,14 +1107,73 @@
             </style>
 
             <script>
+                // ───────────────────────────────────────────────────────────
+                //  CHATBOT: estado persistente entre navegaciones
+                //
+                //  La conversacion del LLM ya vive en `session('chatbot_historial')`
+                //  (server-side). Lo que aqui persistimos es la *vista* de los
+                //  mensajes para que el usuario no pierda el hilo visual al
+                //  cambiar de pagina.
+                //
+                //  Privacidad:
+                //    - La llave de localStorage incluye un namespace fijo y el
+                //      payload guarda el `userId`. Si en el navegador inicia
+                //      sesion otro usuario, el `userId` no coincide y el
+                //      historial se borra ANTES de hidratar.
+                //    - `Logout` se gestiona del lado del servidor (la sesion
+                //      muere); al recargar como invitado no hay layout y la
+                //      llave queda huerfana hasta que otra cuenta entre.
+                //    - "Nueva conversacion" borra tanto localStorage como la
+                //      entrada de sesion del servidor.
+                // ───────────────────────────────────────────────────────────
+
                 const CSRF = document.querySelector('meta[name="csrf-token"]').content;
                 const CHAT_URL = '{{ $chatRoute }}';
+                const CHAT_RESET_URL = '{{ route('chatbot.reset') }}';
+                const CHAT_USER_ID = {{ (int) (auth()->id() ?? 0) }};
+                const CHAT_STORAGE_KEY = 'sigea_chat_state_v1';
+
                 let chatOpen = false;
+                let chatMessages = []; // [{ text, isUser }]
+                let chatInitialWelcomeHTML = ''; // snapshot del welcome para "Nueva conversacion"
+
                 const isDark = () => document.documentElement.classList.contains('dark');
 
+                // ─── Persistencia ────────────────────────────────────────
+                function chatLoadState() {
+                    try {
+                        const raw = localStorage.getItem(CHAT_STORAGE_KEY);
+                        if (!raw) return { userId: CHAT_USER_ID, messages: [], open: false };
+                        const data = JSON.parse(raw);
+                        // Privacidad: distinto usuario en el mismo navegador => wipe.
+                        if (data.userId !== CHAT_USER_ID) {
+                            localStorage.removeItem(CHAT_STORAGE_KEY);
+                            return { userId: CHAT_USER_ID, messages: [], open: false };
+                        }
+                        return data;
+                    } catch (e) {
+                        return { userId: CHAT_USER_ID, messages: [], open: false };
+                    }
+                }
+
+                function chatSaveState() {
+                    try {
+                        localStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify({
+                            userId: CHAT_USER_ID,
+                            messages: chatMessages,
+                            open: chatOpen,
+                        }));
+                    } catch (e) { /* localStorage lleno o bloqueado: silencioso */ }
+                }
+
+                function chatWipeLocal() {
+                    chatMessages = [];
+                    try { localStorage.removeItem(CHAT_STORAGE_KEY); } catch (e) { }
+                }
+
+                // ─── UI ──────────────────────────────────────────────────
                 function toggleChatbot() {
                     const panel = document.getElementById('chatbot-panel');
-                    const btn = document.getElementById('btn-chat-toggle');
                     if (!chatOpen) {
                         panel.style.display = 'flex';
                         panel.style.flexDirection = 'column';
@@ -796,10 +1185,16 @@
                         setTimeout(() => { panel.style.display = 'none'; }, 180);
                     }
                     chatOpen = !chatOpen;
+                    chatSaveState();
                 }
 
-                function agregarMensaje(texto, esUsuario) {
+                /**
+                 * Pinta un mensaje en el DOM. Si `persistir` es true, tambien
+                 * lo guarda en la cola en memoria + localStorage.
+                 */
+                function agregarMensaje(texto, esUsuario, persistir = true) {
                     const c = document.getElementById('chat-messages');
+                    if (!c) return;
                     const d = document.createElement('div');
                     d.className = 'flex ' + (esUsuario ? 'justify-end' : 'justify-start');
                     const dark = isDark();
@@ -809,6 +1204,11 @@
                         }">${texto}</div>`;
                     c.appendChild(d);
                     c.scrollTop = c.scrollHeight;
+
+                    if (persistir) {
+                        chatMessages.push({ text: texto, isUser: !!esUsuario });
+                        chatSaveState();
+                    }
                 }
 
                 function enviarSugerencia(btn) {
@@ -829,6 +1229,7 @@
 
                 function procesarMensaje(texto) {
                     agregarMensaje(texto, true);
+
                     const c = document.getElementById('chat-messages');
                     const t = document.createElement('div');
                     t.id = 'typing';
@@ -840,7 +1241,7 @@
 
                     fetch(CHAT_URL, {
                         method: 'POST',
-                        headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': CSRF },
+                        headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': CSRF, 'Accept': 'application/json' },
                         body: JSON.stringify({ mensaje: texto })
                     })
                         .then(r => r.json())
@@ -853,6 +1254,51 @@
                             agregarMensaje('Error al contactar al asistente.', false);
                         });
                 }
+
+                /**
+                 * Nueva conversacion: limpia DOM, localStorage y la sesion del
+                 * servidor (`chatbot_historial`). Restaura el welcome inicial.
+                 */
+                function nuevaConversacionChat() {
+                    chatWipeLocal();
+
+                    // Reset visual al welcome capturado al cargar la pagina.
+                    const c = document.getElementById('chat-messages');
+                    if (c && chatInitialWelcomeHTML) {
+                        c.innerHTML = chatInitialWelcomeHTML;
+                        c.scrollTop = 0;
+                    }
+
+                    // Reset del historial en el servidor (best-effort).
+                    fetch(CHAT_RESET_URL, {
+                        method: 'POST',
+                        headers: { 'X-CSRF-TOKEN': CSRF, 'Accept': 'application/json' }
+                    }).catch(() => { });
+                }
+
+                // ─── Hidratacion al cargar la pagina ─────────────────────
+                document.addEventListener('DOMContentLoaded', function () {
+                    const c = document.getElementById('chat-messages');
+                    if (!c) return;
+
+                    // Snapshot del welcome para que "Nueva conversacion" lo pueda restaurar.
+                    chatInitialWelcomeHTML = c.innerHTML;
+
+                    const state = chatLoadState();
+                    chatMessages = Array.isArray(state.messages) ? state.messages : [];
+
+                    if (chatMessages.length > 0) {
+                        // Hay historial previo: quitar welcome + sugerencias y repintar.
+                        document.getElementById('chat-welcome')?.remove();
+                        document.getElementById('sugerencias')?.remove();
+                        chatMessages.forEach(m => agregarMensaje(m.text, m.isUser, false));
+                    }
+
+                    // Si el chat estaba abierto en la pagina anterior, reabrir.
+                    if (state.open) {
+                        toggleChatbot();
+                    }
+                });
             </script>
         @endif
     @endauth
@@ -884,120 +1330,120 @@
 
     {{-- Script de Notificaciones --}}
     @auth
-    <script>
-        const NOTIF_CACHE_KEY = 'sigea_notif';
-        const NOTIF_TTL = 120000; // 2 minutos en ms
+        <script>
+            const NOTIF_CACHE_KEY = 'sigea_notif';
+            const NOTIF_TTL = 120000; // 2 minutos en ms
 
-        function notificaciones() {
-            return {
-                abierto: false,
-                items: [],
-                noLeidas: 0,
-                polling: null,
+            function notificaciones() {
+                return {
+                    abierto: false,
+                    items: [],
+                    noLeidas: 0,
+                    polling: null,
 
-                init() {
-                    // Usar caché si existe y no ha vencido; evita petición en cada cambio de página.
-                    const cached = this._leerCache();
-                    if (cached) {
-                        this.items = cached.notificaciones;
-                        this.noLeidas = cached.no_leidas;
-                        // Programar el próximo fetch según tiempo restante del caché
-                        const restante = NOTIF_TTL - (Date.now() - cached.ts);
-                        this.polling = setTimeout(() => {
+                    init() {
+                        // Usar caché si existe y no ha vencido; evita petición en cada cambio de página.
+                        const cached = this._leerCache();
+                        if (cached) {
+                            this.items = cached.notificaciones;
+                            this.noLeidas = cached.no_leidas;
+                            // Programar el próximo fetch según tiempo restante del caché
+                            const restante = NOTIF_TTL - (Date.now() - cached.ts);
+                            this.polling = setTimeout(() => {
+                                this.cargar();
+                                this.polling = setInterval(() => this.cargar(), NOTIF_TTL);
+                            }, restante);
+                        } else {
                             this.cargar();
                             this.polling = setInterval(() => this.cargar(), NOTIF_TTL);
-                        }, restante);
-                    } else {
-                        this.cargar();
-                        this.polling = setInterval(() => this.cargar(), NOTIF_TTL);
-                    }
-                },
-
-                async cargar() {
-                    try {
-                        const res = await fetch('/notificaciones', {
-                            headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' }
-                        });
-                        if (!res.ok) return;
-                        const data = await res.json();
-                        const prevNoLeidas = this.noLeidas;
-                        this.items = data.notificaciones;
-                        this.noLeidas = data.no_leidas;
-                        this._guardarCache(data);
-
-                        if (data.no_leidas > prevNoLeidas && prevNoLeidas > 0) {
-                            this.animarBadge();
                         }
-                    } catch (e) { /* silenciar errores de red */ }
-                },
+                    },
 
-                toggle() {
-                    this.abierto = !this.abierto;
-                    // Al abrir: refrescar solo si el caché está vencido
-                    if (this.abierto && !this._leerCache()) this.cargar();
-                },
+                    async cargar() {
+                        try {
+                            const res = await fetch('/notificaciones', {
+                                headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' }
+                            });
+                            if (!res.ok) return;
+                            const data = await res.json();
+                            const prevNoLeidas = this.noLeidas;
+                            this.items = data.notificaciones;
+                            this.noLeidas = data.no_leidas;
+                            this._guardarCache(data);
 
-                async abrirNotificacion(item) {
-                    if (!item.leida) {
-                        await fetch(`/notificaciones/${item.id}/leida`, {
+                            if (data.no_leidas > prevNoLeidas && prevNoLeidas > 0) {
+                                this.animarBadge();
+                            }
+                        } catch (e) { /* silenciar errores de red */ }
+                    },
+
+                    toggle() {
+                        this.abierto = !this.abierto;
+                        // Al abrir: refrescar solo si el caché está vencido
+                        if (this.abierto && !this._leerCache()) this.cargar();
+                    },
+
+                    async abrirNotificacion(item) {
+                        if (!item.leida) {
+                            await fetch(`/notificaciones/${item.id}/leida`, {
+                                method: 'POST',
+                                headers: {
+                                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                                    'Accept': 'application/json'
+                                }
+                            });
+                            item.leida = true;
+                            this.noLeidas = Math.max(0, this.noLeidas - 1);
+                            this._invalidarCache();
+                        }
+                        if (item.url) {
+                            this.abierto = false;
+                            window.location.href = item.url;
+                        }
+                    },
+
+                    async marcarTodasLeidas() {
+                        await fetch('/notificaciones/marcar-todas', {
                             method: 'POST',
                             headers: {
                                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
                                 'Accept': 'application/json'
                             }
                         });
-                        item.leida = true;
-                        this.noLeidas = Math.max(0, this.noLeidas - 1);
+                        this.items.forEach(i => i.leida = true);
+                        this.noLeidas = 0;
                         this._invalidarCache();
-                    }
-                    if (item.url) {
-                        this.abierto = false;
-                        window.location.href = item.url;
-                    }
-                },
+                    },
 
-                async marcarTodasLeidas() {
-                    await fetch('/notificaciones/marcar-todas', {
-                        method: 'POST',
-                        headers: {
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                            'Accept': 'application/json'
+                    animarBadge() {
+                        const badge = this.$el?.querySelector('[x-text]');
+                        if (badge) {
+                            badge.classList.add('ring-2', 'ring-[#0606F0]/40');
+                            setTimeout(() => badge.classList.remove('ring-2', 'ring-[#0606F0]/40'), 2000);
                         }
-                    });
-                    this.items.forEach(i => i.leida = true);
-                    this.noLeidas = 0;
-                    this._invalidarCache();
-                },
+                    },
 
-                animarBadge() {
-                    const badge = this.$el?.querySelector('[x-text]');
-                    if (badge) {
-                        badge.classList.add('ring-2', 'ring-[#0606F0]/40');
-                        setTimeout(() => badge.classList.remove('ring-2', 'ring-[#0606F0]/40'), 2000);
-                    }
-                },
+                    _guardarCache(data) {
+                        try {
+                            localStorage.setItem(NOTIF_CACHE_KEY, JSON.stringify({ ...data, ts: Date.now() }));
+                        } catch (e) { }
+                    },
 
-                _guardarCache(data) {
-                    try {
-                        localStorage.setItem(NOTIF_CACHE_KEY, JSON.stringify({ ...data, ts: Date.now() }));
-                    } catch (e) {}
-                },
+                    _leerCache() {
+                        try {
+                            const raw = localStorage.getItem(NOTIF_CACHE_KEY);
+                            if (!raw) return null;
+                            const cached = JSON.parse(raw);
+                            return (Date.now() - cached.ts) < NOTIF_TTL ? cached : null;
+                        } catch (e) { return null; }
+                    },
 
-                _leerCache() {
-                    try {
-                        const raw = localStorage.getItem(NOTIF_CACHE_KEY);
-                        if (!raw) return null;
-                        const cached = JSON.parse(raw);
-                        return (Date.now() - cached.ts) < NOTIF_TTL ? cached : null;
-                    } catch (e) { return null; }
-                },
-
-                _invalidarCache() {
-                    try { localStorage.removeItem(NOTIF_CACHE_KEY); } catch (e) {}
-                },
-            };
-        }
-    </script>
+                    _invalidarCache() {
+                        try { localStorage.removeItem(NOTIF_CACHE_KEY); } catch (e) { }
+                    },
+                };
+            }
+        </script>
     @endauth
 
 </body>
