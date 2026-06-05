@@ -68,7 +68,14 @@
                                 Editar
                             </a>
                             <form action="{{ route('gestor.planes-bachillerato.destroy', $p) }}" method="POST" class="inline"
-                                  onsubmit="return confirm('¿Eliminar el plan {{ $p->clave_plan }}?')">
+                                  data-udea-confirm
+                                  data-confirm-title="Eliminar plan de estudios"
+                                  data-confirm-message="¿Eliminar el plan <strong>&quot;{{ $p->clave_plan }}&quot;</strong>?"
+                                  data-confirm-detail="Esta acción no se puede deshacer."
+                                  data-confirm-variant="danger"
+                                  data-confirm-icon="trash"
+                                  data-confirm-button="Eliminar"
+                                  data-confirm-cancel="Cancelar">
                                 @csrf @method('DELETE')
                                 <button type="submit" class="text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 text-xs font-semibold">
                                     Eliminar

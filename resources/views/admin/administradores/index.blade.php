@@ -56,7 +56,14 @@
                                    class="text-yellow-600 dark:text-yellow-400 hover:text-yellow-900 font-medium">Editar</a>
                                 @if($a->id !== auth()->id())
                                     <form method="POST" action="{{ route('admin.administradores.destroy', $a) }}" class="inline"
-                                          onsubmit="return confirm('¿Eliminar este administrador?');">
+                                          data-udea-confirm
+                                          data-confirm-title="Eliminar administrador"
+                                          data-confirm-message="¿Estás seguro que quieres eliminar a <strong>{{ $a->name }}</strong>?"
+                                          data-confirm-detail="Esta acción no se puede deshacer."
+                                          data-confirm-variant="danger"
+                                          data-confirm-icon="trash"
+                                          data-confirm-button="Eliminar"
+                                          data-confirm-cancel="Cancelar">
                                         @csrf @method('DELETE')
                                         <button type="submit" class="text-red-600 dark:text-red-400 hover:text-red-900 font-medium">Eliminar</button>
                                     </form>

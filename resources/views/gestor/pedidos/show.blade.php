@@ -97,7 +97,14 @@
                         </details>
                     @elseif($pedido->estado === 'aprobado')
                         <form method="POST" action="{{ route('gestor.pedidos.listo', $pedido) }}"
-                              onsubmit="return confirm('¿El producto está preparado? Se enviará correo automático al alumno avisándole que puede pasar a recogerlo.')">
+                              data-udea-confirm
+                              data-confirm-title="Marcar como listo"
+                              data-confirm-message="¿El producto está preparado para entregarse?"
+                              data-confirm-detail="Se enviará un correo automático al alumno avisándole que puede pasar a recogerlo."
+                              data-confirm-variant="success"
+                              data-confirm-icon="check"
+                              data-confirm-button="Sí, está listo"
+                              data-confirm-cancel="Aún no">
                             @csrf
                             <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white px-4 py-2.5 rounded-lg text-sm font-bold">
                                 ✉ Marcar como listo para recoger
@@ -106,7 +113,14 @@
                         <p class="text-[10px] text-gray-400 mt-2">Esto envía un correo automático al alumno.</p>
                     @elseif($pedido->estado === 'listo_recoger')
                         <form method="POST" action="{{ route('gestor.pedidos.entregar', $pedido) }}"
-                              onsubmit="return confirm('¿Confirmar entrega del pedido al alumno?')">
+                              data-udea-confirm
+                              data-confirm-title="Confirmar entrega"
+                              data-confirm-message="¿Confirmar la entrega del pedido al alumno?"
+                              data-confirm-detail="El pedido quedará marcado como entregado y cerrado."
+                              data-confirm-variant="success"
+                              data-confirm-icon="check"
+                              data-confirm-button="Confirmar entrega"
+                              data-confirm-cancel="Cancelar">
                             @csrf
                             <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2.5 rounded-lg text-sm font-bold">
                                 📦 Marcar como entregado
@@ -121,7 +135,14 @@
                         <details class="mt-4 pt-4 border-t dark:border-gray-700">
                             <summary class="text-xs text-red-600 cursor-pointer hover:underline">Cancelar pedido</summary>
                             <form method="POST" action="{{ route('gestor.pedidos.cancelar', $pedido) }}" class="mt-3 space-y-2"
-                                  onsubmit="return confirm('¿Cancelar este pedido? El stock se liberará.')">
+                                  data-udea-confirm
+                                  data-confirm-title="Cancelar pedido"
+                                  data-confirm-message="¿Cancelar este pedido?"
+                                  data-confirm-detail="El stock reservado se liberará nuevamente al inventario."
+                                  data-confirm-variant="warning"
+                                  data-confirm-icon="x-circle"
+                                  data-confirm-button="Sí, cancelar"
+                                  data-confirm-cancel="No, mantener">
                                 @csrf
                                 <input type="text" name="motivo" placeholder="Motivo (opcional)"
                                        class="w-full border rounded-lg px-3 py-1.5 text-xs dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200">

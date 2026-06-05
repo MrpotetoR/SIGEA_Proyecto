@@ -90,7 +90,14 @@
                                         <div class="flex flex-wrap gap-2">
                                             @foreach($p->carreras as $c)
                                                 <form method="POST" action="{{ route('admin.asignaciones.destroy') }}" class="inline"
-                                                      onsubmit="return confirm('¿Desasignar la carrera \'{{ $c->nombre_carrera }}\' de {{ $p->nombre_completo }}? Esta carrera tendrá que ser reasignada a otro personal.');">
+                                                      data-udea-confirm
+                                                      data-confirm-title="Desasignar carrera"
+                                                      data-confirm-message="¿Desasignar la carrera <strong>&quot;{{ $c->nombre_carrera }}&quot;</strong> de <strong>{{ $p->nombre_completo }}</strong>?"
+                                                      data-confirm-detail="La carrera tendrá que ser reasignada a otro personal."
+                                                      data-confirm-variant="warning"
+                                                      data-confirm-icon="ban"
+                                                      data-confirm-button="Desasignar"
+                                                      data-confirm-cancel="Cancelar">
                                                     @csrf @method('DELETE')
                                                     <input type="hidden" name="id_personal" value="{{ $p->id_personal }}">
                                                     <input type="hidden" name="id_carrera" value="{{ $c->id_carrera }}">

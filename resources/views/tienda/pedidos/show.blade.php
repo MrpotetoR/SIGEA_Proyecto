@@ -114,7 +114,15 @@
 
                 @if(in_array($pedido->estado, ['pendiente_pago', 'vaucher_enviado'], true))
                     <form method="POST" action="{{ route('tienda.pedido.cancelar', $pedido) }}"
-                          onsubmit="return confirm('¿Cancelar este pedido? Tu stock se liberará.')" class="mt-4 pt-4 border-t border-amber-200 dark:border-amber-800/50">
+                          data-udea-confirm
+                          data-confirm-title="Cancelar pedido"
+                          data-confirm-message="¿Cancelar este pedido?"
+                          data-confirm-detail="El stock reservado se liberará nuevamente."
+                          data-confirm-variant="warning"
+                          data-confirm-icon="x-circle"
+                          data-confirm-button="Sí, cancelar"
+                          data-confirm-cancel="No, mantener"
+                          class="mt-4 pt-4 border-t border-amber-200 dark:border-amber-800/50">
                         @csrf
                         <button type="submit" class="text-xs text-red-600 hover:underline">Cancelar pedido</button>
                     </form>

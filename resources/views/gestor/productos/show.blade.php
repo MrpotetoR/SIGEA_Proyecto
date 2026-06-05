@@ -99,7 +99,15 @@
                         </button>
 
                         @if($producto->activo)
-                            <form x-show="editMode" x-cloak method="POST" action="{{ route('gestor.productos.destroy', $producto) }}" onsubmit="return confirm('¿Desactivar este producto? Dejará de aparecer en el catálogo público, pero el historial de pedidos se conserva.')">
+                            <form x-show="editMode" x-cloak method="POST" action="{{ route('gestor.productos.destroy', $producto) }}"
+                                  data-udea-confirm
+                                  data-confirm-title="Desactivar producto"
+                                  data-confirm-message="¿Desactivar el producto <strong>&quot;{{ $producto->nombre ?? 'seleccionado' }}&quot;</strong>?"
+                                  data-confirm-detail="Dejará de aparecer en el catálogo público, pero el historial de pedidos se conserva."
+                                  data-confirm-variant="warning"
+                                  data-confirm-icon="ban"
+                                  data-confirm-button="Desactivar"
+                                  data-confirm-cancel="Cancelar">
                                 @csrf @method('DELETE')
                                 <button type="submit" class="bg-red-50 hover:bg-red-100 text-red-700 dark:bg-red-900/30 dark:hover:bg-red-900/50 dark:text-red-300 px-4 py-2 rounded-lg text-sm font-semibold inline-flex items-center gap-2">
                                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -121,8 +129,8 @@
                         @endif
 
                         {{-- Eliminar permanentemente: requiere typed confirmation con código del producto --}}
-                        <form x-show="editMode" x-cloak method="POST" action="{{ route('gestor.productos.eliminar-permanente', $producto) }}"
-                              onsubmit="return confirmarEliminacionPermanente('{{ $producto->codigo }}', '{{ addslashes($producto->nombre) }}')">
+                        <form id="form-eliminar-perm-{{ $producto->id_producto ?? $producto->id }}" x-show="editMode" x-cloak method="POST" action="{{ route('gestor.productos.eliminar-permanente', $producto) }}"
+                              onsubmit="event.preventDefault(); confirmarEliminacionPermanente('{{ $producto->codigo }}', '{{ addslashes($producto->nombre) }}', this); return false;">
                             @csrf @method('DELETE')
                             <button type="submit"
                                     class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-semibold inline-flex items-center gap-2 ml-auto"
@@ -372,7 +380,6 @@
                                         {{-- Eliminar variante (form externo) --}}
                                         <button type="submit" form="form-del-{{ $v->id_variante }}"
                                                 x-show="editMode" x-cloak
-                                                onclick="return confirm('¿Eliminar variante {{ $v->codigo_variante }}? Solo se puede si no tiene pedidos asociados.')"
                                                 class="px-2 py-1 rounded text-xs font-semibold bg-gray-50 hover:bg-gray-100 text-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-300" title="Eliminar variante">🗑</button>
                                     </div>
                                 </td>
@@ -401,7 +408,15 @@
             {{-- Forms auxiliares fuera del form-cambios-batch para no anidar.
                  (El stock_minimo se guarda dentro del batch, ya no requiere form aparte). --}}
             @foreach($producto->variantes as $v)
-                <form id="form-del-{{ $v->id_variante }}" method="POST" action="{{ route('gestor.productos.variantes.eliminar', $v) }}" class="hidden">
+                <form id="form-del-{{ $v->id_variante }}" method="POST" action="{{ route('gestor.productos.variantes.eliminar', $v) }}" class="hidden"
+                      data-udea-confirm
+                      data-confirm-title="Eliminar variante"
+                      data-confirm-message="¿Eliminar la variante <strong>&quot;{{ $v->codigo_variante }}&quot;</strong>?"
+                      data-confirm-detail="Solo se puede eliminar si no tiene pedidos asociados. Esta acción no se puede deshacer."
+                      data-confirm-variant="danger"
+                      data-confirm-icon="trash"
+                      data-confirm-button="Eliminar"
+                      data-confirm-cancel="Cancelar">
                     @csrf @method('DELETE')
                 </form>
             @endforeach
@@ -417,7 +432,15 @@
                 @foreach($producto->imagenes as $img)
                     <div class="relative group aspect-square">
                         <img src="{{ Storage::url($img->archivo_path) }}" alt="" class="w-full h-full object-cover rounded-lg border dark:border-gray-700">
-                        <form x-show="editMode" x-cloak method="POST" action="{{ route('gestor.productos.imagenes.destroy', $img) }}" onsubmit="return confirm('¿Eliminar esta imagen?')"
+                        <form x-show="editMode" x-cloak method="POST" action="{{ route('gestor.productos.imagenes.destroy', $img) }}"
+                              data-udea-confirm
+                              data-confirm-title="Eliminar imagen"
+                              data-confirm-message="¿Eliminar esta imagen de la galería?"
+                              data-confirm-detail="Esta acción no se puede deshacer."
+                              data-confirm-variant="danger"
+                              data-confirm-icon="trash"
+                              data-confirm-button="Eliminar"
+                              data-confirm-cancel="Cancelar"
                               class="absolute top-1 right-1">
                             @csrf @method('DELETE')
                             <button type="submit" class="w-6 h-6 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center text-xs font-bold shadow-md">×</button>
@@ -506,24 +529,31 @@
  *  2) Prompt pidiendo escribir el código del producto exactamente.
  * Solo si ambos pasos coinciden se permite el submit.
  */
-function confirmarEliminacionPermanente(codigo, nombre) {
-    const aviso = `⚠ Esta acción es IRREVERSIBLE.\n\n` +
-        `Se eliminará permanentemente el producto "${nombre}" junto con:\n` +
-        `  • Todas sus variantes y su stock\n` +
-        `  • Todas las imágenes (principal y galería)\n` +
-        `  • Todo el historial de movimientos de inventario\n\n` +
-        `Si el producto tiene pedidos asociados, la operación será bloqueada.\n\n` +
-        `¿Continuar?`;
+async function confirmarEliminacionPermanente(codigo, nombre, form) {
+    const detalle =
+        `Se eliminará permanentemente "${nombre}" junto con: todas sus variantes y stock, todas las imágenes (principal y galería) y todo el historial de movimientos de inventario. Si el producto tiene pedidos asociados, la operación será bloqueada.`;
 
-    if (!confirm(aviso)) return false;
+    const ok = await udeaConfirm({
+        title: 'Eliminar producto permanentemente',
+        message: '⚠ Esta acción es <strong>IRREVERSIBLE</strong>. ¿Continuar?',
+        detail: detalle,
+        variant: 'danger',
+        icon: 'warning',
+        confirmText: 'Continuar',
+        cancelText: 'Cancelar',
+    });
+    if (!ok) return;
 
     const respuesta = prompt(`Para confirmar, escribe el código del producto: ${codigo}`);
-    if (respuesta === null) return false;
+    if (respuesta === null) return;
 
     if (respuesta.trim().toUpperCase() !== codigo.toUpperCase()) {
         alert(`El código no coincide. Esperado: "${codigo}". Operación cancelada.`);
-        return false;
+        return;
     }
-    return true;
+    // Permitir el envío real esta vez
+    form.onsubmit = null;
+    if (typeof form.requestSubmit === 'function') form.requestSubmit();
+    else form.submit();
 }
 </script>

@@ -167,7 +167,15 @@
                                            class="text-xs text-green-700 dark:text-green-400 hover:underline font-medium">Descargar</a>
                                         <span class="text-gray-300 dark:text-gray-600">|</span>
                                         <button type="button"
-                                                onclick="if(confirm('¿Eliminar este documento? Podrás volver a cargarlo después.')) document.getElementById('del-al-{{ $tipo }}').submit();"
+                                                onclick="udeaConfirm({
+                                                    title: 'Eliminar documento',
+                                                    message: '¿Eliminar este documento?',
+                                                    detail: 'Podrás volver a cargarlo después.',
+                                                    variant: 'danger',
+                                                    icon: 'trash',
+                                                    confirmText: 'Eliminar',
+                                                    cancelText: 'Cancelar'
+                                                }).then(ok => { if (ok) document.getElementById('del-al-{{ $tipo }}').submit(); });"
                                                 class="text-xs text-red-600 dark:text-red-400 hover:underline font-medium">Eliminar</button>
                                     </div>
                                 @endif

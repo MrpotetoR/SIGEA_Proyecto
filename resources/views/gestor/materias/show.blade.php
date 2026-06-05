@@ -42,10 +42,17 @@
                    class="bg-yellow-500 hover:bg-yellow-600 text-white px-5 py-2 rounded-lg text-sm font-medium transition-colors">
                     Editar materia
                 </a>
-                <form method="POST" action="{{ route('gestor.materias.destroy', $materia) }}">
+                <form method="POST" action="{{ route('gestor.materias.destroy', $materia) }}"
+                      data-udea-confirm
+                      data-confirm-title="Eliminar materia"
+                      data-confirm-message="¿Eliminar la materia <strong>&quot;{{ $materia->nombre_materia ?? $materia->nombre ?? 'seleccionada' }}&quot;</strong>?"
+                      data-confirm-detail="Esta acción no se puede deshacer."
+                      data-confirm-variant="danger"
+                      data-confirm-icon="trash"
+                      data-confirm-button="Eliminar"
+                      data-confirm-cancel="Cancelar">
                     @csrf @method('DELETE')
-                    <button type="submit" class="text-red-600 dark:text-red-400 hover:text-red-800 text-sm font-medium px-5 py-2"
-                            onclick="return confirm('¿Eliminar esta materia?')">
+                    <button type="submit" class="text-red-600 dark:text-red-400 hover:text-red-800 text-sm font-medium px-5 py-2">
                         Eliminar
                     </button>
                 </form>

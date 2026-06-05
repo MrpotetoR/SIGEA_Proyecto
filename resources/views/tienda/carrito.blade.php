@@ -58,7 +58,15 @@
                 </div>
 
                 <div class="bg-gray-50 dark:bg-gray-900/30 px-4 py-4 flex items-center justify-between">
-                    <form method="POST" action="{{ route('tienda.carrito.vaciar') }}" onsubmit="return confirm('¿Vaciar todo el carrito?')">
+                    <form method="POST" action="{{ route('tienda.carrito.vaciar') }}"
+                          data-udea-confirm
+                          data-confirm-title="Vaciar carrito"
+                          data-confirm-message="¿Vaciar todo el carrito?"
+                          data-confirm-detail="Se eliminarán todos los productos seleccionados."
+                          data-confirm-variant="warning"
+                          data-confirm-icon="trash"
+                          data-confirm-button="Vaciar"
+                          data-confirm-cancel="Cancelar">
                         @csrf
                         <button type="submit" class="text-sm text-gray-500 hover:text-red-600">Vaciar carrito</button>
                     </form>

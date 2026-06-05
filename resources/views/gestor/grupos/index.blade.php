@@ -31,7 +31,15 @@
                     <div class="flex items-center gap-2">
                         <a href="{{ route('gestor.grupos.show', $grupo->id_grupo) }}" class="flex-1 text-center px-3 py-1.5 bg-gray-50 dark:bg-gray-700/50 text-gray-700 dark:text-gray-300 text-xs font-medium rounded-lg hover:bg-gray-100 dark:hover:bg-[#04276B] transition-colors">Ver</a>
                         <a href="{{ route('gestor.grupos.edit', $grupo->id_grupo) }}" class="flex-1 text-center px-3 py-1.5 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 text-xs font-medium rounded-lg hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors">Editar</a>
-                        <form method="POST" action="{{ route('gestor.grupos.destroy', $grupo->id_grupo) }}" onsubmit="return confirm('Eliminar este grupo?')">
+                        <form method="POST" action="{{ route('gestor.grupos.destroy', $grupo->id_grupo) }}"
+                              data-udea-confirm
+                              data-confirm-title="Eliminar grupo"
+                              data-confirm-message="¿Eliminar el grupo <strong>&quot;{{ $grupo->nombre ?? $grupo->clave ?? 'seleccionado' }}&quot;</strong>?"
+                              data-confirm-detail="Esta acción no se puede deshacer."
+                              data-confirm-variant="danger"
+                              data-confirm-icon="trash"
+                              data-confirm-button="Eliminar"
+                              data-confirm-cancel="Cancelar">
                             @csrf @method('DELETE')
                             <button type="submit" class="px-3 py-1.5 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 text-xs font-medium rounded-lg hover:bg-red-100 dark:hover:bg-red-900/40 transition-colors">Eliminar</button>
                         </form>

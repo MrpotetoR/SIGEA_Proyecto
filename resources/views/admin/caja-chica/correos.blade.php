@@ -130,7 +130,14 @@
                                     </form>
                                     <span class="text-gray-300 dark:text-gray-600 mx-1">·</span>
                                     <form method="POST" action="{{ route('admin.caja-chica.correos.destroy', $c) }}" class="inline"
-                                          onsubmit="return confirm('¿Eliminar este correo? Ya no recibirá notificaciones.');">
+                                          data-udea-confirm
+                                          data-confirm-title="Eliminar correo"
+                                          data-confirm-message="¿Eliminar <strong>{{ $c->correo }}</strong>?"
+                                          data-confirm-detail="Ya no recibirá notificaciones de caja chica."
+                                          data-confirm-variant="danger"
+                                          data-confirm-icon="trash"
+                                          data-confirm-button="Eliminar"
+                                          data-confirm-cancel="Cancelar">
                                         @csrf @method('DELETE')
                                         <button type="submit"
                                                 class="text-xs text-red-600 dark:text-red-400 hover:underline">

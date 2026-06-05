@@ -80,7 +80,14 @@
                                 <a href="{{ route('admin.personal.edit', $p) }}"
                                    class="text-yellow-600 dark:text-yellow-400 hover:text-yellow-900 font-medium">Editar</a>
                                 <form method="POST" action="{{ route('admin.personal.destroy', $p) }}" class="inline"
-                                      onsubmit="return confirm('¿Eliminar este personal? Sus carreras quedarán sin asignar.');">
+                                      data-udea-confirm
+                                      data-confirm-title="Eliminar personal"
+                                      data-confirm-message="¿Eliminar a <strong>{{ $p->nombre_completo }}</strong>?"
+                                      data-confirm-detail="Sus carreras asignadas quedarán sin asignar."
+                                      data-confirm-variant="danger"
+                                      data-confirm-icon="trash"
+                                      data-confirm-button="Eliminar"
+                                      data-confirm-cancel="Cancelar">
                                     @csrf @method('DELETE')
                                     <button type="submit" class="text-red-600 dark:text-red-400 hover:text-red-900 font-medium">Eliminar</button>
                                 </form>

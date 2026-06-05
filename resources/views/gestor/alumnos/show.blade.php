@@ -162,9 +162,17 @@
 
                             @if($pago && $pago->estaPendiente())
                                 <div class="flex gap-2">
-                                    <form method="POST" action="{{ route('gestor.pagos.aprobar', $pago) }}">
+                                    <form method="POST" action="{{ route('gestor.pagos.aprobar', $pago) }}"
+                                          data-udea-confirm
+                                          data-confirm-title="Aprobar váucher"
+                                          data-confirm-message="¿Aprobar este váucher?"
+                                          data-confirm-detail="Se registrará el pago como aprobado y se generará el ingreso correspondiente."
+                                          data-confirm-variant="success"
+                                          data-confirm-icon="check"
+                                          data-confirm-button="Aprobar"
+                                          data-confirm-cancel="Cancelar">
                                         @csrf
-                                        <button type="submit" onclick="return confirm('¿Aprobar este váucher?')"
+                                        <button type="submit"
                                                 class="bg-green-600 hover:bg-green-700 text-white text-[10px] font-semibold px-3 py-1.5 rounded inline-flex items-center gap-1">
                                             <x-icon name="check" class="w-3 h-3" /> Aprobar
                                         </button>
@@ -175,12 +183,20 @@
                                     </button>
                                 </div>
                                 <form method="POST" action="{{ route('gestor.pagos.rechazar', $pago) }}"
-                                      class="rechazo-form hidden w-full mt-1">
+                                      class="rechazo-form hidden w-full mt-1"
+                                      data-udea-confirm
+                                      data-confirm-title="Rechazar váucher"
+                                      data-confirm-message="¿Rechazar este váucher?"
+                                      data-confirm-detail="El alumno deberá enviar un nuevo comprobante de pago."
+                                      data-confirm-variant="danger"
+                                      data-confirm-icon="x-circle"
+                                      data-confirm-button="Rechazar"
+                                      data-confirm-cancel="Cancelar">
                                     @csrf
                                     <textarea name="comentario_rechazo" required maxlength="500" rows="2"
                                               placeholder="Escribe las observaciones del rechazo..."
                                               class="w-full text-xs border border-red-200 dark:border-red-700 dark:bg-gray-700 dark:text-gray-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-red-400 focus:outline-none mb-1"></textarea>
-                                    <button type="submit" onclick="return confirm('¿Rechazar este váucher?')"
+                                    <button type="submit"
                                             class="bg-red-600 hover:bg-red-700 text-white text-[10px] font-semibold px-4 py-1.5 rounded">
                                         Confirmar rechazo
                                     </button>
@@ -231,7 +247,15 @@
         @if($alumno->estatus === 'activo')
             <div class="bg-white dark:bg-gray-800 rounded-xl shadow dark:shadow-gray-900/20 p-6 border border-transparent dark:border-gray-700">
                 <h3 class="text-base font-semibold text-gray-700 dark:text-gray-200 mb-4">Registrar baja</h3>
-                <form method="POST" action="{{ route('gestor.alumnos.baja', $alumno) }}" class="space-y-3">
+                <form method="POST" action="{{ route('gestor.alumnos.baja', $alumno) }}" class="space-y-3"
+                      data-udea-confirm
+                      data-confirm-title="Registrar baja"
+                      data-confirm-message="¿Confirmar la baja de <strong>{{ $alumno->nombre_completo }}</strong>?"
+                      data-confirm-detail="Esta acción afectará el estatus académico del alumno."
+                      data-confirm-variant="danger"
+                      data-confirm-icon="warning"
+                      data-confirm-button="Registrar baja"
+                      data-confirm-cancel="Cancelar">
                     @csrf
                     <div class="grid grid-cols-3 gap-3">
                         <div>
@@ -254,8 +278,7 @@
                         </div>
                     </div>
                     <button type="submit"
-                            class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
-                            onclick="return confirm('¿Confirmar baja del alumno?')">
+                            class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
                         Registrar baja
                     </button>
                 </form>

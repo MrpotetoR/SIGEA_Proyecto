@@ -111,8 +111,16 @@
                                 </div>
                             </div>
                             <div class="flex items-center gap-3">
-                                <a href="{{ route('gestor.alumnos.historial', $insc->alumno?->id_alumno) }}" class="text-xs text-[#0606F0] dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300">Ver historial</a>
-                                <form action="{{ route('gestor.grupos.desinscribir', [$grupo->id_grupo, $insc->alumno?->id_alumno]) }}" method="POST" onsubmit="return confirm('¿Remover a este alumno del grupo?')">
+                                <a href="{{ route('gestor.historial-alumnos.show', $insc->alumno?->id_alumno) }}" class="text-xs text-[#0606F0] dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300">Ver historial</a>
+                                <form action="{{ route('gestor.grupos.desinscribir', [$grupo->id_grupo, $insc->alumno?->id_alumno]) }}" method="POST"
+                                      data-udea-confirm
+                                      data-confirm-title="Remover del grupo"
+                                      data-confirm-message="¿Remover a <strong>{{ $insc->alumno?->nombre_completo ?? 'este alumno' }}</strong> del grupo?"
+                                      data-confirm-detail="El alumno dejará de estar inscrito en este grupo."
+                                      data-confirm-variant="warning"
+                                      data-confirm-icon="ban"
+                                      data-confirm-button="Remover"
+                                      data-confirm-cancel="Cancelar">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="w-7 h-7 flex items-center justify-center rounded-lg text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors" title="Remover del grupo">

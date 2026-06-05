@@ -91,7 +91,15 @@
                             <td class="px-5 py-3 text-center">
                                 <div class="flex items-center justify-center gap-1">
                                     <a href="{{ route('gestor.horarios.edit', $h->id_horario) }}" class="px-2.5 py-1 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 text-xs rounded-lg hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors">Editar</a>
-                                    <form method="POST" action="{{ route('gestor.horarios.destroy', $h->id_horario) }}" onsubmit="return confirm('Eliminar este horario?')">
+                                    <form method="POST" action="{{ route('gestor.horarios.destroy', $h->id_horario) }}"
+                                          data-udea-confirm
+                                          data-confirm-title="Eliminar horario"
+                                          data-confirm-message="¿Eliminar el horario de <strong>{{ $h->materia?->nombre_materia ?? 'esta materia' }}</strong> ({{ ucfirst($h->dia_semana) }} {{ \Carbon\Carbon::parse($h->hora_inicio)->format('H:i') }}–{{ \Carbon\Carbon::parse($h->hora_fin)->format('H:i') }})?"
+                                          data-confirm-detail="Esta acción no se puede deshacer."
+                                          data-confirm-variant="danger"
+                                          data-confirm-icon="trash"
+                                          data-confirm-button="Eliminar"
+                                          data-confirm-cancel="Cancelar">
                                         @csrf @method('DELETE')
                                         <button type="submit" class="px-2.5 py-1 bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 text-xs rounded-lg hover:bg-red-100 dark:hover:bg-red-900/50 transition-colors">Eliminar</button>
                                     </form>
