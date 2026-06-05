@@ -64,6 +64,20 @@ class ChatbotController extends Controller
     }
 
     /**
+     * Limpia el historial de conversacion del chatbot del usuario actual.
+     *
+     * Se invoca cuando el usuario presiona "Nueva conversacion" desde el panel.
+     * Borra unicamente la entrada de sesion `chatbot_historial`, que es la que
+     * se le envia al modelo como contexto previo. Es per-sesion, asi que no hay
+     * forma de que un usuario afecte el historial de otro.
+     */
+    public function resetHistorial(Request $request)
+    {
+        $request->session()->forget('chatbot_historial');
+        return response()->json(['ok' => true]);
+    }
+
+    /**
      * Detecta el rol principal del usuario.
      */
     private function detectarRol($user): string
@@ -160,7 +174,7 @@ class ChatbotController extends Controller
             'alumno'  => $this->contextoAlumno($user),
             'docente' => $this->contextoDocente($user),
             'gestor'  => $this->contextoGestor($user),
-            default   => 'Usuario del sistema SIGEA.',
+            default   => 'Usuario del sistema UDEA.',
         };
     }
 
@@ -359,7 +373,7 @@ class ChatbotController extends Controller
         ];
         $rolLabel = $rolLabels[$rol] ?? 'un usuario';
 
-        return "Eres el Asistente SIGEA. Estas hablando con {$rolLabel}.\n\n"
+        return "Eres el Asistente de la Universidad de los Angeles. Estas hablando con {$rolLabel}.\n\n"
             . "COMO RESPONDER:\n"
             . "- Ve directo al grano. Maximo 1-2 oraciones cortas.\n"
             . "- Habla claro y simple, como si le explicaras a un amigo. Sin tecnicismos.\n"
@@ -387,7 +401,7 @@ class ChatbotController extends Controller
         $mensaje = strtolower($mensaje);
 
         if (str_contains($mensaje, 'hola') || str_contains($mensaje, 'buenos') || str_contains($mensaje, 'buenas')) {
-            return 'Hola! Soy el asistente SIGEA. El servicio de IA esta temporalmente limitado, pero puedo ayudarte con informacion basica.';
+            return 'Hola! Soy el asistente de la Universidad de los Angeles. El servicio de IA esta temporalmente limitado, pero puedo ayudarte con informacion basica.';
         }
 
         return match ($rol) {
@@ -407,7 +421,7 @@ class ChatbotController extends Controller
             return 'Tu horario esta en la seccion <b>Horario</b>.';
         }
         if (str_contains($mensaje, 'acude') || str_contains($mensaje, 'cultural') || str_contains($mensaje, 'deportiv')) {
-            return 'Las horas culturales / ACUDE ya no se gestionan en SIGEA.';
+            return 'Las horas culturales / ACUDE ya no se gestionan en este sistema.';
         }
         if (str_contains($mensaje, 'kardex')) {
             return 'Tu kardex esta en la seccion <b>Kardex</b>. Puedes descargarlo en PDF.';
