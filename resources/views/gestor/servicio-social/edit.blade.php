@@ -22,19 +22,29 @@
 
         <div class="grid grid-cols-2 gap-4">
             <div>
-                <label class="text-[11px] font-semibold text-gray-500 uppercase mb-1 block dark:text-gray-400">Horas Acumuladas</label>
-                <input type="number" name="horas_acumuladas" value="{{ old('horas_acumuladas', (int) $servicioSocial->horas_acumuladas) }}" min="0" max="160" step="1" maxlength="3" oninput="if(this.value.length>3)this.value=this.value.slice(0,3)" required class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-[13px] focus:ring-2 focus:ring-sky-300 outline-none dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200">
-                <p class="text-[10px] text-gray-400 dark:text-gray-500 mt-1">Máximo 3 dígitos — tope institucional 160 h.</p>
-                @error('horas_acumuladas') <p class="text-red-500 text-[11px] mt-1 dark:text-red-400">{{ $message }}</p> @enderror
+                <label class="text-[11px] font-semibold text-gray-500 uppercase mb-1 block dark:text-gray-400">Horas Requeridas</label>
+                <input type="number" name="horas_requeridas" value="{{ old('horas_requeridas', (int) $servicioSocial->horas_requeridas) }}" min="0" max="2000" step="1" required class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-[13px] focus:ring-2 focus:ring-sky-300 outline-none dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200">
+                <p class="text-[10px] text-gray-400 dark:text-gray-500 mt-1">
+                    Default de carrera: <strong>{{ $servicioSocial->alumno?->carrera?->horas_servicio_social_default ?? 480 }} h</strong>.
+                </p>
+                @error('horas_requeridas') <p class="text-red-500 text-[11px] mt-1 dark:text-red-400">{{ $message }}</p> @enderror
             </div>
             <div>
-                <label class="text-[11px] font-semibold text-gray-500 uppercase mb-1 block dark:text-gray-400">Estatus</label>
-                <select name="estatus" required class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-[13px] focus:ring-2 focus:ring-sky-300 outline-none dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200">
-                    <option value="en_curso" {{ old('estatus', $servicioSocial->estatus) === 'en_curso' ? 'selected' : '' }}>En curso</option>
-                    <option value="completado" {{ old('estatus', $servicioSocial->estatus) === 'completado' ? 'selected' : '' }}>Completado</option>
-                </select>
-                @error('estatus') <p class="text-red-500 text-[11px] mt-1 dark:text-red-400">{{ $message }}</p> @enderror
+                <label class="text-[11px] font-semibold text-gray-500 uppercase mb-1 block dark:text-gray-400">Horas Acumuladas</label>
+                <input type="number" name="horas_acumuladas" value="{{ old('horas_acumuladas', (int) $servicioSocial->horas_acumuladas) }}" min="0" max="2000" step="1" required class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-[13px] focus:ring-2 focus:ring-sky-300 outline-none dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200">
+                <p class="text-[10px] text-gray-400 dark:text-gray-500 mt-1">Horas que el alumno lleva cumplidas.</p>
+                @error('horas_acumuladas') <p class="text-red-500 text-[11px] mt-1 dark:text-red-400">{{ $message }}</p> @enderror
             </div>
+        </div>
+
+        <div>
+            <label class="text-[11px] font-semibold text-gray-500 uppercase mb-1 block dark:text-gray-400">Estatus</label>
+            <select name="estatus" required class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-[13px] focus:ring-2 focus:ring-sky-300 outline-none dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200">
+                <option value="en_curso" {{ old('estatus', $servicioSocial->estatus) === 'en_curso' ? 'selected' : '' }}>En curso</option>
+                <option value="completado" {{ old('estatus', $servicioSocial->estatus) === 'completado' ? 'selected' : '' }}>Completado</option>
+            </select>
+            <p class="text-[10px] text-gray-400 dark:text-gray-500 mt-1">Se ajustará automáticamente a "Completado" si las horas acumuladas alcanzan las requeridas.</p>
+            @error('estatus') <p class="text-red-500 text-[11px] mt-1 dark:text-red-400">{{ $message }}</p> @enderror
         </div>
 
         <div class="flex justify-between items-center pt-2">

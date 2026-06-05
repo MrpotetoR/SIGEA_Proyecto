@@ -1,6 +1,21 @@
 <x-panel title="Inscripciones" panelNombre="Panel Gestor Escolar">
     <x-slot name="nav">@include('partials.gestor-nav')</x-slot>
 
+    {{-- Barra de acciones --}}
+    <div class="flex items-center justify-between gap-3 mb-5 flex-wrap">
+        <div>
+            <h2 class="text-lg font-bold text-gray-800 dark:text-gray-100">Inscripciones</h2>
+            <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Gestión individual y masiva de inscripciones por grupo.</p>
+        </div>
+        <a href="{{ route('gestor.inscripciones.promover.form') }}"
+           class="inline-flex items-center gap-2 px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold rounded-xl transition-colors shadow-sm hover:shadow">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+            </svg>
+            Promoción masiva por grupo
+        </a>
+    </div>
+
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
         {{-- Formulario nueva inscripción --}}
@@ -138,10 +153,17 @@
                                 <td class="px-5 py-3 text-center text-gray-600 dark:text-gray-400 text-[13px]">{{ $i->grupo?->cicloEscolar?->nombre }}</td>
                                 <td class="px-5 py-3 text-center text-gray-500 dark:text-gray-400 text-[13px]">{{ $i->fecha_inscripcion?->format('d/m/Y') }}</td>
                                 <td class="px-5 py-3 text-center">
-                                    <form method="POST" action="{{ route('gestor.inscripciones.destroy', $i) }}" class="inline">
+                                    <form method="POST" action="{{ route('gestor.inscripciones.destroy', $i) }}" class="inline"
+                                          data-udea-confirm
+                                          data-confirm-title="Eliminar inscripción"
+                                          data-confirm-message="¿Eliminar la inscripción de <strong>{{ $i->alumno?->nombre_completo ?? 'este alumno' }}</strong>?"
+                                          data-confirm-detail="El alumno quedará desvinculado del grupo. Esta acción no se puede deshacer."
+                                          data-confirm-variant="danger"
+                                          data-confirm-icon="trash"
+                                          data-confirm-button="Eliminar"
+                                          data-confirm-cancel="Cancelar">
                                         @csrf @method('DELETE')
-                                        <button type="submit" class="px-2.5 py-1 bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 text-xs rounded-lg hover:bg-red-100 dark:hover:bg-red-900/50 transition-colors"
-                                                onclick="return confirm('¿Eliminar inscripción?')">Eliminar</button>
+                                        <button type="submit" class="px-2.5 py-1 bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 text-xs rounded-lg hover:bg-red-100 dark:hover:bg-red-900/50 transition-colors">Eliminar</button>
                                     </form>
                                 </td>
                             </tr>

@@ -64,6 +64,28 @@
                             {{ $carrera->duracion_estimada }}
                         </div>
                     </div>
+
+                    {{-- ── Horas de servicio social requeridas (default por carrera) ── --}}
+                    <div class="col-span-2">
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                            Horas de servicio social *
+                        </label>
+                        <div class="flex items-center gap-3">
+                            <input type="number" name="horas_servicio_social_default"
+                                   value="{{ old('horas_servicio_social_default', $carrera->horas_servicio_social_default ?? 480) }}"
+                                   min="0" max="2000" step="1" required
+                                   class="w-40 border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400 focus:outline-none @error('horas_servicio_social_default') border-red-400 @enderror">
+                            <span class="text-xs text-gray-500 dark:text-gray-400">horas requeridas</span>
+                        </div>
+                        <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-1.5">
+                            <strong class="text-gray-700 dark:text-gray-300">Referencia UDEA / SEP:</strong>
+                            480 h (mínimo legal) · 960 h (Enfermería, Estomatología) · 480-960 h (Nutrición).
+                        </p>
+                        <p class="text-[10px] text-amber-600 dark:text-amber-400 mt-0.5">
+                            ⓘ Cambiar este valor afecta solo a los <strong>nuevos</strong> registros de SS. Los registros existentes mantienen su valor.
+                        </p>
+                        @error('horas_servicio_social_default')<p class="text-red-500 dark:text-red-400 text-xs mt-1">{{ $message }}</p>@enderror
+                    </div>
                 </div>
 
                 <div class="flex gap-3 pt-4 border-t dark:border-gray-700">

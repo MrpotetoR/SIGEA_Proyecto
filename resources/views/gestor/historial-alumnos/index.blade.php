@@ -86,7 +86,7 @@
                                 <span class="inline-block px-2.5 py-0.5 text-xs font-medium rounded-lg capitalize {{ $colorSemaforo }}">{{ $nivel }}</span>
                             </td>
                             <td class="px-5 py-3 text-center">
-                                <a href="{{ route('gestor.alumnos.historial', $alumno->id_alumno) }}"
+                                <a href="{{ route('gestor.historial-alumnos.show', $alumno->id_alumno) }}"
                                    class="inline-flex items-center gap-1 px-3 py-1.5 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 text-xs font-medium rounded-lg hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors">
                                     <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>

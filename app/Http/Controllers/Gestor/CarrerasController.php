@@ -68,11 +68,12 @@ class CarrerasController extends Controller
         $puedeAsignar = $this->puedeAsignarCarreras();
 
         $reglas = [
-            'nombre_carrera' => 'required|string|max:120',
-            'clave_carrera'  => 'required|string|max:20|unique:carrera,clave_carrera',
-            'rvoe'           => ['nullable', 'string', 'max:50', 'regex:/^[A-Za-z0-9\-\/]+$/'],
-            'area_academica' => 'required|in:' . implode(',', array_keys(Carrera::AREAS_ACADEMICAS)),
-            'tipo_periodo'   => 'required|in:' . implode(',', array_keys(Carrera::TIPOS_PERIODO)),
+            'nombre_carrera'                  => 'required|string|max:120',
+            'clave_carrera'                   => 'required|string|max:20|unique:carrera,clave_carrera',
+            'rvoe'                            => ['nullable', 'string', 'max:50', 'regex:/^[A-Za-z0-9\-\/]+$/'],
+            'area_academica'                  => 'required|in:' . implode(',', array_keys(Carrera::AREAS_ACADEMICAS)),
+            'tipo_periodo'                    => 'required|in:' . implode(',', array_keys(Carrera::TIPOS_PERIODO)),
+            'horas_servicio_social_default'   => 'required|integer|min:0|max:2000',
         ];
 
         // Solo se valida el campo de asignación si el usuario puede ver el combo.
@@ -101,7 +102,7 @@ class CarrerasController extends Controller
 
         $carrera = DB::transaction(function () use ($request, $gestorAsignadoId) {
             $carrera = Carrera::create($request->only(
-                'nombre_carrera', 'clave_carrera', 'rvoe', 'area_academica', 'tipo_periodo'
+                'nombre_carrera', 'clave_carrera', 'rvoe', 'area_academica', 'tipo_periodo', 'horas_servicio_social_default'
             ));
 
             if ($gestorAsignadoId) {
@@ -140,15 +141,16 @@ class CarrerasController extends Controller
     public function update(Request $request, Carrera $carrera)
     {
         $request->validate([
-            'nombre_carrera' => 'required|string|max:120',
-            'rvoe'           => ['nullable', 'string', 'max:50', 'regex:/^[A-Za-z0-9\-\/]+$/'],
-            'area_academica' => 'required|in:' . implode(',', array_keys(Carrera::AREAS_ACADEMICAS)),
+            'nombre_carrera'                => 'required|string|max:120',
+            'rvoe'                          => ['nullable', 'string', 'max:50', 'regex:/^[A-Za-z0-9\-\/]+$/'],
+            'area_academica'                => 'required|in:' . implode(',', array_keys(Carrera::AREAS_ACADEMICAS)),
+            'horas_servicio_social_default' => 'required|integer|min:0|max:2000',
         ], [
             'rvoe.regex' => 'El RVOE solo admite letras, números, guion (-) y diagonal (/).',
         ]);
 
         // tipo_periodo es inmutable una vez creada la carrera — el modelo también lo blinda.
-        $carrera->update($request->only('nombre_carrera', 'rvoe', 'area_academica'));
+        $carrera->update($request->only('nombre_carrera', 'rvoe', 'area_academica', 'horas_servicio_social_default'));
 
         return redirect()->route('gestor.carreras.index')->with('success', 'Carrera actualizada.');
     }

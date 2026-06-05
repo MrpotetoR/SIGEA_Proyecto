@@ -111,9 +111,12 @@
                         $ciclo = $stats['ciclo_activo'];
                         $inicio = \Carbon\Carbon::parse($ciclo->fecha_inicio);
                         $fin    = \Carbon\Carbon::parse($ciclo->fecha_fin);
-                        $total  = $inicio->diffInDays($fin);
-                        $transcurrido = $inicio->diffInDays(now());
-                        $pct = min(100, $total > 0 ? round(($transcurrido / $total) * 100) : 0);
+                        // Métrica operativa: avance por PERIODOS académicos (cuatris/sems), no por días absolutos.
+                        $totalPeriodos    = $ciclo->total_periodos;
+                        $periodoActual    = $ciclo->periodo_actual;
+                        $finPeriodoActual = $ciclo->fecha_fin_periodo_actual;
+                        $labelPeriodo     = $ciclo->tipo_inferido === 'semestre' ? 'Semestre' : 'Cuatrimestre';
+                        $pct = $totalPeriodos > 0 ? min(100, round(($periodoActual / $totalPeriodos) * 100)) : 0;
                     @endphp
                     <div class="flex items-center gap-3 mb-4">
                         <div class="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-900/40 flex items-center justify-center">
@@ -123,17 +126,33 @@
                         </div>
                         <div>
                             <p class="text-[18px] font-bold text-gray-900 dark:text-gray-100 leading-none">{{ $ciclo->nombre }}</p>
-                            <span class="text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/30 px-2 py-0.5 rounded-full mt-1 inline-block">Activo</span>
+                            <span class="text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/30 px-2 py-0.5 rounded-full mt-1 inline-block">Activo · {{ $labelPeriodo }}</span>
                         </div>
                     </div>
-                    <div class="text-[12px] text-gray-400 flex justify-between mb-2">
-                        <span>{{ $inicio->format('d/m/Y') }}</span>
-                        <span>{{ $fin->format('d/m/Y') }}</span>
+
+                    {{-- Métrica principal: cuatrimestre/semestre actual --}}
+                    <div class="bg-gray-50 dark:bg-gray-700/40 rounded-xl p-3 mb-3">
+                        <div class="flex items-baseline justify-between mb-2">
+                            <span class="text-[11px] font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{ $labelPeriodo }} actual</span>
+                            <span class="text-[20px] font-bold text-[#04276B] dark:text-blue-300 leading-none">{{ $periodoActual }}<span class="text-[12px] text-gray-400 font-medium"> / {{ $totalPeriodos }}</span></span>
+                        </div>
+                        <div class="rainbow-track h-2 rainbow-glow">
+                            <div class="rainbow-bar" style="width: {{ $pct }}%"></div>
+                        </div>
+                        @if($finPeriodoActual)
+                            <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-2">
+                                Termina aproximadamente el <strong>{{ $finPeriodoActual->translatedFormat('d M Y') }}</strong>
+                                @php $diasRest = max(0, (int) now()->diffInDays($finPeriodoActual, false)); @endphp
+                                <span class="text-gray-400 dark:text-gray-500">({{ $diasRest }} días)</span>
+                            </p>
+                        @endif
                     </div>
-                    <div class="rainbow-track h-2 rainbow-glow">
-                        <div class="rainbow-bar" style="width: {{ $pct }}%"></div>
+
+                    {{-- Generación total (info secundaria) --}}
+                    <div class="text-[10px] text-gray-400 dark:text-gray-500 flex items-center justify-between pt-1 border-t border-gray-100 dark:border-gray-700">
+                        <span>Generación: {{ $inicio->format('d/m/Y') }}</span>
+                        <span>→ {{ $fin->format('d/m/Y') }}</span>
                     </div>
-                    <p class="text-[11px] text-gray-400 mt-1.5">{{ $pct }}% transcurrido · {{ max(0, (int) now()->diffInDays($fin, false)) }} días restantes</p>
                 @else
                     <div class="text-center py-8">
                         <div class="w-12 h-12 mx-auto rounded-2xl bg-gray-50 dark:bg-gray-700 flex items-center justify-center mb-3">
@@ -166,7 +185,7 @@
                     ['route' => 'gestor.noticias.create', 'label' => 'Publicar Noticia',
                      'color' => 'bg-sky-50 hover:bg-sky-100 text-sky-700 dark:bg-sky-900/30 dark:hover:bg-sky-900/50 dark:text-sky-300',
                      'icon' => 'M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z'],
-                    ['route' => 'gestor.reportes',        'label' => 'Ver Reportes',
+                    ['route' => 'gestor.documentacion-reportes', 'label' => 'Ver Reportes',
                      'color' => 'bg-emerald-50 hover:bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:hover:bg-emerald-900/50 dark:text-emerald-300',
                      'icon' => 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z'],
                     ['route' => 'gestor.constancias',     'label' => 'Constancias',

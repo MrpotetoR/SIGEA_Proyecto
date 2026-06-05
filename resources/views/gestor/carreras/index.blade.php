@@ -124,11 +124,18 @@
                                     @endif
                                     <a href="{{ route('gestor.carreras.edit', $c) }}"
                                         class="text-yellow-600 dark:text-yellow-400 hover:text-yellow-900 font-medium">Editar</a>
-                                    <form method="POST" action="{{ route('gestor.carreras.destroy', $c) }}" class="inline">
+                                    <form method="POST" action="{{ route('gestor.carreras.destroy', $c) }}" class="inline"
+                                        data-udea-confirm
+                                        data-confirm-title="Eliminar carrera"
+                                        data-confirm-message="¿Eliminar la carrera <strong>&quot;{{ $c->nombre_carrera }}&quot;</strong>?"
+                                        data-confirm-detail="Esta acción no se puede deshacer."
+                                        data-confirm-variant="danger"
+                                        data-confirm-icon="trash"
+                                        data-confirm-button="Eliminar"
+                                        data-confirm-cancel="Cancelar">
                                         @csrf @method('DELETE')
                                         <button type="submit"
-                                            class="text-red-600 dark:text-red-400 hover:text-red-900 font-medium"
-                                            onclick="return confirm('¿Eliminar carrera?')">Eliminar</button>
+                                            class="text-red-600 dark:text-red-400 hover:text-red-900 font-medium">Eliminar</button>
                                     </form>
                                 </div>
                             </td>

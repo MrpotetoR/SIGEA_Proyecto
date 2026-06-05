@@ -8,18 +8,16 @@
         <a href="{{ route('gestor.servicio-social.create') }}" class="bg-[#0606F0] text-white px-4 py-2 rounded-xl text-[12px] font-medium hover:bg-[#04276B] transition-colors dark:bg-[#0606F0] dark:hover:bg-[#0606F0]">+ Registrar</a>
     </div>
 
-    @if(session('success'))
-        <div class="bg-emerald-50 border border-emerald-200 text-emerald-700 px-4 py-3 rounded-2xl text-[13px] dark:bg-green-900/30 dark:border-green-700 dark:text-green-300">{{ session('success') }}</div>
-    @endif
+    {{-- El banner global de session('success') ya lo muestra el componente <x-panel>; evitamos duplicarlo aquí. --}}
 
     @php
         $alumnosConSS = $alumnos->filter(fn($a) => $a->servicioSocial !== null);
     @endphp
 
     @if($alumnosConSS->isNotEmpty())
-        <div class="bg-white rounded-2xl border border-gray-100 shadow-sm dark:bg-gray-800 dark:border-gray-700 dark:shadow-gray-900/20 flex flex-col min-h-0" style="max-height: calc(100vh - 220px);">
-            <div class="overflow-y-auto flex-1 custom-scrollbar">
-            <table class="min-w-full divide-y divide-gray-100 dark:divide-gray-700">
+        <div class="bg-white rounded-2xl border border-gray-100 shadow-sm dark:bg-gray-800 dark:border-gray-700 dark:shadow-gray-900/20 w-full overflow-hidden" style="max-height: calc(100vh - 220px);">
+            <div class="overflow-y-auto custom-scrollbar" style="max-height: calc(100vh - 220px);">
+            <table class="min-w-full w-full divide-y divide-gray-100 dark:divide-gray-700">
                 <thead class="bg-gray-50 dark:bg-gray-700/50 sticky top-0 z-10">
                     <tr>
                         <th class="px-5 py-3 text-left text-[11px] font-semibold text-gray-500 uppercase dark:text-gray-400">Alumno</th>
@@ -63,7 +61,15 @@
                             <td class="px-5 py-3 text-center">
                                 <div class="flex justify-center gap-1">
                                     <a href="{{ route('gestor.servicio-social.edit', $ss->id_servicio) }}" class="text-[11px] text-sky-600 hover:text-sky-800 px-2 py-1 rounded-lg hover:bg-sky-50 dark:text-blue-400 dark:hover:bg-gray-700">Editar</a>
-                                    <form method="POST" action="{{ route('gestor.servicio-social.destroy', $ss->id_servicio) }}" onsubmit="return confirm('¿Eliminar el registro de servicio social de {{ $alumno->nombre_completo }}?')">
+                                    <form method="POST" action="{{ route('gestor.servicio-social.destroy', $ss->id_servicio) }}"
+                                          data-udea-confirm
+                                          data-confirm-title="Eliminar servicio social"
+                                          data-confirm-message="¿Eliminar el registro de servicio social de <strong>{{ $alumno->nombre_completo }}</strong>?"
+                                          data-confirm-detail="Se perderán las horas registradas. Esta acción no se puede deshacer."
+                                          data-confirm-variant="danger"
+                                          data-confirm-icon="trash"
+                                          data-confirm-button="Eliminar"
+                                          data-confirm-cancel="Cancelar">
                                         @csrf @method('DELETE')
                                         <button type="submit" class="text-[11px] text-red-500 hover:text-red-700 px-2 py-1 rounded-lg hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/20">Eliminar</button>
                                     </form>

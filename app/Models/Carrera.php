@@ -10,7 +10,7 @@ class Carrera extends Model
     protected $primaryKey = 'id_carrera';
     public $timestamps = false;
 
-    protected $fillable = ['nombre_carrera', 'clave_carrera', 'rvoe', 'area_academica', 'tipo_periodo', 'duracion_periodos'];
+    protected $fillable = ['nombre_carrera', 'clave_carrera', 'rvoe', 'area_academica', 'tipo_periodo', 'duracion_periodos', 'horas_servicio_social_default'];
 
     public const AREAS_ACADEMICAS = [
         'ciencias_salud'       => 'Ciencias de la Salud',
@@ -28,12 +28,12 @@ class Carrera extends Model
     ];
 
     /**
-     * Total de periodos por tipo — reglas de negocio fijas del sistema.
-     * Cuatrimestre: 10 periodos | Semestre: 7 periodos
+     * Total de periodos por tipo — reglas de negocio fijas del sistema (UDEA).
+     * Cuatrimestre: 10 periodos (3 años 4 meses) | Semestre: 6 periodos (3 años exactos)
      */
     public const DURACION_POR_TIPO = [
         'cuatrimestre' => 10,
-        'semestre'     => 7,
+        'semestre'     => 6,
     ];
 
     /** Máximo de periodos que puede tener un alumno en esta carrera. */

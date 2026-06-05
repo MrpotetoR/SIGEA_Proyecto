@@ -9,7 +9,7 @@ class PerfilController extends Controller
 {
     public function index(Request $request)
     {
-        $docente = $request->user()->docente;
-        return view('gestor.perfil', compact('docente'));
+        $gestor = $request->user()->gestorEscolar;
+        return view('gestor.perfil', compact('gestor'));
     }
 }

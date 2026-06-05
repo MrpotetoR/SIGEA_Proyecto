@@ -34,11 +34,18 @@
                                     <a href="{{ route('gestor.documentos.edit', $d) }}"
                                         class="text-yellow-600 dark:text-yellow-400 hover:text-yellow-900 dark:hover:text-yellow-300 font-medium">Editar</a>
                                     <form method="POST" action="{{ route('gestor.documentos.destroy', $d) }}"
-                                        class="inline">
+                                        class="inline"
+                                        data-udea-confirm
+                                        data-confirm-title="Eliminar documento"
+                                        data-confirm-message="¿Eliminar el documento <strong>&quot;{{ $d->titulo ?? $d->nombre_original ?? 'sin nombre' }}&quot;</strong>?"
+                                        data-confirm-detail="Esta acción no se puede deshacer."
+                                        data-confirm-variant="danger"
+                                        data-confirm-icon="trash"
+                                        data-confirm-button="Eliminar"
+                                        data-confirm-cancel="Cancelar">
                                         @csrf @method('DELETE')
                                         <button type="submit"
-                                            class="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300 font-medium"
-                                            onclick="return confirm('¿Eliminar documento?')">Eliminar</button>
+                                            class="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300 font-medium">Eliminar</button>
                                     </form>
                                 </div>
                             </td>

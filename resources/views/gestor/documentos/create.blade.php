@@ -1,10 +1,21 @@
 <x-panel title="Subir Documento" panelNombre="Panel Gestor Escolar">
     <x-slot name="nav">@include('partials.gestor-nav')</x-slot>
     <div class="max-w-lg">
-        <a href="{{ route('gestor.documentos.index') }}" class="text-sm text-[#0606F0] dark:text-blue-400 hover:underline mb-6 inline-block">← Volver</a>
+        <a href="{{ route('gestor.documentacion-reportes', array_filter(['tab' => 'documentos', 'carpeta' => $carpetaActual?->id_carpeta])) }}" class="text-sm text-[#0606F0] dark:text-blue-400 hover:underline mb-6 inline-block">← Volver</a>
         <div class="bg-white dark:bg-gray-800 rounded-xl shadow dark:shadow-gray-900/20 border border-transparent dark:border-gray-700 p-6">
+            @if(isset($carpetaActual) && $carpetaActual)
+                <div class="mb-4 bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-700 rounded-lg p-3 text-sm text-blue-800 dark:text-blue-200">
+                    Subiendo en la carpeta: <strong>{{ $carpetaActual->nombre }}</strong>
+                    @if($carpetaActual->esPrivada())
+                        <span class="ml-2 text-xs bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-300 px-2 py-0.5 rounded">Privada</span>
+                    @endif
+                </div>
+            @endif
             <form method="POST" action="{{ route('gestor.documentos.store') }}" enctype="multipart/form-data" class="space-y-5">
                 @csrf
+                @if(isset($carpetaActual) && $carpetaActual)
+                    <input type="hidden" name="carpeta_id" value="{{ $carpetaActual->id_carpeta }}">
+                @endif
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Título *</label>
                     <input type="text" name="titulo" value="{{ old('titulo') }}" required
@@ -31,7 +42,7 @@
                 </div>
                 <div class="flex gap-3 pt-4 border-t dark:border-gray-700">
                     <button type="submit" class="bg-blue-700 hover:bg-blue-800 dark:bg-[#0606F0] dark:hover:bg-blue-400 text-white px-6 py-2.5 rounded-lg text-sm font-semibold transition-colors">Subir documento</button>
-                    <a href="{{ route('gestor.documentos.index') }}" class="bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 px-6 py-2.5 rounded-lg text-sm font-medium transition-colors">Cancelar</a>
+                    <a href="{{ route('gestor.documentacion-reportes', array_filter(['tab' => 'documentos', 'carpeta' => $carpetaActual?->id_carpeta])) }}" class="bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 px-6 py-2.5 rounded-lg text-sm font-medium transition-colors">Cancelar</a>
                 </div>
             </form>
         </div>

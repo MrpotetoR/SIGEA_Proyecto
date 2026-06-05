@@ -63,7 +63,7 @@
                         <select name="tipo_periodo" id="tipo_periodo" required
                                 class="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400 focus:outline-none @error('tipo_periodo') border-red-400 @enderror">
                             <option value="cuatrimestre" @selected(old('tipo_periodo', 'cuatrimestre') === 'cuatrimestre')>Cuatrimestre (10 periodos)</option>
-                            <option value="semestre" @selected(old('tipo_periodo') === 'semestre')>Semestre (7 periodos)</option>
+                            <option value="semestre" @selected(old('tipo_periodo') === 'semestre')>Semestre (6 periodos)</option>
                         </select>
                         <p class="text-[10px] text-amber-600 dark:text-amber-400 mt-1">⚠ No se podrá modificar después de crear la carrera.</p>
                         @error('tipo_periodo')<p class="text-red-500 dark:text-red-400 text-xs mt-1">{{ $message }}</p>@enderror
@@ -80,6 +80,30 @@
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Duración estimada</label>
                         <div id="duracion-estimada"
                              class="w-full border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700/50 rounded-lg px-3 py-2 text-sm text-gray-600 dark:text-gray-300">—</div>
+                    </div>
+
+                    {{-- ── Horas de servicio social requeridas (default por carrera) ── --}}
+                    <div class="col-span-2">
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                            Horas de servicio social *
+                        </label>
+                        <div class="flex items-center gap-3">
+                            <input type="number" name="horas_servicio_social_default" id="horas_ss_default"
+                                   value="{{ old('horas_servicio_social_default', 480) }}"
+                                   min="0" max="2000" step="1" required
+                                   class="w-40 border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400 focus:outline-none @error('horas_servicio_social_default') border-red-400 @enderror">
+                            <span class="text-xs text-gray-500 dark:text-gray-400">horas requeridas</span>
+                        </div>
+                        <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-1.5">
+                            <strong class="text-gray-700 dark:text-gray-300">Referencia UDEA / SEP:</strong>
+                            480 h (mínimo legal: la mayoría de carreras) ·
+                            960 h (Enfermería, Estomatología) ·
+                            480-960 h (Nutrición — depende de la institución).
+                        </p>
+                        <p class="text-[10px] text-amber-600 dark:text-amber-400 mt-0.5">
+                            ⓘ Es el valor por defecto; el gestor puede ajustarlo caso por caso al registrar el SS de cada alumno.
+                        </p>
+                        @error('horas_servicio_social_default')<p class="text-red-500 dark:text-red-400 text-xs mt-1">{{ $message }}</p>@enderror
                     </div>
 
                     {{-- ── Asignación: solo visible para gestores con permiso especial (o admin) ── --}}

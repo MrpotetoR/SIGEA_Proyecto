@@ -37,6 +37,13 @@ Route::middleware('auth')->group(function () {
         Route::post('/{notificacion}/leida', [\App\Http\Controllers\NotificacionController::class, 'marcarLeida'])->name('leida');
         Route::post('/marcar-todas', [\App\Http\Controllers\NotificacionController::class, 'marcarTodasLeidas'])->name('todas-leidas');
     });
+
+    // ── Chatbot: reset de historial de conversacion (compartido para los 4 roles).
+    //    Borra la entrada `chatbot_historial` de la sesion actual; al ser por
+    //    sesion no afecta a otros usuarios.
+    Route::post('/chatbot/reset',
+        [\App\Http\Controllers\ChatbotController::class, 'resetHistorial'])
+        ->name('chatbot.reset');
 });
 
 // ============================================================
@@ -313,7 +320,11 @@ Route::prefix('gestor-escolar')->name('gestor.')->middleware(['auth', 'verified'
 
     // Materias y ciclos: aplican en ambos contextos (el formulario se adapta)
     Route::resource('materias', \App\Http\Controllers\Gestor\MateriasController::class);
-    Route::resource('ciclos',   \App\Http\Controllers\Gestor\CiclosController::class);
+    // Ciclos: creación SOLO vía batch (crear-anio). Sin create/store individual — regla UDEA:
+    // todos los ciclos siguen una de las dos plantillas (cuatrimestral / semestral).
+    Route::post('ciclos/crear-anio', [\App\Http\Controllers\Gestor\CiclosController::class, 'crearAnio'])->name('ciclos.crear-anio');
+    Route::resource('ciclos', \App\Http\Controllers\Gestor\CiclosController::class)
+        ->except(['create', 'store']);
 
     // Grupos (CRUD + inscripcion individual)
     Route::resource('grupos', \App\Http\Controllers\Gestor\GruposController::class);
@@ -326,6 +337,9 @@ Route::prefix('gestor-escolar')->name('gestor.')->middleware(['auth', 'verified'
     // Inscripciones masivas
     Route::get('/inscripciones',                  [\App\Http\Controllers\Gestor\InscripcionesController::class, 'index'])->name('inscripciones');
     Route::get('/inscripciones/check',            [\App\Http\Controllers\Gestor\InscripcionesController::class, 'check'])->name('inscripciones.check');
+    Route::get('/inscripciones/promover',         [\App\Http\Controllers\Gestor\InscripcionesController::class, 'promoverForm'])->name('inscripciones.promover.form');
+    Route::get('/inscripciones/promover/preview', [\App\Http\Controllers\Gestor\InscripcionesController::class, 'previewPromocion'])->name('inscripciones.promover.preview');
+    Route::post('/inscripciones/promover',        [\App\Http\Controllers\Gestor\InscripcionesController::class, 'promover'])->name('inscripciones.promover');
     Route::post('/inscripciones',                 [\App\Http\Controllers\Gestor\InscripcionesController::class, 'store'])->name('inscripciones.store');
     Route::delete('/inscripciones/{inscripcion}', [\App\Http\Controllers\Gestor\InscripcionesController::class, 'destroy'])->name('inscripciones.destroy');
 
@@ -345,8 +359,31 @@ Route::prefix('gestor-escolar')->name('gestor.')->middleware(['auth', 'verified'
 
     // Noticias, documentos, reportes
     Route::resource('noticias',   \App\Http\Controllers\Gestor\NoticiasController::class);
-    Route::resource('documentos', \App\Http\Controllers\Gestor\DocumentosController::class);
-    Route::get('/reportes', [\App\Http\Controllers\Gestor\ReportesController::class, 'index'])->name('reportes');
+    // Alias legacy del index de documentos: redirige a la vista unificada con tab=documentos.
+    Route::get('/documentos', fn() => redirect()->route('gestor.documentacion-reportes', ['tab' => 'documentos']))
+        ->name('documentos.index');
+    Route::resource('documentos', \App\Http\Controllers\Gestor\DocumentosController::class)
+        ->except(['index']);
+
+    // Vista unificada: Documentación y Reportes (tabs: reportes | documentos).
+    Route::get('/documentacion-reportes',
+        [\App\Http\Controllers\Gestor\DocumentacionReportesController::class, 'index'])
+        ->name('documentacion-reportes');
+
+    // Carpetas dentro de Documentos Institucionales.
+    Route::post('/documentos/carpetas',
+        [\App\Http\Controllers\Gestor\CarpetasDocumentoController::class, 'store'])
+        ->name('documentos.carpetas.store');
+    Route::put('/documentos/carpetas/{carpeta}',
+        [\App\Http\Controllers\Gestor\CarpetasDocumentoController::class, 'update'])
+        ->name('documentos.carpetas.update');
+    Route::delete('/documentos/carpetas/{carpeta}',
+        [\App\Http\Controllers\Gestor\CarpetasDocumentoController::class, 'destroy'])
+        ->name('documentos.carpetas.destroy');
+
+    // Alias legacy: redirige a la vista unificada con la pestaña correspondiente.
+    Route::get('/reportes', fn() => redirect()->route('gestor.documentacion-reportes', ['tab' => 'reportes']))
+        ->name('reportes');
 
     // ============================================================
     // CAJA CHICA — Vales (acceso por flag puede_gestionar_caja_chica)

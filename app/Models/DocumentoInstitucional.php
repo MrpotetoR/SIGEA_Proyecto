@@ -9,7 +9,7 @@ class DocumentoInstitucional extends Model
     protected $table = 'documento_institucional';
     protected $primaryKey = 'id_documento';
 
-    protected $fillable = ['user_id', 'titulo', 'tipo', 'archivo_url', 'fecha_publicacion'];
+    protected $fillable = ['user_id', 'carpeta_id', 'titulo', 'tipo', 'archivo_url', 'fecha_publicacion'];
 
     protected function casts(): array
     {
@@ -23,5 +23,8 @@ class DocumentoInstitucional extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
-
+    public function carpeta()
+    {
+        return $this->belongsTo(CarpetaDocumento::class, 'carpeta_id', 'id_carpeta');
+    }
 }

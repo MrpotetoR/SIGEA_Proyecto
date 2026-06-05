@@ -14,11 +14,14 @@ use Illuminate\Http\Request;
  * cualquier alumno bajo su contexto activo (Universidad/Bachillerato).
  * El scope global NivelEducativoScope ya filtra los alumnos visibles.
  *
- * LIMITE_SS: tope institucional total de horas de servicio social por alumno.
+ * Las horas requeridas por alumno se inicializan con el default de su carrera
+ * (`carrera.horas_servicio_social_default`) y el gestor puede sobreescribir
+ * caso por caso (ej. Nutrición hospitalaria vs básica).
  */
 class ServicioSocialController extends Controller
 {
-    private const LIMITE_SS = 160;
+    /** Tope máximo absoluto de horas de SS (para validación sanity-check). */
+    private const TOPE_ABSOLUTO_HORAS = 2000;
 
     public function index(Request $request)
     {
@@ -46,7 +49,8 @@ class ServicioSocialController extends Controller
     public function create()
     {
         // Solo alumnos del contexto activo (scope global) que aun no tengan SS registrado.
-        $alumnos = Alumno::whereDoesntHave('servicioSocial')
+        $alumnos = Alumno::with('carrera')
+            ->whereDoesntHave('servicioSocial')
             ->orderBy('apellidos')->orderBy('nombre')->get();
 
         return view('gestor.servicio-social.create', compact('alumnos'));
@@ -57,22 +61,30 @@ class ServicioSocialController extends Controller
         $request->validate([
             'id_alumno'        => 'required|exists:alumno,id_alumno',
             'institucion'      => ['nullable', 'string', 'max:150', 'regex:/^[\pL\pN\s]+$/u'],
-            'horas_acumuladas' => ['required', 'numeric', 'min:0', 'max:' . self::LIMITE_SS],
+            'horas_acumuladas' => ['required', 'numeric', 'min:0', 'max:' . self::TOPE_ABSOLUTO_HORAS],
+            'horas_requeridas' => ['nullable', 'numeric', 'min:0', 'max:' . self::TOPE_ABSOLUTO_HORAS],
             'estatus'          => 'required|in:en_curso,completado',
         ], [
             'institucion.regex'    => 'La institución solo puede contener letras y números.',
-            'horas_acumuladas.max' => 'El limite institucional de servicio social es de ' . self::LIMITE_SS . ' horas.',
+            'horas_acumuladas.max' => 'El tope absoluto de horas es ' . self::TOPE_ABSOLUTO_HORAS . '.',
+            'horas_requeridas.max' => 'El tope absoluto de horas es ' . self::TOPE_ABSOLUTO_HORAS . '.',
         ]);
 
-        $horas   = (float) $request->horas_acumuladas;
-        $estatus = $horas >= self::LIMITE_SS ? 'completado' : $request->estatus;
+        // Horas requeridas: lo que mande el gestor, o el default de la carrera del alumno, o 480 como último fallback.
+        $alumno = Alumno::with('carrera')->findOrFail($request->id_alumno);
+        $horasRequeridas = $request->filled('horas_requeridas')
+            ? (float) $request->horas_requeridas
+            : (float) ($alumno->carrera?->horas_servicio_social_default ?? 480);
+
+        $horasAcumuladas = (float) $request->horas_acumuladas;
+        $estatus = $horasAcumuladas >= $horasRequeridas ? 'completado' : $request->estatus;
 
         ServicioSocial::updateOrCreate(
             ['id_alumno' => $request->id_alumno],
             [
                 'institucion'      => $request->institucion,
-                'horas_acumuladas' => $horas,
-                'horas_requeridas' => self::LIMITE_SS,
+                'horas_acumuladas' => $horasAcumuladas,
+                'horas_requeridas' => $horasRequeridas,
                 'estatus'          => $estatus,
             ]
         );
@@ -95,20 +107,23 @@ class ServicioSocialController extends Controller
     {
         $request->validate([
             'institucion'      => ['nullable', 'string', 'max:150', 'regex:/^[\pL\pN\s]+$/u'],
-            'horas_acumuladas' => ['required', 'numeric', 'min:0', 'max:' . self::LIMITE_SS],
+            'horas_acumuladas' => ['required', 'numeric', 'min:0', 'max:' . self::TOPE_ABSOLUTO_HORAS],
+            'horas_requeridas' => ['required', 'numeric', 'min:0', 'max:' . self::TOPE_ABSOLUTO_HORAS],
             'estatus'          => 'required|in:en_curso,completado',
         ], [
             'institucion.regex'    => 'La institución solo puede contener letras y números.',
-            'horas_acumuladas.max' => 'El limite institucional de servicio social es de ' . self::LIMITE_SS . ' horas.',
+            'horas_acumuladas.max' => 'El tope absoluto de horas es ' . self::TOPE_ABSOLUTO_HORAS . '.',
+            'horas_requeridas.max' => 'El tope absoluto de horas es ' . self::TOPE_ABSOLUTO_HORAS . '.',
         ]);
 
-        $horas   = (float) $request->horas_acumuladas;
-        $estatus = $horas >= self::LIMITE_SS ? 'completado' : $request->estatus;
+        $horasAcumuladas = (float) $request->horas_acumuladas;
+        $horasRequeridas = (float) $request->horas_requeridas;
+        $estatus = $horasAcumuladas >= $horasRequeridas ? 'completado' : $request->estatus;
 
         $servicioSocial->update([
             'institucion'      => $request->institucion,
-            'horas_acumuladas' => $horas,
-            'horas_requeridas' => self::LIMITE_SS,
+            'horas_acumuladas' => $horasAcumuladas,
+            'horas_requeridas' => $horasRequeridas,
             'estatus'          => $estatus,
         ]);
 
