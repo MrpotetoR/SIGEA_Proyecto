@@ -105,25 +105,77 @@
                 </div>
             </div>
 
-            {{-- EGRESOS (Caja Chica) --}}
-            <div class="bg-gradient-to-br from-rose-50 to-red-50 dark:from-rose-900/20 dark:to-red-900/20 border-2 border-rose-300 dark:border-rose-700 rounded-2xl p-6">
+            {{-- DIFERENCIA (Caja Chica): faltante / sobrante / cuadrada --}}
+            @php
+                // Determina el tono visual según la diferencia.
+                $diffEstado = match (true) {
+                    $diferenciaCaja < 0 => 'faltante',
+                    $diferenciaCaja > 0 => 'sobrante',
+                    default             => 'cuadrada',
+                };
+                $diffStyles = [
+                    'faltante' => [
+                        'bg'        => 'bg-gradient-to-br from-rose-50 to-red-50 dark:from-rose-900/20 dark:to-red-900/20',
+                        'border'    => 'border-rose-300 dark:border-rose-700',
+                        'title'     => 'text-rose-700 dark:text-rose-300',
+                        'amount'    => 'text-rose-900 dark:text-rose-200',
+                        'sub'       => 'text-rose-700 dark:text-rose-400',
+                        'divider'   => 'border-rose-200 dark:border-rose-700',
+                        'label'     => 'Faltante · Caja Chica',
+                        'helperLbl' => 'text-rose-700 dark:text-rose-400',
+                        'sign'      => '−',
+                        'helper'    => 'Diferencia por reponer respecto al monto base.',
+                        // Flecha hacia abajo (egreso / déficit)
+                        'iconPath'  => 'M17 17L7.8 7.8M7 17h10V7',
+                    ],
+                    'sobrante' => [
+                        'bg'        => 'bg-gradient-to-br from-emerald-50 to-green-50 dark:from-emerald-900/20 dark:to-green-900/20',
+                        'border'    => 'border-emerald-300 dark:border-emerald-700',
+                        'title'     => 'text-emerald-700 dark:text-emerald-300',
+                        'amount'    => 'text-emerald-900 dark:text-emerald-200',
+                        'sub'       => 'text-emerald-700 dark:text-emerald-400',
+                        'divider'   => 'border-emerald-200 dark:border-emerald-700',
+                        'label'     => 'Sobrante · Caja Chica',
+                        'helperLbl' => 'text-emerald-700 dark:text-emerald-400',
+                        'sign'      => '+',
+                        'helper'    => 'Excedente por encima del monto base del fondo.',
+                        // Flecha hacia arriba
+                        'iconPath'  => 'M7 17l9.2-9.2M17 17V7H7',
+                    ],
+                    'cuadrada' => [
+                        'bg'        => 'bg-gradient-to-br from-sky-50 to-blue-50 dark:from-sky-900/20 dark:to-blue-900/20',
+                        'border'    => 'border-sky-300 dark:border-sky-700',
+                        'title'     => 'text-sky-700 dark:text-sky-300',
+                        'amount'    => 'text-sky-900 dark:text-sky-200',
+                        'sub'       => 'text-sky-700 dark:text-sky-400',
+                        'divider'   => 'border-sky-200 dark:border-sky-700',
+                        'label'     => 'Faltante de Caja Chica',
+                        'helperLbl' => 'text-sky-700 dark:text-sky-400',
+                        'sign'      => '',
+                        'helper'    => 'El saldo actual coincide con el monto base del fondo.',
+                        // Check
+                        'iconPath'  => 'M5 13l4 4L19 7',
+                    ],
+                ][$diffEstado];
+            @endphp
+            <div class="{{ $diffStyles['bg'] }} border-2 {{ $diffStyles['border'] }} rounded-2xl p-6">
                 <div class="flex items-center justify-between mb-3">
-                    <h2 class="text-base font-bold text-rose-700 dark:text-rose-300 uppercase tracking-wider inline-flex items-center gap-2">
+                    <h2 class="text-base font-bold {{ $diffStyles['title'] }} uppercase tracking-wider inline-flex items-center gap-2">
                         <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M17 17L7.8 7.8M7 17h10V7"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" d="{{ $diffStyles['iconPath'] }}" />
                         </svg>
-                        Egresos · Caja Chica
+                        {{ $diffStyles['label'] }}
                     </h2>
                 </div>
-                <p class="text-4xl font-bold text-rose-900 dark:text-rose-200">
-                    − ${{ number_format($egresosResumen['total'], 2) }}
+                <p class="text-4xl font-bold {{ $diffStyles['amount'] }}">
+                    {{ $diffStyles['sign'] }} ${{ number_format(abs($diferenciaCaja), 2) }}
                 </p>
-                <p class="text-sm text-rose-700 dark:text-rose-400 mt-1">
-                    {{ $egresosResumen['conteo'] }} vales autorizados en el periodo
+                <p class="text-sm {{ $diffStyles['sub'] }} mt-1">
+                    {{ $diffStyles['helper'] }}
                 </p>
 
-                <div class="mt-4 pt-4 border-t border-rose-200 dark:border-rose-700">
-                    <p class="text-xs uppercase tracking-wide font-semibold text-rose-700 dark:text-rose-400 mb-2">
+                <div class="mt-4 pt-4 border-t {{ $diffStyles['divider'] }}">
+                    <p class="text-xs uppercase tracking-wide font-semibold {{ $diffStyles['helperLbl'] }} mb-2">
                         Estado actual del fondo
                     </p>
                     @php
@@ -145,11 +197,22 @@
                             {{ $fondo->semaforo_label }}
                         </span>
                     </div>
+                    <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-2">
+                        {{ $egresosResumen['conteo'] }} vales autorizados en el periodo (informativo).
+                    </p>
                 </div>
             </div>
         </div>
 
         {{-- Saldo neto del periodo --}}
+        @php
+            // Formato legible del componente caja chica:
+            //   sin diferencia → "± $0.00"
+            //   faltante       → "− $X.XX"
+            //   sobrante       → "+ $X.XX"
+            $cajaSigno = $diferenciaCaja < 0 ? '−' : ($diferenciaCaja > 0 ? '+' : '±');
+            $cajaTextoOp = $diferenciaCaja < 0 ? '−' : '+';
+        @endphp
         <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg dark:shadow-gray-900/20 p-8 border-2 {{ $saldoNeto >= 0 ? 'border-[#0606F0]' : 'border-rose-500' }}">
             <div class="text-center">
                 <p class="text-xs uppercase tracking-widest text-gray-500 dark:text-gray-400 font-semibold mb-2">
@@ -160,12 +223,13 @@
                 </p>
                 <p class="text-sm text-gray-500 dark:text-gray-400 mt-3">
                     Ingresos (${{ number_format($ingresosResumen['total'], 2) }})
-                    − Egresos (${{ number_format($egresosResumen['total'], 2) }})
+                    {{ $cajaTextoOp }} Caja Chica ({{ $cajaSigno }}${{ number_format(abs($diferenciaCaja), 2) }})
                     = <strong>${{ number_format($saldoNeto, 2) }}</strong>
                 </p>
                 <p class="text-[11px] text-gray-400 dark:text-gray-500 mt-4 italic max-w-xl mx-auto">
-                    Nota: el saldo neto es la diferencia teórica del periodo.
-                    El saldo real de la Caja Chica se rige por el fondo objetivo y se mantiene independiente.
+                    Nota: la Caja Chica funciona como un fondo objetivo, no como un flujo de egresos.
+                    Lo que aporta al saldo neto del periodo es la diferencia entre su saldo actual y
+                    su monto base (un faltante resta; un sobrante suma).
                 </p>
             </div>
         </div>

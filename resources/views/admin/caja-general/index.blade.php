@@ -27,7 +27,7 @@
                     {{ now()->startOfWeek()->format('d/m') }} — {{ now()->endOfWeek()->format('d/m') }}
                 </p>
             </div>
-            <div class="bg-gradient-to-br from-[#0606F0] to-[#04276B] text-white rounded-xl shadow p-5">
+            <div class="bg-gradient-to-br from-[#0606F0]  text-white rounded-xl shadow p-5">
                 <p class="text-xs uppercase tracking-wider text-white/80 font-semibold">Este mes</p>
                 <p class="text-3xl font-bold mt-1">
                     ${{ number_format($resumen['rapidas']['mes'], 2) }}

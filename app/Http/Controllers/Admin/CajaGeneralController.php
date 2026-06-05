@@ -148,10 +148,21 @@ class CajaGeneralController extends Controller
         // Saldo del fondo (info actual, no del periodo)
         $fondo = FondoCajaChica::actual();
 
-        $saldoNeto = $ingresosResumen['total'] - $egresosResumen['total'];
+        // Diferencia real de la caja chica:
+        //   saldo_actual - monto_base
+        //     < 0  → faltante  (la caja debe MENOS de lo objetivo, hay un hueco por reponer)
+        //     > 0  → sobrante  (la caja tiene MÁS de lo objetivo, caso poco común)
+        //     = 0  → caja cuadrada
+        // La caja chica es un fondo objetivo (no un flujo de egresos del periodo),
+        // por eso lo correcto es mostrar la diferencia respecto al monto base.
+        $diferenciaCaja = (float) $fondo->saldo_actual - (float) $fondo->monto_base;
+
+        // Saldo neto del periodo: ingresos del periodo + diferencia de caja chica.
+        // Un faltante resta al neto; un sobrante suma.
+        $saldoNeto = $ingresosResumen['total'] + $diferenciaCaja;
 
         return view('admin.caja-general.consolidado', compact(
-            'ingresosResumen', 'egresosResumen', 'fondo', 'saldoNeto', 'filtros'
+            'ingresosResumen', 'egresosResumen', 'fondo', 'saldoNeto', 'diferenciaCaja', 'filtros'
         ));
     }
 
