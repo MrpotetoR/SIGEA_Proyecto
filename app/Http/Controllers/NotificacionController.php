@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Notificacion;
 use App\Models\Noticia;
+use App\Models\Notificacion;
 use App\Services\NotificacionService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -19,10 +19,16 @@ class NotificacionController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
+        // Liberar el lock de sesión inmediatamente para no bloquear navegaciones
+        // simultáneas (sesiones en archivo, típico en XAMPP).
+        session()->save();
+
         $this->procesarNoticiasProgramadas();
 
+        // Mostrar siempre las no leídas (sin importar antigüedad) + leídas recientes (30 días).
+        // Así el badge y la lista siempre son consistentes.
         $notificaciones = Notificacion::where('user_id', auth()->id())
-            ->recientes()
+            ->where(fn ($q) => $q->noLeidas()->orWhere(fn ($q2) => $q2->recientes()))
             ->orderByDesc('created_at')
             ->limit(20)
             ->get();
@@ -30,16 +36,16 @@ class NotificacionController extends Controller
         $noLeidas = Notificacion::where('user_id', auth()->id())->noLeidas()->count();
 
         return response()->json([
-            'notificaciones' => $notificaciones->map(fn($n) => [
-                'id'         => $n->id,
-                'tipo'       => $n->tipo,
-                'titulo'     => $n->titulo,
-                'mensaje'    => $n->mensaje,
-                'icono_svg'  => $n->icono_svg,
+            'notificaciones' => $notificaciones->map(fn ($n) => [
+                'id' => $n->id,
+                'tipo' => $n->tipo,
+                'titulo' => $n->titulo,
+                'mensaje' => $n->mensaje,
+                'icono_svg' => $n->icono_svg,
                 'color_class' => $n->color_class,
-                'url'        => $n->url,
-                'leida'      => $n->estaLeida(),
-                'tiempo'     => $n->created_at->locale('es')->diffForHumans(),
+                'url' => $n->url,
+                'leida' => $n->estaLeida(),
+                'tiempo' => $n->created_at->locale('es')->diffForHumans(),
                 'created_at' => $n->created_at->toIso8601String(),
             ]),
             'no_leidas' => $noLeidas,
@@ -82,12 +88,12 @@ class NotificacionController extends Controller
     {
         // Throttle global: si ya corrió en los últimos 60s, salir inmediatamente.
         // Cache::add devuelve true solo si la clave no existía (atómico en cache).
-        if (!Cache::add('procesar-noticias-programadas:lock', 1, 60)) {
+        if (! Cache::add('procesar-noticias-programadas:lock', 1, 60)) {
             return;
         }
 
         // Salida temprana barata: si no hay nada pendiente, evitamos el ->get() y el loop.
-        if (!Noticia::pendientesNotificacion()->exists()) {
+        if (! Noticia::pendientesNotificacion()->exists()) {
             return;
         }
 

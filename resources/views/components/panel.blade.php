@@ -885,6 +885,9 @@
     {{-- Script de Notificaciones --}}
     @auth
     <script>
+        const NOTIF_CACHE_KEY = 'sigea_notif';
+        const NOTIF_TTL = 120000; // 2 minutos en ms
+
         function notificaciones() {
             return {
                 abierto: false,
@@ -893,9 +896,21 @@
                 polling: null,
 
                 init() {
-                    this.cargar();
-                    // Polling cada 30 segundos
-                    this.polling = setInterval(() => this.cargar(), 30000);
+                    // Usar caché si existe y no ha vencido; evita petición en cada cambio de página.
+                    const cached = this._leerCache();
+                    if (cached) {
+                        this.items = cached.notificaciones;
+                        this.noLeidas = cached.no_leidas;
+                        // Programar el próximo fetch según tiempo restante del caché
+                        const restante = NOTIF_TTL - (Date.now() - cached.ts);
+                        this.polling = setTimeout(() => {
+                            this.cargar();
+                            this.polling = setInterval(() => this.cargar(), NOTIF_TTL);
+                        }, restante);
+                    } else {
+                        this.cargar();
+                        this.polling = setInterval(() => this.cargar(), NOTIF_TTL);
+                    }
                 },
 
                 async cargar() {
@@ -908,8 +923,8 @@
                         const prevNoLeidas = this.noLeidas;
                         this.items = data.notificaciones;
                         this.noLeidas = data.no_leidas;
+                        this._guardarCache(data);
 
-                        // Efecto visual si hay nuevas
                         if (data.no_leidas > prevNoLeidas && prevNoLeidas > 0) {
                             this.animarBadge();
                         }
@@ -918,7 +933,8 @@
 
                 toggle() {
                     this.abierto = !this.abierto;
-                    if (this.abierto) this.cargar();
+                    // Al abrir: refrescar solo si el caché está vencido
+                    if (this.abierto && !this._leerCache()) this.cargar();
                 },
 
                 async abrirNotificacion(item) {
@@ -932,6 +948,7 @@
                         });
                         item.leida = true;
                         this.noLeidas = Math.max(0, this.noLeidas - 1);
+                        this._invalidarCache();
                     }
                     if (item.url) {
                         this.abierto = false;
@@ -949,16 +966,35 @@
                     });
                     this.items.forEach(i => i.leida = true);
                     this.noLeidas = 0;
+                    this._invalidarCache();
                 },
 
                 animarBadge() {
-                    // Vibración visual en el badge
                     const badge = this.$el?.querySelector('[x-text]');
                     if (badge) {
                         badge.classList.add('ring-2', 'ring-[#0606F0]/40');
                         setTimeout(() => badge.classList.remove('ring-2', 'ring-[#0606F0]/40'), 2000);
                     }
-                }
+                },
+
+                _guardarCache(data) {
+                    try {
+                        localStorage.setItem(NOTIF_CACHE_KEY, JSON.stringify({ ...data, ts: Date.now() }));
+                    } catch (e) {}
+                },
+
+                _leerCache() {
+                    try {
+                        const raw = localStorage.getItem(NOTIF_CACHE_KEY);
+                        if (!raw) return null;
+                        const cached = JSON.parse(raw);
+                        return (Date.now() - cached.ts) < NOTIF_TTL ? cached : null;
+                    } catch (e) { return null; }
+                },
+
+                _invalidarCache() {
+                    try { localStorage.removeItem(NOTIF_CACHE_KEY); } catch (e) {}
+                },
             };
         }
     </script>
