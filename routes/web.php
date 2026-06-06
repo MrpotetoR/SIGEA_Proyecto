@@ -117,6 +117,7 @@ Route::prefix('docente')->name('docente.')->middleware(['auth', 'verified', 'rol
     Route::get('/asistencia',                     [\App\Http\Controllers\Docente\AsistenciaController::class, 'index'])->name('asistencia');
     Route::get('/asistencia/{grupo}',             [\App\Http\Controllers\Docente\AsistenciaController::class, 'show'])->name('asistencia.show');
     Route::get('/asistencia/{grupo}/historial',   [\App\Http\Controllers\Docente\AsistenciaController::class, 'historial'])->name('asistencia.historial');
+    Route::get('/asistencia/{grupo}/pdf',         [\App\Http\Controllers\Docente\AsistenciaController::class, 'pdf'])->name('asistencia.pdf');
     Route::post('/asistencia/{grupo}',            [\App\Http\Controllers\Docente\AsistenciaController::class, 'store'])->name('asistencia.store');
 
     // Calificaciones

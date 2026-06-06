@@ -21,6 +21,14 @@
                 </svg>
                 Ver historial
             </a>
+            <a href="{{ route('docente.asistencia.pdf', $grupo->id_grupo) }}"
+               class="text-[12px] font-medium text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/30 px-3 py-1.5 rounded-xl hover:bg-emerald-100 dark:hover:bg-emerald-900/50 transition-colors inline-flex items-center gap-1.5"
+               title="Descargar lista en blanco para captura manual">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-4 h-4">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2h-4l-2-2H7a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                </svg>
+                Imprimir lista
+            </a>
             <a href="{{ route('docente.asistencia') }}"
                class="text-[12px] font-medium text-gray-500 dark:text-gray-300 hover:text-gray-700 dark:hover:text-gray-100 bg-gray-100 dark:bg-gray-700 px-3 py-1.5 rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">&larr; Volver</a>
         </div>
