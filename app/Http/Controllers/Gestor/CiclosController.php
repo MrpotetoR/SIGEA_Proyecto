@@ -15,36 +15,6 @@ class CiclosController extends Controller
         return view('gestor.ciclos.index', compact('ciclos'));
     }
 
-    public function create()
-    {
-        $aniosUsados = CicloEscolar::pluck('fecha_inicio')
-            ->map(fn($f) => \Carbon\Carbon::parse($f)->year)
-            ->unique()->values();
-        return view('gestor.ciclos.create', compact('aniosUsados'));
-    }
-
-    public function store(Request $request)
-    {
-        $request->validate([
-            'fecha_inicio' => 'required|date',
-        ]);
-
-        // Regla fija del sistema: ciclo = 3 años 4 meses. Nombre = rango de años "YYYY–YYYY".
-        $fechaFin = CicloEscolar::calcularFechaFin($request->fecha_inicio);
-        $nombre   = CicloEscolar::generarNombre($request->fecha_inicio);
-
-        if ($error = $this->validarDuplicado($request->fecha_inicio, $fechaFin, $nombre)) {
-            return back()->withInput()->withErrors(['fecha_inicio' => $error]);
-        }
-
-        CicloEscolar::create([
-            'nombre'       => $nombre,
-            'fecha_inicio' => $request->fecha_inicio,
-            'fecha_fin'    => $fechaFin,
-        ]);
-        return redirect()->route('gestor.ciclos.index')->with('success', "Ciclo escolar \"$nombre\" creado (3 años 4 meses).");
-    }
-
     public function show(CicloEscolar $ciclo) { return view('gestor.ciclos.show', compact('ciclo')); }
 
     public function edit(CicloEscolar $ciclo)
