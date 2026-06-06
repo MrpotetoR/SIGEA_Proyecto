@@ -52,7 +52,7 @@ class DatabaseSeeder extends Seeder
         $admin = User::firstOrCreate(
             ['email' => 'admin@sigea.edu.mx'],
             [
-                'name'     => 'Administrador SIGEA',
+                'name'     => 'Administrador UDEA',
                 'password' => bcrypt('admin2026'),
                 'activo'   => true,
             ]
@@ -204,7 +204,7 @@ class DatabaseSeeder extends Seeder
 
         $this->command->info('');
         $this->command->info('═══════════════════════════════════════════════════════════');
-        $this->command->info('  SIGEA inicializado con datos mínimos para manual de usuario');
+        $this->command->info('  UDEA inicializado con datos mínimos para manual de usuario');
         $this->command->info('═══════════════════════════════════════════════════════════');
         $this->command->info('  Usuarios base (todos con contraseña "password"');
         $this->command->info('  excepto admin):');

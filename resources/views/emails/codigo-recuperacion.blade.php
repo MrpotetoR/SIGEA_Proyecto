@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Codigo de recuperacion - SIGEA</title>
+    <title>Codigo de recuperacion - UDEA</title>
 </head>
 <body style="margin:0; padding:0; background-color:#f3f4f6; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
     <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color:#f3f4f6; padding:32px 16px;">
@@ -22,7 +22,7 @@
                                         </div>
                                     </td>
                                     <td align="right" style="color:rgba(255,255,255,0.85); font-size:12px; font-weight:600; letter-spacing:0.08em; text-transform:uppercase;">
-                                        SIGEA
+                                        UDEA
                                     </td>
                                 </tr>
                             </table>
@@ -42,7 +42,7 @@
                                 Hola {{ $nombreUsuario }},
                             </p>
                             <p style="margin:0 0 24px; color:#4b5563; font-size:14px; line-height:1.6;">
-                                Recibimos una solicitud para restablecer la contrasena de tu cuenta en SIGEA.
+                                Recibimos una solicitud para restablecer la contrasena de tu cuenta en UDEA.
                                 Usa el siguiente codigo de verificacion para continuar:
                             </p>
 
@@ -81,7 +81,7 @@
                                 Este correo fue enviado automaticamente, por favor no respondas a esta direccion.
                             </p>
                             <p style="margin:0; color:#9ca3af; font-size:11.5px;">
-                                &copy; {{ date('Y') }} SIGEA - Sistema de Gestion Academica.
+                                &copy; {{ date('Y') }} UDEA - Sistema de Gestion Academica.
                             </p>
                         </td>
                     </tr>

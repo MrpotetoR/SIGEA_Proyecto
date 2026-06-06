@@ -4,7 +4,7 @@
         $user->hasRole('alumno')            => ['Panel Alumno',      'partials.alumno-nav',    'alumno.noticias'],
         $user->hasRole('docente')           => ['Panel Docente',     'partials.docente-nav',   'docente.noticias'],
         $user->hasRole('gestor_escolar')    => ['Gestor Escolar',    'partials.gestor-nav',    'gestor.noticias.index'],
-        default                             => ['SIGEA', null, null],
+        default                             => ['UDEA', null, null],
     };
 @endphp
 

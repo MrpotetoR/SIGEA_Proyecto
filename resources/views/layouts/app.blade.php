@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', 'SIGEA') — Sistema de Gestión Educativa</title>
+    <title>@yield('title', 'UDEA') — Sistema de Gestión Educativa</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="bg-gray-50 min-h-screen">
@@ -16,7 +16,7 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16">
                 <div class="flex items-center">
-                    <a href="/" class="text-xl font-bold text-blue-900">SIGEA</a>
+                    <a href="/" class="text-xl font-bold text-blue-900">UDEA</a>
                     <span class="ml-3 text-sm text-gray-500">
                         @if(auth()->user()->esServiciosEscolares())
                             Servicios Escolares

@@ -32,7 +32,7 @@ class CodigoRecuperacionPasswordMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'SIGEA — Codigo de recuperacion de contrasena',
+            subject: 'UDEA — Codigo de recuperacion de contrasena',
         );
     }
 

@@ -45,7 +45,7 @@ class PerfilController extends Controller
      *         @OA\JsonContent(
      *
      *             @OA\Property(property="name", type="string", example="Juan Pérez"),
-     *             @OA\Property(property="email", type="string", format="email", example="juan@sigea.local")
+     *             @OA\Property(property="email", type="string", format="email", example="juan@udea.local")
      *         )
      *     ),
      *

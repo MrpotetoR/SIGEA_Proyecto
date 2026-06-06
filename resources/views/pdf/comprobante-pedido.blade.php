@@ -107,9 +107,9 @@
     @endif
 
     <div class="footer">
-        Documento generado electrónicamente por SIGEA — {{ now()->format('d/m/Y H:i') }}.
+        Documento generado electrónicamente por UDEA — {{ now()->format('d/m/Y H:i') }}.
         <br>
-        Universidad de Los Ángeles · {{ config('app.name', 'SIGEA') }} · {{ date('Y') }}
+        Universidad de Los Ángeles · {{ config('app.name', 'UDEA') }} · {{ date('Y') }}
     </div>
 </body>
 </html>

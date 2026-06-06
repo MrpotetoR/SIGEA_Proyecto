@@ -3,7 +3,7 @@
     $panelNombre = match (true) {
         $user->hasRole('alumno')  => 'Panel Alumno',
         $user->hasRole('docente') => 'Panel Docente',
-        default                   => 'SIGEA',
+        default                   => 'UDEA',
     };
     $navPartial = match (true) {
         $user->hasRole('alumno')  => 'partials.alumno-nav',

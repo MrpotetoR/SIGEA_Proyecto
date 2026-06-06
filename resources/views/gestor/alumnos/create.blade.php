@@ -59,7 +59,7 @@
                     <input type="email" name="email" value="{{ old('email') }}" required maxlength="255"
                            class="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400 focus:outline-none @error('email') border-red-400 @enderror">
                     @error('email')<p class="text-red-500 dark:text-red-400 text-xs mt-1">{{ $message }}</p>@enderror
-                    <p class="text-xs text-gray-400 mt-1">Se usará como usuario de acceso. Contraseña inicial: <code class="dark:text-gray-300">sigea{{ date('Y') }}</code></p>
+                    <p class="text-xs text-gray-400 mt-1">Se usará como usuario de acceso. Contraseña inicial: <code class="dark:text-gray-300">udea{{ date('Y') }}</code></p>
                 </div>
 
                 <div class="grid grid-cols-2 gap-4">

@@ -56,7 +56,7 @@
 
     <div class="membrete">
         <h1>INSTITUTO TECNOLÓGICO</h1>
-        <p>Sistema Integral de Gestión Escolar y Académica — SIGEA</p>
+        <p>Sistema Integral de Gestión Escolar y Académica — UDEA</p>
     </div>
 
     <div class="titulo">Kárdex Académico</div>
@@ -126,12 +126,12 @@
 
     <div class="firma">
         <div class="linea"></div>
-        <p><strong>Control Escolar — SIGEA</strong></p>
+        <p><strong>Control Escolar — UDEA</strong></p>
         <p>Instituto Tecnológico</p>
     </div>
 
     <div class="pie">
-        Documento generado electrónicamente por SIGEA el {{ now()->format('d/m/Y H:i') }}.
+        Documento generado electrónicamente por UDEA el {{ now()->format('d/m/Y H:i') }}.
         Válido sin firma autógrafa con sello institucional.
     </div>
 

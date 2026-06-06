@@ -34,7 +34,7 @@
 
     <div class="membrete">
         <h1>INSTITUTO TECNOLÓGICO</h1>
-        <p>Sistema Integral de Gestión Escolar y Académica — SIGEA</p>
+        <p>Sistema Integral de Gestión Escolar y Académica — UDEA</p>
     </div>
 
     <div class="folio">
@@ -126,11 +126,11 @@
     <div class="firma">
         <div class="linea"></div>
         <p><strong>Jefatura de Servicios Escolares</strong></p>
-        <p>Instituto Tecnológico — SIGEA</p>
+        <p>Instituto Tecnológico — UDEA</p>
     </div>
 
     <div class="pie">
-        Documento generado electrónicamente por SIGEA. Válido sin firma autógrafa con sello institucional.
+        Documento generado electrónicamente por UDEA. Válido sin firma autógrafa con sello institucional.
         Generado el {{ now()->format('d/m/Y H:i') }}
     </div>
 

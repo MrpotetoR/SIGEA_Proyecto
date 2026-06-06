@@ -84,7 +84,7 @@
         </div>
 
         <div style="background:#f4f4f4; padding:15px; text-align:center; font-size:11px; color:#888;">
-            Este es un correo automático del sistema SIGEA. Por favor no respondas a esta dirección.
+            Este es un correo automático del sistema UDEA. Por favor no respondas a esta dirección.
             <br>
             Universidad de Los Ángeles · &copy; {{ date('Y') }}
         </div>

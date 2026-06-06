@@ -5,10 +5,10 @@ namespace App\OpenApi;
 /**
  * @OA\Info(
  *     version="1.0.0",
- *     title="SIGEA REST API",
- *     description="API REST del Sistema Integral de Gestión Educativa Académica (SIGEA). Autenticación mediante tokens Sanctum (header `Authorization: Bearer <token>`).",
+ *     title="UDEA REST API",
+ *     description="API REST del Sistema Integral de Gestión Educativa Académica (UDEA). Autenticación mediante tokens Sanctum (header `Authorization: Bearer <token>`).",
  *
- *     @OA\Contact(name="Equipo SIGEA", email="contacto@sigea.local")
+ *     @OA\Contact(name="Equipo UDEA", email="contacto@udea.local")
  * )
  *
  * @OA\Server(

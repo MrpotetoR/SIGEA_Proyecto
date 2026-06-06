@@ -182,7 +182,7 @@ class AlumnosController extends Controller
             $user = User::create([
                 'name' => "{$request->nombre} {$request->apellidos}",
                 'email' => $request->email,
-                'password' => bcrypt('sigea' . date('Y')),
+                'password' => bcrypt('udea' . date('Y')),
                 'activo' => true,
             ]);
             $user->assignRole('alumno');
